@@ -6,17 +6,134 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <TextView
+    <LinearLayout
         android:id="@+id/text_home"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/body_1"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_marginBottom="18dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:text="000님, \n   스트레스 상태"
+                android:textColor="#000"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            >
+
+            <LinearLayout
+                android:id="@+id/body_2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="#33E3C7CB"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="28dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="150dp"
+                            android:text="- 앱 사용 시간 "
+                            android:textColor="#767676"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:text="+"
+                            android:textColor="#777777"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#FFFFFF"
+                            app:cornerRadius="50sp" />
+                    </LinearLayout>
+
+                    <Button
+
+                        android:layout_width="320dp"
+                        android:layout_height="240dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="24dp"
+                        android:background="@drawable/round_button"
+                        android:text="앱 사용 시간을 보려면\n클릭하세요"
+                        android:textColor="#777777"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="#00FFFFFF" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="#33E3C7CB"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="28dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="- 앱 사용 횟수 "
+                            android:textColor="#767676"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <Button
+
+                        android:layout_width="320dp"
+                        android:layout_height="240dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="24dp"
+                        android:background="@drawable/round_button"
+                        android:text="앱 사용 횟수를 보려면\n클릭하세요"
+                        android:textColor="#777777"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="#00FFFFFF" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
