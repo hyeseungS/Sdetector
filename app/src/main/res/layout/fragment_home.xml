@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@navigation/mobile_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -41,14 +41,13 @@
         <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-
+            android:scrollbars="none"
             >
-
             <LinearLayout
                 android:id="@+id/body_2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                >
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -59,15 +58,14 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="28dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="150dp"
                             android:text="- 앱 사용 시간 "
+                            android:layout_marginRight="180dp"
                             android:textColor="#767676"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -106,7 +104,6 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="28dp">
 
@@ -114,6 +111,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="- 앱 사용 횟수 "
+                            android:layout_marginRight="180dp"
                             android:textColor="#767676"
                             android:textSize="20sp"
                             android:textStyle="bold" />
