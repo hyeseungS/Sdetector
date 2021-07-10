@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".GraphFragment2">
 
     <LinearLayout
-        android:id="@+id/text_home"
+        android:id="@+id/graph1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#33E3C7CB"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@navigation/mobile_navigation"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,34 +18,33 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/body_1"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="100dp"
+            android:gravity="center_vertical"
+            android:padding="28dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="000님, \n   스트레스 상태"
-                android:textColor="#000"
-                android:textSize="36sp"
+                android:text="- 앱 사용 횟수 "
+                android:textColor="#767676"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_below="@+id/body_1"
-            android:layout_alignParentLeft="true"
-            android:layout_weight="1"
-            android:orientation="horizontal" />
+        <Button
 
-
+            android:layout_width="320dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/round_button"
+            android:text="앱 사용 횟수를 보려면\n클릭하세요"
+            android:textColor="#777777"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:backgroundTint="#00FFFFFF" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
