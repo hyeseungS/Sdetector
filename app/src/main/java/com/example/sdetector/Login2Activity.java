@@ -18,6 +18,8 @@ public class Login2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
 
+        getSupportActionBar().setTitle("회원가입");
+
         CheckBox checkBox = findViewById(R.id.checkBox); // 전체 동의
         CheckBox checkBox1 = findViewById(R.id.checkBox1); // 이용 약관 동의
         CheckBox checkBox2 = findViewById(R.id.checkBox2); // 개인정보 수집 동의
