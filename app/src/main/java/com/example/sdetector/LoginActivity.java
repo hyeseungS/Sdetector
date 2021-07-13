@@ -25,6 +25,17 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        Button findBtn = (Button) findViewById(R.id.buttonFind);
+        findBtn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(getApplicationContext(),
+                        Login4Activity.class);
+                startActivity(intent);
+            }
+        });
+
         Button signupBtn = (Button) findViewById(R.id.buttonSignup);
         signupBtn.setOnClickListener(new View.OnClickListener(){
 
