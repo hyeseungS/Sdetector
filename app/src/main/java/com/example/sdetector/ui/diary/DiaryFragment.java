@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sdetector.R;
 import com.example.sdetector.databinding.FragmentDiaryBinding;
+import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -36,14 +37,34 @@ import java.util.zip.Inflater;
 
 import android.widget.Toast;
 
-public class DiaryFragment extends Fragment implements View.OnClickListener {
+public class DiaryFragment extends Fragment {
 
     private DiaryViewModel diaryViewModel;
     private FragmentDiaryBinding binding;
 
     private static String TAG = "DiaryFragment";
 
-    private Context context;
+    Context context;
+    TabLayout.OnTabSelectedListener listener;
+
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        this.context = context;
+        if (context instanceof TabLayout.OnTabSelectedListener) {
+            listener = (TabLayout.OnTabSelectedListener) context;
+        }
+    }
+
+    public void onDetach() {
+        super.onDetach();
+
+        if (context != null) {
+            context = null;
+            listener = null;
+        }
+    }
+
 
     View view;
     DatePickerDialog datedialog;
@@ -69,12 +90,14 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
         diaryViewModel =
                 new ViewModelProvider(this).get(DiaryViewModel.class);
 
-        binding = FragmentDiaryBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        //binding = FragmentDiaryBinding.inflate(inflater, container, false);
+        //View root = binding.getRoot();
 
         //여기부터 추가코드
         view = inflater.inflate(R.layout.fragment_diary, container,false);
         context = container.getContext();
+
+
         tv = (TextView)view.findViewById(R.id.DatetextView);
         tv.setText(getArguments().getString("date"));
         Calendar cal = Calendar.getInstance();
@@ -124,8 +147,7 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        return root;
-        //return view;
+        return view;
     }
 
     DatePickerDialog.OnDateSetListener mDateSetListener = (datePicker, yy, mm, dd) -> {
@@ -152,32 +174,8 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.saveBtn) {
-            Log.i("TAG", "save 진행");
-            FileOutputStream fos = null;
-
-            try {
-                /*fos = openFileOutput("memo.txt", Context.MODE_PRIVATE);
-                String out = minputText.getText().toString();
-                fos.write(out.getBytes());*/
-                Toast.makeText(getContext(), "save 완료", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (fos != null) fos.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-
 }
