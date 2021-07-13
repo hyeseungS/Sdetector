@@ -6,156 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".ui.diary.DiaryFragment">
 
-    <LinearLayout
-        android:id="@+id/text_diary"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#33E3C7CB"
-        android:gravity="center"
-        android:orientation="vertical"
+
+    <TextView
+        android:id="@+id/DatetextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="96dp"
+        android:text="Hello World!"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.181"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/DatePickerBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="88dp"
+        android:onClick="showDatePicker"
+        android:text="날짜선택(달력아이콘)"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/inputText"
+        android:layout_width="305dp"
+        android:layout_height="280dp"
+        android:layout_marginTop="160dp"
+        android:layout_weight="9"
+        android:gravity="top"
+        android:textIsSelectable="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="244dp"
+        android:layout_height="39dp"
+        android:layout_marginBottom="200dp"
+        android:layout_weight="1"
+        android:text="SAVE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:text="감정 일기"
-            android:textColor="#504435"
-            android:textSize="32dp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/round_layout"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/DatetextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="90dp"
-                    android:text="Hello World!"
-                    android:textColor="@color/black"
-                    android:textSize="26sp"
-                    android:textStyle="normal" />
-
-                <Button
-                    android:id="@+id/DatePickerBtn"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:background="@drawable/ic_calendar_24" />
-                /*android:onClick="showDatePicker"*/
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:text="오늘의 감정을 선택하세요."
-                android:textColor="@color/black"
-                android:textSize="14dp" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_button"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <RadioGroup
-                    android:id="@+id/emotion_diary"
-                    android:layout_width="300dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <RadioButton
-                        android:id="@+id/good_radioBtn"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/diary_radiobtn"
-                        android:button="@null"
-                        android:drawableTop="@drawable/happy_emoticon"
-                        android:gravity="center"
-                        android:text="좋음"
-                        android:textColor="#676658"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <RadioButton
-                        android:id="@+id/normal_radioBtn"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/diary_radiobtn"
-                        android:button="@null"
-                        android:drawableTop="@drawable/normal_emoticon"
-                        android:gravity="center"
-                        android:text="보통"
-                        android:textColor="#676658"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <RadioButton
-                        android:id="@+id/bad_radioBtn"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/diary_radiobtn"
-                        android:button="@null"
-                        android:drawableTop="@drawable/sad_emoticon"
-                        android:gravity="center"
-                        android:text="나쁨"
-                        android:textColor="#676658"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </RadioGroup>
-
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/inputText"
-                android:layout_width="300dp"
-                android:layout_height="240dp"
-                android:layout_weight="9"
-                android:gravity="top"
-                android:scrollbars="vertical"
-                android:textIsSelectable="false" />
-
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/saveBtn"
-            android:layout_width="320dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="5dp"
-            android:text="저장하기"
-            android:textSize="24dp"
-            android:textStyle="bold"
-            app:cornerRadius="36dp" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/inputText"
+        app:layout_constraintVertical_bias="0.769" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
