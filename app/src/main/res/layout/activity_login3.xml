@@ -45,14 +45,14 @@
                 android:textStyle="bold">
 
                 <EditText
-                    android:id="@+id/EditTextemail"
+                    android:id="@+id/EditTextEmail"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="20sp"
                     android:gravity="center_vertical"
-                    android:hint="email"
+                    android:hint="Email"
                     android:textColor="#2B261E"
                     android:textColorHint="#662B261E"
                     android:textSize="15sp"

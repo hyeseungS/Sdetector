@@ -14,6 +14,8 @@ public class Login3Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login3);
 
+        getSupportActionBar().setTitle("회원가입");
+
         Button backBtn = (Button) findViewById(R.id.buttonBack);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
