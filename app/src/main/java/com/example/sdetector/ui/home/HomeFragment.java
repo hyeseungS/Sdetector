@@ -27,6 +27,11 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -55,8 +60,8 @@ public class HomeFragment extends Fragment {
         GraphFragment2 fragment2 = new GraphFragment2();
         adapter.addItem(fragment2);
 
-
         pager.setAdapter(adapter);
+
         return root;
     }
 
@@ -85,6 +90,5 @@ public class HomeFragment extends Fragment {
             return items.size();
         }
     }
-
 
 }

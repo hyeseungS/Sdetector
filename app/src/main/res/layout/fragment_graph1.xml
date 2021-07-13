@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#33E3C7CB"
-        android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,16 +46,26 @@
 
         <Button
 
+            android:id="@+id/app_time_button"
             android:layout_width="320dp"
             android:layout_height="240dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="24dp"
+
             android:background="@drawable/round_button"
             android:text="앱 사용 시간을 보려면\n클릭하세요"
             android:textColor="#777777"
             android:textSize="18sp"
             android:textStyle="bold"
             app:backgroundTint="#00FFFFFF" />
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/chart1"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+
+             />
     </LinearLayout>
 
 
