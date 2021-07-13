@@ -136,7 +136,7 @@
             <EditText
                 android:id="@+id/inputText"
                 android:layout_width="300dp"
-                android:layout_height="280dp"
+                android:layout_height="240dp"
                 android:layout_weight="9"
                 android:gravity="top"
                 android:scrollbars="vertical"
