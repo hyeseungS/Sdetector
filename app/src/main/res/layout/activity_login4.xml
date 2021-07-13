@@ -17,79 +17,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            android:paddingHorizontal="30dp">
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:text="ID 찾기"
-                app:backgroundTint="@color/purple_200" />
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:text="PW 찾기"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"/>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/findBox"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <FrameLayout
+            android:id="@+id/fBox"
+            android:layout_marginTop="15dp"
             android:layout_marginHorizontal="30dp"
-            android:background="@drawable/login_bg"
-            android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="20dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:gravity="bottom"
+            android:layout_marginBottom="15dp">
 
-            <TextView
+            <Button
+                android:id="@+id/idF"
                 android:layout_width="match_parent"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginHorizontal="20dp"
-                android:text="가입한 이메일 주소를 입력하세요.
-\n 메일함에서 비밀번호를 확인할 수 있습니다."/>
-
-            <EditText
-                android:background="@drawable/login2_textview"
-                android:id="@+id/EditTextEmail"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
                 android:layout_marginHorizontal="10dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_margin="20sp"
-                android:gravity="center_vertical"
-                android:paddingLeft="20dp"
-                android:hint="Email"
-                android:textColor="#2B261E"
-                android:textColorHint="#662B261E"
-                android:textSize="20sp"
+                android:background="@drawable/login2_button2"
+                android:padding="20sp"
+                android:text=" ID 찾기 "
+                android:textSize="25sp"
                 android:textStyle="bold" />
 
             <Button
-                android:layout_marginBottom="20dp"
-                android:id="@+id/buttonPWf"
-                android:layout_width="wrap_content"
-                android:layout_height="55dp"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/login2_button"
-                android:text="PW 확인"
-                android:paddingHorizontal="20dp"
-                android:textColor="#2B261E"
-                android:textSize="20sp"
+                android:id="@+id/pwF"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/login2_button2"
+                android:padding="20sp"
+                android:text=" PW 찾기 "
+                android:textSize="25sp"
                 android:textStyle="bold" />
-        </RelativeLayout>
-
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

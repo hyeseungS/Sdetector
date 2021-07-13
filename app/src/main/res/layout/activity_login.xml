@@ -33,7 +33,7 @@
             android:padding="10dp">
 
             <EditText
-                android:id="@+id/Emaail"
+                android:id="@+id/Email"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginHorizontal="20dp"
