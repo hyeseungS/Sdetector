@@ -6,29 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.diary.DiaryFragment">
 
-<<<<<<< HEAD
-
-    <TextView
-        android:id="@+id/DatetextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
-        android:text="Hello World!"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.181"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/DatePickerBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
-        android:onClick="showDatePicker"
-
-        android:text="날짜선택(달력아이콘)"
-=======
     <LinearLayout
         android:id="@+id/text_diary"
         android:layout_width="match_parent"
@@ -36,7 +13,6 @@
         android:background="#33E3C7CB"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@navigation/mobile_navigation"
->>>>>>> 122410bb1c7c42406ef75d6e6e6db395efede66d
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
