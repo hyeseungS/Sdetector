@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.sdetector.databinding.FragmentGraph3Binding;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -25,8 +24,6 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import java.util.ArrayList;
 
 public class Graph3Fragment extends Fragment {
-
-    private FragmentGraph3Binding binding;
 
     public LineChart lineChart1;
     public LineChart lineChart2;
@@ -77,12 +74,6 @@ public class Graph3Fragment extends Fragment {
         lineChart3.setMarker(mv3);
 
         return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 
     public void onClick(View view) {
