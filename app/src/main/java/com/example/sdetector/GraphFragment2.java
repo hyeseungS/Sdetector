@@ -33,8 +33,8 @@ public class GraphFragment2 extends Fragment {
     private static final int MAX_Y_VALUE = 50;
     private static final int MIN_Y_VALUE = 0;
     private static final String SET_LABEL = " ";
-    private static final String[] APPS = { "인스타그램", "네이버", "카카오톡", "유튜브" };
-    private HorizontalBarChart chart2;
+    private static final String[] APPS = {"인스타그램", "네이버", "카카오톡", "유튜브"};
+    private HorizontalBarChart barChart2;
 
     @Nullable
     @Override
@@ -45,12 +45,12 @@ public class GraphFragment2 extends Fragment {
             @Override
             public void onClick(View view) {
                 graphButton2.setVisibility(View.GONE);
-                chart2 = rootView.findViewById(R.id.chart2);
+                barChart2 = rootView.findViewById(R.id.chart2);
 
                 BarData data = createChartData();
                 configureChartAppearance();
                 prepareChartData(data);
-                chart2.setVisibility(View.VISIBLE);
+                barChart2.setVisibility(View.VISIBLE);
             }
         });
 
@@ -59,18 +59,20 @@ public class GraphFragment2 extends Fragment {
     }
 
     private void configureChartAppearance() {
-        chart2.getDescription().setEnabled(false);
-        chart2.setTouchEnabled(false);
-        chart2.setDrawGridBackground(false);
-        chart2.getLegend().setEnabled(false);
+        barChart2.getDescription().setEnabled(false);
+        barChart2.setTouchEnabled(false);
+        barChart2.getLegend().setEnabled(false);
+        barChart2.setExtraOffsets(20f, 0f, 40f, 0f);
 
-        XAxis xAxis = chart2.getXAxis();
-        xAxis.setDrawGridLines(false);
+        XAxis xAxis = barChart2.getXAxis();
         xAxis.setDrawAxisLine(false);
         xAxis.setGranularity(1f);
         xAxis.setTextSize(15f);
+        xAxis.setGridLineWidth(30f);
+        xAxis.setGridColor(Color.parseColor("#80E5E5E5"));
+
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        YAxis axisLeft = chart2.getAxisLeft();
+        YAxis axisLeft = barChart2.getAxisLeft();
         axisLeft.setDrawGridLines(false);
         axisLeft.setDrawAxisLine(false);
         axisLeft.setAxisMinimum(0f); // 최소값
@@ -78,7 +80,7 @@ public class GraphFragment2 extends Fragment {
         axisLeft.setGranularity(1f); // 값 만큼 라인선 설정
         axisLeft.setDrawLabels(false); // 값 셋팅 설정
 
-        YAxis axisRight = chart2.getAxisRight();
+        YAxis axisRight = barChart2.getAxisRight();
         axisRight.setTextSize(15f);
         axisRight.setDrawLabels(false);
         axisRight.setDrawGridLines(false);
@@ -88,7 +90,7 @@ public class GraphFragment2 extends Fragment {
 
             @Override
             public String getFormattedValue(float value) {
-                return APPS[(int)value];
+                return APPS[(int) value];
             }
         });
     }
@@ -103,7 +105,13 @@ public class GraphFragment2 extends Fragment {
         BarDataSet set2 = new BarDataSet(values, SET_LABEL);
         set2.setDrawIcons(false);
         set2.setDrawValues(true);
-        set2.setColor(Color.GRAY);
+        set2.setColor(Color.parseColor("#66767676"));
+        set2.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return (String.valueOf((int) value)) + "회";
+            }
+        });
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(set2);
@@ -116,7 +124,7 @@ public class GraphFragment2 extends Fragment {
 
     private void prepareChartData(BarData data) {
         data.setValueTextSize(15);
-        chart2.setData(data);
-        chart2.invalidate();
+        barChart2.setData(data);
+        barChart2.invalidate();
     }
 }

@@ -9,7 +9,11 @@
         android:id="@+id/navigation_home"
         android:name="com.example.sdetector.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_more_graph"
+            app:destination="@id/more_graph" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_report"
@@ -28,4 +32,10 @@
         android:name="com.example.sdetector.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/more_graph"
+        android:name="com.example.sdetector.Graph3Fragment"
+        android:label="앱 사용 시간"
+        tools:layout="@layout/fragment_graph3" />
 </navigation>

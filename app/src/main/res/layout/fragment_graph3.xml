@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Graph3Fragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/day_button"
+                android:layout_width="110dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/round_button3"
+                android:text="DAY"
+                android:textColor="#767676"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="#00000000" />
+
+            <Button
+                android:id="@+id/week_button"
+                android:layout_width="110dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="10dp"
+
+                android:background="@drawable/round_button3"
+                android:text="WEEK"
+                android:textColor="#767676"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="#00000000" />
+
+            <Button
+                android:id="@+id/month_button"
+                android:layout_width="110dp"
+                android:layout_height="50dp"
+                android:background="@drawable/round_button3"
+                android:text="MONTH"
+                android:textColor="#767676"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="#00000000" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/detail_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:paddingStart="40dp"
+            android:text="- 일간 앱 사용 시간"
+            android:textColor="#767676"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/day_time_chart"
+            android:layout_width="360dp"
+            android:layout_height="320dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/week_time_chart"
+            android:layout_width="360dp"
+            android:layout_height="320dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:visibility="gone" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/month_time_chart"
+            android:layout_width="360dp"
+            android:layout_height="320dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
