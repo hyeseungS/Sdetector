@@ -71,7 +71,6 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="20sp"
                     android:gravity="center_vertical"
-                    android:onClick="onTextViewClicked"
                     android:text="[필수] 서비스 이용 약관"
                     android:textColor="#2B261E"
                     android:textSize="15sp"
