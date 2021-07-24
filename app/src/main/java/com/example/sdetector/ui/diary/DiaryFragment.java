@@ -117,20 +117,6 @@ public class DiaryFragment extends Fragment {
         msaveBtn.setOnClickListener(listener);
     }
 
-    // Date Picker에서 선택한 yy,mm,dd를 TextView에 설정
-    /*DatePickerDialog.OnDateSetListener mDateSetListener = (datePicker, yy, mm, dd) -> {
-        TextView tv = getView().findViewById(R.id.DatetextView);
-        tv.setText(String.format("%d-%d-%d", yy,mm+1,dd));
-    };
-
-
-
-    // DATE Picker에서 선택한 날짜를 날짜TextView에 지정_mDateSetListener 함수로
-    public void showDatePicker(View view){
-        cal = Calendar.getInstance();
-        new DatePickerDialog(getActivity().getApplicationContext(), mDateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
-    }*/
-
     // 저장 버튼 누를때 listener
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
@@ -163,11 +149,6 @@ public class DiaryFragment extends Fragment {
         }
 
     };
-
-
-
-
-
 
 
     @Override

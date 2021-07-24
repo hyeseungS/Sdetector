@@ -30,7 +30,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements DiaryFragment.DatePickerListener {
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -70,16 +70,13 @@ public class MainActivity extends AppCompatActivity implements DiaryFragment.Dat
     }
 
 
-    @Override
-    public void DatePickerData(String data) {
 
-        DatePickerDialog.OnDateSetListener mDateSetListener = (datePicker, yy, mm, dd) -> {
+    public void showDatePicker(View view) {
+
+        mDateSetListener = (datePicker, yy, mm, dd) -> {
             TextView tv = findViewById(R.id.DatetextView);
             tv.setText(String.format("%d-%d-%d", yy, mm + 1, dd));
         };
-    }
-
-    public void showDatePicker(View view) {
 
             Calendar cal = Calendar.getInstance();
             new DatePickerDialog(this, mDateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
