@@ -31,11 +31,30 @@
         android:id="@+id/navigation_settings"
         android:name="com.example.sdetector.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_navigation_settings_to_mem_settings"
+            app:destination="@id/mem_settings" />
+        <action
+            android:id="@+id/action_navigation_settings_to_tnc_settings"
+            app:destination="@id/tac_settings" />
+    </fragment>
 
     <fragment
         android:id="@+id/more_graph"
         android:name="com.example.sdetector.Graph3Fragment"
         android:label="앱 사용 시간"
         tools:layout="@layout/fragment_graph3" />
+
+    <fragment
+        android:id="@+id/mem_settings"
+        android:name="com.example.sdetector.Settings2Fragment"
+        android:label="회원 정보"
+        tools:layout="@layout/fragment_settings2" />
+
+    <fragment
+        android:id="@+id/tac_settings"
+        android:name="com.example.sdetector.Settings3Fragment"
+        android:label="이용 약관 확인"
+        tools:layout="@layout/fragment_settings3" />
 </navigation>

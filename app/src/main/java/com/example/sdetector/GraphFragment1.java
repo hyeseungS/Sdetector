@@ -76,12 +76,12 @@ public class GraphFragment1 extends Fragment {
         barChart1.getDescription().setEnabled(false);
         barChart1.setTouchEnabled(false);
         barChart1.getLegend().setEnabled(false);
-        barChart1.setExtraOffsets(20f, 0f, 40f, 0f);
+        barChart1.setExtraOffsets(10f, 0f, 40f, 0f);
         XAxis xAxis = barChart1.getXAxis();
         xAxis.setDrawAxisLine(false);
         xAxis.setGranularity(1f);
         xAxis.setTextSize(15f);
-        xAxis.setGridLineWidth(30f);
+        xAxis.setGridLineWidth(25f);
         xAxis.setGridColor(Color.parseColor("#80E5E5E5"));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         YAxis axisLeft = barChart1.getAxisLeft();

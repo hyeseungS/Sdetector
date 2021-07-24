@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
+import com.example.sdetector.ui.settings.SettingsFragment;
 import com.example.sdetector.ui.diary.DiaryFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -72,8 +72,14 @@ public class MainActivity extends AppCompatActivity {
     public void moveToDetail(){
         navController.navigate(R.id.action_navigation_home_to_more_graph);
     }
+    
+    public void moveToMEMSettings(){
+        navController.navigate(R.id.action_navigation_settings_to_mem_settings);
+    }
 
-
+    public void moveToTACSettings(){
+        navController.navigate(R.id.action_navigation_settings_to_tnc_settings);
+    }
 
     public void showDatePicker(View view) {
 
