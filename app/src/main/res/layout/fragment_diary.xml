@@ -57,9 +57,11 @@
 
                 <Button
                     android:id="@+id/DatePickerBtn"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:background="@drawable/ic_calendar_24" />
+                    android:layout_width="10dp"
+                    android:layout_height="18dp"
+                    android:background="@drawable/ic_calendar_24"
+                    android:onClick="showDatePicker"/>
+
             </LinearLayout>
 
             <TextView

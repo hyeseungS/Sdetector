@@ -1,14 +1,24 @@
 package com.example.sdetector;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.Menu;
-
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import com.example.sdetector.ui.settings.SettingsFragment;
+import com.example.sdetector.ui.diary.DiaryFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentOnAttachListener;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -16,9 +26,12 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.Calendar;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
     private NavController navController;
 
     @Override
@@ -59,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     public void moveToDetail(){
         navController.navigate(R.id.action_navigation_home_to_more_graph);
     }
-
+    
     public void moveToMEMSettings(){
         navController.navigate(R.id.action_navigation_settings_to_mem_settings);
     }
@@ -67,6 +80,17 @@ public class MainActivity extends AppCompatActivity {
     public void moveToTACSettings(){
         navController.navigate(R.id.action_navigation_settings_to_tnc_settings);
     }
+
+    public void showDatePicker(View view) {
+
+        mDateSetListener = (datePicker, yy, mm, dd) -> {
+            TextView tv = findViewById(R.id.DatetextView);
+            tv.setText(String.format("%d-%d-%d", yy, mm + 1, dd));
+        };
+
+            Calendar cal = Calendar.getInstance();
+            new DatePickerDialog(this, mDateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
+        };
 
 }
 

@@ -1,5 +1,7 @@
 package com.example.sdetector.ui.diary;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.sdetector.MainActivity;
 import com.example.sdetector.R;
 import com.example.sdetector.databinding.FragmentDiaryBinding;
 import com.google.android.material.tabs.TabLayout;
@@ -36,16 +39,15 @@ public class DiaryFragment extends Fragment {
 
     private static String TAG = "DiaryFragment";
 
-    Context context;
-    TabLayout.OnTabSelectedListener listener;
+    public interface DatePickerListener{
+        void DatePickerData(String data);
+    }
+
+    private DatePickerListener mDatePickerListener;
 
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        this.context = context;
-        if (context instanceof TabLayout.OnTabSelectedListener) {
-            listener = (TabLayout.OnTabSelectedListener) context;
-        }
     }
 
     public void onDetach() {
@@ -58,9 +60,25 @@ public class DiaryFragment extends Fragment {
     }
 
 
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_diary, container, false);
+
+        return view;
+    }
+
+    Context context;
+
     View view;
     DatePickerDialog datedialog;
     TextView tv;
+    Calendar cal;
     Date today = new Date();
     //날짜 포맷 설정
     final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 mm월 dd일");
@@ -73,101 +91,72 @@ public class DiaryFragment extends Fragment {
     //저장버튼
     Button msaveBtn;
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    @Override
+    public void onViewCreated(@NonNull View view, @NonNull Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        diaryViewModel =
-                new ViewModelProvider(this).get(DiaryViewModel.class);
-
-        //binding = FragmentDiaryBinding.inflate(inflater, container, false);
-        //View root = binding.getRoot();
-
-        //여기부터 추가코드
-        view = inflater.inflate(R.layout.fragment_diary, container, false);
-        context = container.getContext();
+        this.context = context;
+        if (getActivity() != null && getActivity() instanceof DatePickerListener){
+            mDatePickerListener = (DatePickerListener) getActivity();
+        }
 
 
-        tv = (TextView) view.findViewById(R.id.DatetextView);
-        tv.setText(getArguments().getString("date"));
+        // 날짜 텍스트_일단 오늘날짜 지정
+        tv = getView().findViewById(R.id.DatetextView);
         Calendar cal = Calendar.getInstance();
-        //tv.setText(cal.get(Calendar.YEAR) +"-"+ (cal.get(Calendar.MONTH)+1) +"-"+ cal.get(Calendar.DATE));
-
-        datedialog = new DatePickerDialog(getContext(),
-                (DatePickerDialog.OnDateSetListener) this,
-                cal.get(Calendar.YEAR),
-                (cal.get(Calendar.MONTH) + 1),
-                cal.get(Calendar.DATE));
+        tv.setText(cal.get(Calendar.YEAR) +"-"+ (cal.get(Calendar.MONTH)+1) +"-"+ cal.get(Calendar.DATE));
 
         //날짜 선택 버튼
-        mDatePickerBtn = (Button) view.findViewById(R.id.DatePickerBtn);
-        mDatePickerBtn.setText((CharSequence) today);
-        mDatePickerBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                showDatePicker();
-            }
-        });
+        mDatePickerBtn = getView().findViewById(R.id.DatePickerBtn);
 
-        //내용 부분
-        minputText = (EditText) view.findViewById(R.id.inputText);
+        //내용 텍스트
+        minputText = getView().findViewById(R.id.inputText);
 
-        //저장 버튼
-        msaveBtn = (Button) view.findViewById(R.id.saveBtn);
-        msaveBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                if (view.getId() == R.id.saveBtn) {
-                    Log.i("TAG", "save 진행");
-                    FileOutputStream fos = null;
+        // 저장 버튼
+        msaveBtn = getView().findViewById(R.id.saveBtn);
+        msaveBtn.setOnClickListener(listener);
+    }
 
+    // 저장 버튼 누를때 listener
+    View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (view.getId() == R.id.saveBtn) {
+                Log.i("TAG", "save 진행");
+                FileOutputStream fos = null;
+
+                try {
+                    fos = getActivity().openFileOutput("memo.txt", Context.MODE_PRIVATE);
+                    String out = minputText.getText().toString();
+                    fos.write(out.getBytes());
+                    Toast.makeText(getActivity().getApplicationContext(), "save 완료", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
                     try {
-                        fos = context.openFileOutput("memo.txt", Context.MODE_PRIVATE);
-                        String out = minputText.getText().toString();
-                        fos.write(out.getBytes());
-                        Toast.makeText(getContext(), "save 완료", Toast.LENGTH_SHORT).show();
+                        if (fos != null) fos.close();
                     } catch (Exception e) {
                         e.printStackTrace();
-                    } finally {
-                        try {
-                            if (fos != null) fos.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
                     }
                 }
             }
-        });
-
-        return view;
-    }
-
-    DatePickerDialog.OnDateSetListener mDateSetListener = (datePicker, yy, mm, dd) -> {
-        // Date Picker에서 선택한 날짜를 TextView에 설정
-        tv.setText(String.format("%d-%d-%d", yy, mm + 1, dd));
-    };
-
-    public void showDatePicker() {
-        // DATE Picker가 처음 떴을 때, 오늘 날짜가 보이도록 설정.
-        Calendar cal = Calendar.getInstance();
-        try {
-            today = dateFormat.parse(mDatePickerBtn.getText().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        
+        {
+            if(mDatePickerListener != null){
+                mDatePickerListener.DatePickerData(DiaryFragment.this.toString());
+        }
         }
 
-        cal.setTime(today);
+    };
 
-        //int todayYear = cal.get(Calendar.YEAR);
-        //int todayMonth = cal.get(Calendar.MONTH);
-        //int todayDay = cal.get(Calendar.DAY_OF_MONTH);
-
-        new DatePickerDialog(getContext(), mDateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
-    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
+
+
+
 }
