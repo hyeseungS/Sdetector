@@ -66,7 +66,7 @@ public class Settings3Fragment extends Fragment {
                         });
                 builder.show();
                 break;
-            case R.id.tacBtn3:
+            /*case R.id.tacBtn3:
                 builder.setTitle("사용자 접근권한");
                 builder.setMessage(R.string.arg_textView3);
                 builder.setNegativeButton("확인",
@@ -78,7 +78,7 @@ public class Settings3Fragment extends Fragment {
                             }
                         });
                 builder.show();
-                break;
+                break;*/
         }
     }
 

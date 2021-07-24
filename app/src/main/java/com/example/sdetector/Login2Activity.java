@@ -130,7 +130,7 @@ public class Login2Activity extends AppCompatActivity {
             }
         });
 
-        TextView textView3 = findViewById(R.id.textView3);
+        /*TextView textView3 = findViewById(R.id.textView3);
         textView3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +148,7 @@ public class Login2Activity extends AppCompatActivity {
                 builder.show();
 
             }
-        });
+        });*/
 
         TextView textView4 = findViewById(R.id.textView4);
         textView4.setOnClickListener(new View.OnClickListener() {
