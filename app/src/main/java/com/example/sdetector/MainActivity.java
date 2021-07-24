@@ -3,6 +3,7 @@ package com.example.sdetector;
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.example.sdetector.ui.settings.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -57,6 +58,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void moveToDetail(){
         navController.navigate(R.id.action_navigation_home_to_more_graph);
+    }
+
+    public void moveToMEMSettings(){
+        navController.navigate(R.id.action_navigation_settings_to_mem_settings);
+    }
+
+    public void moveToTACSettings(){
+        navController.navigate(R.id.action_navigation_settings_to_tnc_settings);
     }
 
 }

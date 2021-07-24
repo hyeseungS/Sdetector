@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F4E2E5"
+        android:background="#00FFFFFF"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,7 +23,7 @@
             android:id="@+id/findBox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/login_bg"
+            android:background="@drawable/round_layout"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingHorizontal="10dp"

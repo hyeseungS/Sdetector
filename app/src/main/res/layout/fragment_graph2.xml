@@ -48,9 +48,10 @@
 
         <com.github.mikephil.charting.charts.HorizontalBarChart
             android:id="@+id/chart2"
-            android:layout_width="match_parent"
+            android:layout_width="340dp"
             android:layout_height="240dp"
             android:layout_gravity="center"
+            android:background="@drawable/round_button_white"
             android:visibility="gone"
             />
     </LinearLayout>

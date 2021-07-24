@@ -4,16 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.settings.SettingsFragment">
+    tools:context=".Settings3Fragment">
 
     <LinearLayout
-        android:id="@+id/text_settings"
+        android:id="@+id/text_settings3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#33E3C7CB"
-        android:gravity="center_horizontal"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="10dp"
+        android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +26,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:text="환경 설정"
+            android:text="이용 약관 확인"
             android:textColor="#504435"
             android:textSize="32dp"
             android:textStyle="bold" />
@@ -36,7 +34,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:orientation="vertical">
 
             <LinearLayout
@@ -51,9 +50,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="회원 정보"
+                    android:text="이용 약관"
                     android:textColor="#676658"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
 
                 <View
@@ -67,143 +66,149 @@
                     />
 
                 <Button
-                    android:id="@+id/member_info"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_baseline_arrow_right_24"
-                    app:backgroundTint="#676767" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="320dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/round_layout2"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="30dp"
-                android:paddingRight="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="이용 약관 확인"
-                    android:textColor="#676658"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <View
-
-                    android:layout_width="0dp"
-
-                    android:layout_height="0dp"
-
-                    android:layout_weight="1"
-
-                    />
-
-                <Button
-                    android:id="@+id/tac_info"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_baseline_arrow_right_24"
-                    app:backgroundTint="#676767" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="320dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/round_layout2"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="30dp"
-                android:paddingRight="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="버전 정보"
-                    android:textColor="#676658"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <View
-
-                    android:layout_width="0dp"
-
-                    android:layout_height="0dp"
-
-                    android:layout_weight="1"
-
-                    />
-
-                <TextView
-                    android:layout_width="60dp"
+                    android:id="@+id/tacBtn1"
+                    android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:layout_marginRight="5dp"
                     android:background="@drawable/round_button"
-                    android:gravity="center"
-                    android:text="1.0.0"
-                    android:textColor="#676658"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="320dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/round_layout2"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="30dp"
-                android:paddingRight="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="알림 수신"
-                    android:textColor="#676658"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <View
-
-                    android:layout_width="0dp"
-
-                    android:layout_height="0dp"
-
-                    android:layout_weight="1"
-
-                    />
-
-                <ToggleButton
-                    android:id="@+id/toggle_"
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_gravity="center"
-                    android:background="@drawable/round_button"
-                    android:textOff="OFF"
-                    android:textOn="ON"
+                    android:padding="0dp"
+                    android:text="확인"
+                    android:textColor="#2B261E"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     app:backgroundTint="#00FFFFFF" />
+
+                <ToggleButton
+                    android:id="@+id/tacToggle1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/round_button"
+                    android:textOff="비동의"
+                    android:textOn="동의"
+                    android:textColor="#2B261E"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#00FFFFFF"/>
+
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="320dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/round_layout2"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="30dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="개인정보 수집 및 이용동의"
+                    android:textColor="#676658"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <View
+
+                    android:layout_width="0dp"
+
+                    android:layout_height="0dp"
+
+                    android:layout_weight="1"
+
+                    />
+
+                <Button
+                    android:id="@+id/tacBtn2"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/round_button"
+                    android:padding="0dp"
+                    android:text="확인"
+                    android:textColor="#2B261E"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#00FFFFFF" />
+
+                <ToggleButton
+                    android:id="@+id/tacToggle2"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/round_button"
+                    android:textOff="비동의"
+                    android:textOn="동의"
+                    android:textColor="#2B261E"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#00FFFFFF"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="320dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/round_layout2"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="30dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="사용자 접근 동의"
+                    android:textColor="#676658"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <View
+
+                    android:layout_width="0dp"
+
+                    android:layout_height="0dp"
+
+                    android:layout_weight="1"
+
+                    />
+
+                <Button
+                    android:id="@+id/tacBtn3"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/round_button"
+                    android:padding="0dp"
+                    android:text="확인"
+                    android:textColor="#2B261E"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#00FFFFFF" />
+
+                <ToggleButton
+                    android:id="@+id/tacToggle3"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/round_button"
+                    android:textOff="비동의"
+                    android:textOn="동의"
+                    android:textColor="#2B261E"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#00FFFFFF"/>
+
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/logoutBtn"
-            android:layout_width="320dp"
-            android:layout_height="55dp"
-            android:layout_marginBottom="10dp"
-            android:text="로그아웃"
-            android:textSize="24dp"
-            android:textStyle="bold"
-            app:cornerRadius="36dp" />
-
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
