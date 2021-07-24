@@ -10,6 +10,8 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -34,8 +36,8 @@ public class GraphFragment1 extends Fragment {
     private static final int MAX_Y_VALUE = 10;
     private static final int MIN_Y_VALUE = 0;
     private static final String SET_LABEL = " ";
-    private static final String[] APPS = { "인스타그램", "네이버", "카카오톡", "유튜브" };
-    private HorizontalBarChart chart1;
+    private static final String[] APPS = {"인스타그램", "네이버", "카카오톡", "유튜브"};
+    private HorizontalBarChart barChart1;
 
     @Nullable
     @Override
@@ -46,31 +48,43 @@ public class GraphFragment1 extends Fragment {
             @Override
             public void onClick(View view) {
                 graphButton1.setVisibility(View.GONE);
-                chart1 = rootView.findViewById(R.id.chart1);
+                barChart1 = rootView.findViewById(R.id.chart1);
 
                 BarData data = createChartData();
                 configureChartAppearance();
                 prepareChartData(data);
-                chart1.setVisibility(View.VISIBLE);
+                barChart1.setVisibility(View.VISIBLE);
+            }
+        });
+
+        Button moreButton = (Button) rootView.findViewById(R.id.more_button);
+        moreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                MainActivity activity = (MainActivity) getActivity();
+                activity.moveToDetail();
+
             }
         });
 
         return rootView;
         //xml 레이아웃이 인플레이트 되고 자바소스 코드와 연결이된다.
     }
-    private void configureChartAppearance() {
-        chart1.getDescription().setEnabled(false);
-        chart1.setTouchEnabled(false);
-        chart1.setDrawGridBackground(false);
-        chart1.getLegend().setEnabled(false);
 
-        XAxis xAxis = chart1.getXAxis();
-        xAxis.setDrawGridLines(false);
+    private void configureChartAppearance() {
+        barChart1.getDescription().setEnabled(false);
+        barChart1.setTouchEnabled(false);
+        barChart1.getLegend().setEnabled(false);
+        barChart1.setExtraOffsets(20f, 0f, 40f, 0f);
+        XAxis xAxis = barChart1.getXAxis();
         xAxis.setDrawAxisLine(false);
         xAxis.setGranularity(1f);
         xAxis.setTextSize(15f);
+        xAxis.setGridLineWidth(30f);
+        xAxis.setGridColor(Color.parseColor("#80E5E5E5"));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        YAxis axisLeft = chart1.getAxisLeft();
+        YAxis axisLeft = barChart1.getAxisLeft();
         axisLeft.setDrawGridLines(false);
         axisLeft.setDrawAxisLine(false);
         axisLeft.setAxisMinimum(0f); // 최소값
@@ -78,7 +92,7 @@ public class GraphFragment1 extends Fragment {
         axisLeft.setGranularity(1f); // 값 만큼 라인선 설정
         axisLeft.setDrawLabels(false); // 값 셋팅 설정
 
-        YAxis axisRight = chart1.getAxisRight();
+        YAxis axisRight = barChart1.getAxisRight();
         axisRight.setTextSize(15f);
         axisRight.setDrawLabels(false);
         axisRight.setDrawGridLines(false);
@@ -88,7 +102,7 @@ public class GraphFragment1 extends Fragment {
 
             @Override
             public String getFormattedValue(float value) {
-                return APPS[(int)value];
+                return APPS[(int) value];
             }
         });
     }
@@ -103,7 +117,13 @@ public class GraphFragment1 extends Fragment {
         BarDataSet set1 = new BarDataSet(values, SET_LABEL);
         set1.setDrawIcons(false);
         set1.setDrawValues(true);
-        set1.setColor(Color.GRAY);
+        set1.setColor(Color.parseColor("#66767676"));
+        set1.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return (String.valueOf((int) value)) + "시간";
+            }
+        });
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
@@ -116,7 +136,7 @@ public class GraphFragment1 extends Fragment {
 
     private void prepareChartData(BarData data) {
         data.setValueTextSize(15);
-        chart1.setData(data);
-        chart1.invalidate();
+        barChart1.setData(data);
+        barChart1.invalidate();
     }
 }

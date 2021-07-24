@@ -33,6 +33,7 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/more_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:backgroundTint="#FFFFFF"
@@ -65,7 +66,7 @@
             android:layout_gravity="center"
             android:visibility="gone"
 
-             />
+            />
     </LinearLayout>
 
 
