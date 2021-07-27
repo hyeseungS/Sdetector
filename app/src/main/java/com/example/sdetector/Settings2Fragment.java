@@ -23,7 +23,7 @@ public class Settings2Fragment extends Fragment {
         button1.setOnClickListener(this::onClick);
         Button button2 = (Button) rootView.findViewById(R.id.changePwBtn);
         button2.setOnClickListener(this::onClick);
-        Button button3 = (Button) rootView.findViewById(R.id.changeIdBtn);
+        Button button3 = (Button) rootView.findViewById(R.id.changeInfoBtn);
         button3.setOnClickListener(this::onClick);
 
         return rootView;
@@ -31,15 +31,17 @@ public class Settings2Fragment extends Fragment {
 
     public void onClick(View view) {
 
+        MainActivity activity = (MainActivity) getActivity();
+
         switch (view.getId()) {
             case R.id.changeIdBtn:
-
+                activity.moveToIDSettings();
                 break;
             case R.id.changePwBtn:
-
+                activity.moveToPWSettings();
                 break;
             case R.id.changeInfoBtn:
-
+                activity.moveToINFOSettings();
                 break;
         }
     }

@@ -72,13 +72,24 @@ public class MainActivity extends AppCompatActivity {
     public void moveToDetail(){
         navController.navigate(R.id.action_navigation_home_to_more_graph);
     }
-    
+
     public void moveToMEMSettings(){
         navController.navigate(R.id.action_navigation_settings_to_mem_settings);
     }
 
     public void moveToTACSettings(){
         navController.navigate(R.id.action_navigation_settings_to_tnc_settings);
+    }
+    public void moveToIDSettings(){
+        navController.navigate(R.id.action_mem_settings_to_mem_settingsID);
+    }
+
+    public void moveToPWSettings(){
+        navController.navigate(R.id.action_mem_settings_to_mem_settingsPW);
+    }
+
+    public void moveToINFOSettings(){
+        navController.navigate(R.id.action_mem_settings_to_mem_settingsINFO);
     }
 
     public void showDatePicker(View view) {

@@ -50,7 +50,33 @@
         android:id="@+id/mem_settings"
         android:name="com.example.sdetector.Settings2Fragment"
         android:label="회원 정보"
-        tools:layout="@layout/fragment_settings2" />
+        tools:layout="@layout/fragment_settings2" >
+        <action
+            android:id="@+id/action_mem_settings_to_mem_settingsID"
+            app:destination="@id/mem_settingsID" />
+        <action
+            android:id="@+id/action_mem_settings_to_mem_settingsPW"
+            app:destination="@id/mem_settingsPW" />
+        <action
+            android:id="@+id/action_mem_settings_to_mem_settingsINFO"
+            app:destination="@id/mem_settingsINFO" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mem_settingsID"
+        android:name="com.example.sdetector.Settings2_1Fragment"
+        android:label="ID 변경"
+        tools:layout="@layout/fragment_settings2_1" />
+    <fragment
+        android:id="@+id/mem_settingsPW"
+        android:name="com.example.sdetector.Settings2_2Fragment"
+        android:label="PW 변경"
+        tools:layout="@layout/fragment_settings2_2" />
+    <fragment
+        android:id="@+id/mem_settingsINFO"
+        android:name="com.example.sdetector.Settings2_3Fragment"
+        android:label="개인 정보 변경"
+        tools:layout="@layout/fragment_settings2_3" />
 
     <fragment
         android:id="@+id/tac_settings"
