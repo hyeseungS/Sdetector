@@ -12,9 +12,9 @@
         android:layout_height="match_parent"
         android:background="#33E3C7CB"
         android:gravity="center_horizontal"
+        android:orientation="vertical"
         android:paddingHorizontal="10dp"
         android:paddingVertical="10dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,8 +35,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:background="@drawable/round_layout"
             android:gravity="center"
             android:orientation="vertical"
@@ -60,8 +60,8 @@
 
                 <Button
                     android:id="@+id/DatePickerBtn"
-                    android:layout_width="10dp"
-                    android:layout_height="18dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:background="@drawable/ic_calendar_24"
                     android:onClick="showDatePicker" />
 
@@ -154,8 +154,8 @@
             android:layout_width="320dp"
             android:layout_height="55dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:text="저장하기"
             android:textSize="24dp"
             android:textStyle="bold"

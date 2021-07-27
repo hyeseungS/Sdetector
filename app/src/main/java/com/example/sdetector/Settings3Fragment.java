@@ -1,6 +1,7 @@
 package com.example.sdetector;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,25 +15,56 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class Settings3Fragment extends Fragment {
     private ViewGroup rootView;
+    private SharedPreferences appData;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_settings3, container, false);
 
+        appData = getActivity().getSharedPreferences("Terms and Conditions", MODE_PRIVATE);
         Button button1 = (Button) rootView.findViewById(R.id.tacBtn1);
         button1.setOnClickListener(this::onClick);
         ToggleButton toggle1 = (ToggleButton) rootView.findViewById(R.id.tacToggle1);
+        boolean tacService = appData.getBoolean("tacService", true);  //default is true
+        if (tacService = true)
+        {
+            toggle1.setChecked(true);
+        }
+        else
+        {
+            toggle1.setChecked(false);
+        }
         toggle1.setOnCheckedChangeListener(this::onCheckedChange);
         Button button2 = (Button) rootView.findViewById(R.id.tacBtn2);
         button2.setOnClickListener(this::onClick);
         ToggleButton toggle2 = (ToggleButton) rootView.findViewById(R.id.tacToggle2);
+        boolean tacPersonal = appData.getBoolean("tacPersonal", true);  //default is true
+        if (tacPersonal = true)
+        {
+            toggle2.setChecked(true);
+        }
+        else
+        {
+            toggle2.setChecked(false);
+        }
         toggle2.setOnCheckedChangeListener(this::onCheckedChange);
         Button button3 = (Button) rootView.findViewById(R.id.tacBtn3);
         button3.setOnClickListener(this::onClick);
         ToggleButton toggle3 = (ToggleButton) rootView.findViewById(R.id.tacToggle3);
+        boolean tacAccess = appData.getBoolean("tacAccess", true);  //default is true
+        if (tacPersonal = true)
+        {
+            toggle3.setChecked(true);
+        }
+        else
+        {
+            toggle3.setChecked(false);
+        }
         toggle3.setOnCheckedChangeListener(this::onCheckedChange);
 
         return rootView;
@@ -91,8 +123,15 @@ public class Settings3Fragment extends Fragment {
                 //toggle 버튼이 on된 경우
                 if(isChecked){
                     toastMessage = "서비스 이용 약관에 동의합니다";
+                    SharedPreferences.Editor editor = appData.edit();
+                    editor.putBoolean("tacService", true); // value to store
+                    editor.commit();
+                    
                 }else{
                     toastMessage = "서비스 이용 약관에 비동의합니다";
+                    SharedPreferences.Editor editor = appData.edit();
+                    editor.putBoolean("tacService", false); // value to store
+                    editor.commit();
                 }
 
                 Toast.makeText(getActivity(),toastMessage,Toast.LENGTH_SHORT).show();
@@ -101,8 +140,14 @@ public class Settings3Fragment extends Fragment {
                 //toggle 버튼이 on된 경우
                 if(isChecked){
                     toastMessage = "개인정보 수집 및 이용에 동의합니다";
+                    SharedPreferences.Editor editor = appData.edit();
+                    editor.putBoolean("tacPersonal", true); // value to store
+                    editor.commit();
                 }else{
                     toastMessage = "개인정보 수집 및 이용에 비동의합니다";
+                    SharedPreferences.Editor editor = appData.edit();
+                    editor.putBoolean("tacPersonal", false); // value to store
+                    editor.commit();
                 }
 
                 Toast.makeText(getActivity(),toastMessage,Toast.LENGTH_SHORT).show();
@@ -110,8 +155,14 @@ public class Settings3Fragment extends Fragment {
             case R.id.tacToggle3:
                 if(isChecked){
                     toastMessage = "사용자 접근 권한에 동의합니다";
+                    SharedPreferences.Editor editor = appData.edit();
+                    editor.putBoolean("tacAccess", true); // value to store
+                    editor.commit();
                 }else{
                     toastMessage = "사용자 접근 권한에 비동의합니다";
+                    SharedPreferences.Editor editor = appData.edit();
+                    editor.putBoolean("tacAccess", false); // value to store
+                    editor.commit();
                 }
 
                 Toast.makeText(getActivity(),toastMessage,Toast.LENGTH_SHORT).show();
