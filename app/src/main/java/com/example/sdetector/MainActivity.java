@@ -1,6 +1,7 @@
 package com.example.sdetector;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -103,6 +104,20 @@ public class MainActivity extends AppCompatActivity {
             new DatePickerDialog(this, mDateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
         };
 
+    public void backLogin(View v) {
+        Button logoutbtn = findViewById(R.id.logoutBtn);
+        logoutbtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),
+                        LoginActivity.class);
+                startActivity(intent);
+            }
+
+        });
+
+    }
 }
 
 

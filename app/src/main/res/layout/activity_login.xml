@@ -27,11 +27,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/round_layout"
             android:orientation="vertical"
             android:paddingHorizontal="10dp"
-            android:paddingVertical="20dp">
+            android:paddingVertical="15dp">
 
             <EditText
                 android:id="@+id/Email"
@@ -99,9 +99,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
             android:gravity="center"
             android:orientation="vertical"
+            android:layout_marginBottom="10dp"
             android:padding="5dp">
 
             <LinearLayout
@@ -154,7 +154,7 @@
                 android:layout_width="290dp"
                 android:layout_height="55dp"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="15dp"
                 android:src="@drawable/google_signin" />
 
 

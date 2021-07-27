@@ -19,7 +19,7 @@
         <LinearLayout
             android:id="@+id/body_1"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
+            android:layout_height="170dp"
             android:gravity="center"
             android:orientation="horizontal">
 
