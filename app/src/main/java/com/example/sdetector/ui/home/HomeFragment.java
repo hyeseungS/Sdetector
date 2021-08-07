@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,13 +43,11 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final LinearLayout LinearLayoutView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-
-            }
-        });
+        String name = "김영희";
+        TextView home_text = (TextView) root.findViewById(R.id.home_text);
+        home_text.setText(name+"님, \n   스트레스 상태 ");
+        ImageView home_emotion = (ImageView) root.findViewById(R.id.home_emotion);
+        home_emotion.setImageResource(R.drawable.sad_emoticon);
 
         ViewPager pager = root.findViewById(R.id.pager);
         pager.setOffscreenPageLimit(2);

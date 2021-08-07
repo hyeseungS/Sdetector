@@ -2,24 +2,17 @@ package com.example.sdetector;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import com.example.sdetector.ui.settings.SettingsFragment;
-import com.example.sdetector.ui.diary.DiaryFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentOnAttachListener;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -74,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
         navController.navigate(R.id.action_navigation_home_to_more_graph);
     }
 
+    public void moveToDiaryList(){
+        navController.navigate(R.id.action_navigation_diary_to_diary_list);
+    }
+
     public void moveToMEMSettings(){
         navController.navigate(R.id.action_navigation_settings_to_mem_settings);
     }
@@ -97,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDateSetListener = (datePicker, yy, mm, dd) -> {
             TextView tv = findViewById(R.id.DatetextView);
-            tv.setText(String.format("%d-%d-%d", yy, mm + 1, dd));
+            tv.setText(String.format("%d년 %d월 %d일", yy, mm + 1, dd));
         };
 
             Calendar cal = Calendar.getInstance();

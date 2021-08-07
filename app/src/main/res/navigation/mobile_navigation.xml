@@ -25,7 +25,17 @@
         android:id="@+id/navigation_diary"
         android:name="com.example.sdetector.ui.diary.DiaryFragment"
         android:label="@string/title_diary"
-        tools:layout="@layout/fragment_diary" />
+        tools:layout="@layout/fragment_diary" >
+        <action
+            android:id="@+id/action_navigation_diary_to_diary_list"
+            app:destination="@id/diary_list" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/diary_list"
+        android:name="com.example.sdetector.DiarylistFragment"
+        android:label="일기 목록"
+        tools:layout="@layout/fragment_diarylist" />
 
     <fragment
         android:id="@+id/navigation_settings"

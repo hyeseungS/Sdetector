@@ -1,7 +1,5 @@
 package com.example.sdetector.ui.diary;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +8,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sdetector.MainActivity;
 import com.example.sdetector.R;
 import com.example.sdetector.databinding.FragmentDiaryBinding;
-import com.google.android.material.tabs.TabLayout;
-
 import android.content.Context;
 import android.util.Log;
 import android.widget.Button;
@@ -27,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.app.DatePickerDialog;
-import android.widget.DatePicker;
 import java.util.Calendar;
 
 import android.widget.Toast;
@@ -81,7 +75,7 @@ public class DiaryFragment extends Fragment {
     Calendar cal;
     Date today = new Date();
     //날짜 포맷 설정
-    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 mm월 dd일");
+    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일");
     String result = dateFormat.format(today);
 
     //날짜버튼
@@ -104,7 +98,7 @@ public class DiaryFragment extends Fragment {
         // 날짜 텍스트_일단 오늘날짜 지정
         tv = getView().findViewById(R.id.DatetextView);
         Calendar cal = Calendar.getInstance();
-        tv.setText(cal.get(Calendar.YEAR) +"-"+ (cal.get(Calendar.MONTH)+1) +"-"+ cal.get(Calendar.DATE));
+        tv.setText(cal.get(Calendar.YEAR) +"년 "+ (cal.get(Calendar.MONTH)+1) +"월 "+ cal.get(Calendar.DATE)+"일");
 
         //날짜 선택 버튼
         mDatePickerBtn = getView().findViewById(R.id.DatePickerBtn);
@@ -129,7 +123,9 @@ public class DiaryFragment extends Fragment {
                     fos = getActivity().openFileOutput("memo.txt", Context.MODE_PRIVATE);
                     String out = minputText.getText().toString();
                     fos.write(out.getBytes());
-                    Toast.makeText(getActivity().getApplicationContext(), "save 완료", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "저장 완료", Toast.LENGTH_SHORT).show();
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.moveToDiaryList();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

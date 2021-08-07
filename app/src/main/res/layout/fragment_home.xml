@@ -24,6 +24,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/home_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
@@ -33,6 +34,7 @@
                 android:textStyle="bold" />
 
             <ImageView
+                android:id="@+id/home_emotion"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="25dp"
