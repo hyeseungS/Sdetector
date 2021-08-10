@@ -29,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v){
                 Intent intent = new Intent(getApplicationContext(),
                         MainActivity.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                finish();
                 startActivity(intent);
             }
         });
@@ -92,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (user != null) {
                     Intent intent = new Intent(getApplicationContext(),
                             MainActivity.class);
+                    LoginActivity.this.finish();
                     startActivity(intent);
                 }
                 else {
