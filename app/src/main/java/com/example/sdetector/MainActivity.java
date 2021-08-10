@@ -102,8 +102,8 @@ public class MainActivity extends AppCompatActivity {
         };
 
     public void backLogin(View v) {
-        Button logoutbtn = findViewById(R.id.logoutBtn);
-        logoutbtn.setOnClickListener(new View.OnClickListener() {
+        Button logoutBtn = findViewById(R.id.logoutBtn);
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
