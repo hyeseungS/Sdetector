@@ -197,7 +197,7 @@ public class DiaryFragment extends Fragment {
                 outputStream.close();
 
                 int responseStatusCode = httpURLConnection.getResponseCode();
-                LOG.d(TAG, "POST response code - "+responseStatusCode);
+                Log.d(TAG, "POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
                 if(responseStatusCode == HttpURLConnection.HTTP_OK) {
