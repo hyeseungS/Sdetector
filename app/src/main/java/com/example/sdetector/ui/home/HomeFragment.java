@@ -21,8 +21,13 @@ import com.example.sdetector.GraphFragment1;
 import com.example.sdetector.GraphFragment2;
 import com.example.sdetector.R;
 import com.example.sdetector.databinding.FragmentHomeBinding;
+import com.kakao.sdk.user.UserApiClient;
+import com.kakao.sdk.user.model.User;
 
 import java.util.ArrayList;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 
 public class HomeFragment extends Fragment {
 
@@ -43,9 +48,21 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        String name = "김영희";
+        //String name = get_user_name();
         TextView home_text = (TextView) root.findViewById(R.id.home_text);
-        home_text.setText(name+"님, \n   스트레스 상태 ");
+        //home_text.setText(name+"님, \n   스트레스 상태 ");
+        UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
+            @Override
+            public Unit invoke(User user, Throwable throwable) {
+                if (user != null) {
+                    home_text.setText(user.getKakaoAccount().getProfile().getNickname()+"님,\n    스트레스 상태");
+                }
+                else {
+                    home_text.setText("로그아웃 상태입니다");
+                }
+                return null;
+            }
+        });
         ImageView home_emotion = (ImageView) root.findViewById(R.id.home_emotion);
         home_emotion.setImageResource(R.drawable.sad_emoticon);
 

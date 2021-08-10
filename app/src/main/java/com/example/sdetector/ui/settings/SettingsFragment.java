@@ -17,6 +17,13 @@ import androidx.fragment.app.Fragment;
 import com.example.sdetector.LoginActivity;
 import com.example.sdetector.MainActivity;
 import com.example.sdetector.R;
+import com.kakao.sdk.auth.AuthApiClient;
+import com.kakao.sdk.user.UserApiClient;
+import com.kakao.sdk.user.model.User;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
 
 public class SettingsFragment extends Fragment {
 
@@ -32,6 +39,7 @@ public class SettingsFragment extends Fragment {
         Button memberButton = (Button) rootView.findViewById(R.id.member_info);
         Button tacButton = (Button) rootView.findViewById(R.id.tac_info);
         ToggleButton alarmToggle = (ToggleButton) rootView.findViewById(R.id.toggle_);
+        Button logoutBtn = (Button) rootView.findViewById(R.id.logoutBtn);
 
         memberButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +77,40 @@ public class SettingsFragment extends Fragment {
                     }
                 }
         );
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
+                    @Override
+                    public Unit invoke(User user, Throwable throwable) {
+                        if (user != null) { // 카카오 로그인 상태
+                            UserApiClient.getInstance().logout(new Function1<Throwable, Unit>() {
+                                @Override
+                                public Unit invoke(Throwable throwable) {
+                                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                                    //                         -> getContext() ?
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    // FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET ?
+                                    startActivity(intent);
+                                    return null;
+                                }
+                            });
+                        }
+                        else { // 카카오 이외 로그인 (또는 로그아웃) 상태
+                            // 로그아웃 처리 후
+                            Intent intent = new Intent(getContext(), LoginActivity.class);
+                            //                         -> getContext() ?
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            // FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET ?
+                            startActivity(intent);
+                        }
+                        return null;
+                    }
+                });
+            }
+        });
         return rootView;
     }
 
