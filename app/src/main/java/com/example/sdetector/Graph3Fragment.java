@@ -21,7 +21,12 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class Graph3Fragment extends Fragment {
 
@@ -29,8 +34,9 @@ public class Graph3Fragment extends Fragment {
     public LineChart lineChart2;
     public LineChart lineChart3;
 
-    private static final String[][] LABEL = {{"7.17", "7.18", "7.19", "7.20"}, {"3주 전", "2주 전", "1주 전", "이번 주"}, {"3달 전", "2달 전", "1달 전", "이번 달"}};
+    private static final String[][] LABEL = {{"", "", "", ""}, {"3주 전", "2주 전", "1주 전", "이번 주"}, {"3달 전", "2달 전", "1달 전", "이번 달"}};
     private static final int[][] RANGE = {{8, 20, 40}, {2, 5, 10}};
+    private static final String[] APPS = {"인스타그램", "네이버", "카카오톡", "유튜브"};
     ViewGroup rootView;
 
     @Override
@@ -40,6 +46,15 @@ public class Graph3Fragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        // 그래프 날짜 지정(일간)
+        Calendar cal = new GregorianCalendar(Locale.KOREA);
+        SimpleDateFormat formatter = new SimpleDateFormat("MM.dd");
+        int i=3;
+        do {
+            LABEL[0][i--] = formatter.format(cal.getTime());
+            cal.add(Calendar.DATE, -1);
+        } while(i>=0);
 
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_graph3, container, false);
 
@@ -101,6 +116,8 @@ public class Graph3Fragment extends Fragment {
         }
     }
 
+
+    // 선 그래프 틀 커스텀
     private void configureChartAppearance(LineChart lineChart, int range) {
         lineChart.setExtraBottomOffset(15f);
         lineChart.getDescription().setEnabled(false);
@@ -136,17 +153,17 @@ public class Graph3Fragment extends Fragment {
         yAxis.setTextColor(Color.LTGRAY);
 
         yAxis.setGranularity((float) RANGE[1][range]);
-        yAxis.setAxisMinimum(0f); // 최소값
+        yAxis.setAxisMinimum(0f); // 최솟값
         yAxis.setAxisLineWidth(2);
 
-        yAxis.setAxisMaximum((float) RANGE[0][range]); // 최대값
+        yAxis.setAxisMaximum((float) RANGE[0][range]); // 최댓값
 
         YAxis yAxisLeft = lineChart.getAxisLeft();
         yAxisLeft.setDrawAxisLine(false);
         yAxisLeft.setTextSize(14f);
         yAxisLeft.setAxisLineWidth(2);
-        yAxisLeft.setAxisMinimum(0f); // 최소값
-        yAxisLeft.setAxisMaximum((float) RANGE[0][range]); // 최대값
+        yAxisLeft.setAxisMinimum(0f); // 최솟값
+        yAxisLeft.setAxisMaximum((float) RANGE[0][range]); // 최댓값
         yAxisLeft.setGranularity((float) RANGE[1][range]);
         yAxisLeft.setTextColor(Color.rgb(163, 163, 163));
 
@@ -159,27 +176,32 @@ public class Graph3Fragment extends Fragment {
         });
     }
 
+    // 4개의 앱(entry) 데이터 생성
     private LineData createChartData(int range) {
-        ArrayList<Entry> entry1 = new ArrayList<>();
-        ArrayList<Entry> entry2 = new ArrayList<>();
-        ArrayList<Entry> entry3 = new ArrayList<>();
-        ArrayList<Entry> entry4 = new ArrayList<>();
+        ArrayList<Entry> entry1 = new ArrayList<>(); // 앱1
+        ArrayList<Entry> entry2 = new ArrayList<>(); // 앱2
+        ArrayList<Entry> entry3 = new ArrayList<>(); // 앱3
+        ArrayList<Entry> entry4 = new ArrayList<>(); // 앱4
 
         LineData chartData = new LineData();
 
+        // 랜덤 데이터 추출 (추후 변경)
         for (int i = 0; i < 4; i++) {
 
-            float val1 = (float) (Math.random() * RANGE[0][range]);
-            float val2 = (float) (Math.random() * RANGE[0][range]);
-            float val3 = (float) (Math.random() * RANGE[0][range]);
-            float val4 = (float) (Math.random() * RANGE[0][range]);
+            float val1 = (float) (Math.random() * RANGE[0][range]); // 앱1 값
+            float val2 = (float) (Math.random() * RANGE[0][range]); // 앱2 값
+            float val3 = (float) (Math.random() * RANGE[0][range]); // 앱3 값
+            float val4 = (float) (Math.random() * RANGE[0][range]); // 앱4 값
             entry1.add(new Entry(i, val1));
             entry2.add(new Entry(i, val2));
             entry3.add(new Entry(i, val3));
             entry4.add(new Entry(i, val4));
         }
 
-        LineDataSet lineDataSet1 = new LineDataSet(entry1, "인스타그램");
+        // 4개 앱의 DataSet 추가 및 선 커스텀 (추후 앱 이름 변경)
+
+        // 앱1
+        LineDataSet lineDataSet1 = new LineDataSet(entry1, APPS[0]);
         chartData.addDataSet(lineDataSet1);
 
         lineDataSet1.setLineWidth(3);
@@ -192,7 +214,8 @@ public class Graph3Fragment extends Fragment {
         lineDataSet1.setColor(Color.rgb(255, 155, 155));
         lineDataSet1.setCircleColor(Color.rgb(255, 155, 155));
 
-        LineDataSet lineDataSet2 = new LineDataSet(entry2, "네이버");
+        // 앱2
+        LineDataSet lineDataSet2 = new LineDataSet(entry2, APPS[1]);
         chartData.addDataSet(lineDataSet2);
 
         lineDataSet2.setLineWidth(3);
@@ -205,7 +228,8 @@ public class Graph3Fragment extends Fragment {
         lineDataSet2.setColor(Color.rgb(178, 223, 138));
         lineDataSet2.setCircleColor(Color.rgb(178, 223, 138));
 
-        LineDataSet lineDataSet3 = new LineDataSet(entry3, "카카오톡");
+        // 앱3
+        LineDataSet lineDataSet3 = new LineDataSet(entry3, APPS[2]);
         chartData.addDataSet(lineDataSet3);
 
         lineDataSet3.setLineWidth(3);
@@ -218,7 +242,8 @@ public class Graph3Fragment extends Fragment {
         lineDataSet3.setColor(Color.rgb(166, 208, 227));
         lineDataSet3.setCircleColor(Color.rgb(166, 208, 227));
 
-        LineDataSet lineDataSet4 = new LineDataSet(entry4, "유튜브");
+        // 앱4
+        LineDataSet lineDataSet4 = new LineDataSet(entry4, APPS[3]);
         chartData.addDataSet(lineDataSet4);
 
         lineDataSet4.setLineWidth(3);
@@ -234,6 +259,7 @@ public class Graph3Fragment extends Fragment {
         return chartData;
     }
 
+    // LineChart에 LineData 설정
     private void prepareChartData(LineData data, LineChart lineChart) {
         data.setValueTextSize(15);
         lineChart.setData(data);
