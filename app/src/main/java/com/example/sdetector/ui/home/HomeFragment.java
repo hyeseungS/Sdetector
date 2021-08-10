@@ -54,7 +54,12 @@ public class HomeFragment extends Fragment {
         UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
             @Override
             public Unit invoke(User user, Throwable throwable) {
-                home_text.setText(user.getKakaoAccount().getProfile().getNickname()+"님,\n    스트레스 상태");
+                if (user != null) {
+                    home_text.setText(user.getKakaoAccount().getProfile().getNickname()+"님,\n    스트레스 상태");
+                }
+                else {
+                    home_text.setText("로그아웃 상태입니다");
+                }
                 return null;
             }
         });
