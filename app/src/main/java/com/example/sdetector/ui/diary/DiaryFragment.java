@@ -1,9 +1,12 @@
 package com.example.sdetector.ui.diary;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,6 +30,10 @@ import java.util.Calendar;
 import android.widget.Toast;
 
 public class DiaryFragment extends Fragment {
+
+    //인터넷 서버 통신 코드
+    private static String IP_ADDRESS = "52.78.1.186";   //매번 ip주소 바꿔줄 것
+    //private static String TAG = "phptest";
 
     private DiaryViewModel diaryViewModel;
     private FragmentDiaryBinding binding;
@@ -116,6 +123,15 @@ public class DiaryFragment extends Fragment {
         @Override
         public void onClick(View view) {
             if (view.getId() == R.id.saveBtn) {
+
+                // DB로 전송
+                String diaryContent = minputText.getText().toString();
+
+                InsertData task = new InsertData();
+                task.execute("http://"+IP_ADDRESS+"/insert.php",diaryContent);
+
+                minputText.setText("");
+
                 Log.i("TAG", "save 진행");
                 FileOutputStream fos = null;
 
@@ -137,6 +153,7 @@ public class DiaryFragment extends Fragment {
                 }
             }
         }
+
         
         {
             if(mDatePickerListener != null){
@@ -146,13 +163,33 @@ public class DiaryFragment extends Fragment {
 
     };
 
+    class InsertData extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            //progressDialog = ProgressDialog.show(DiaryFragment.this, "Please wait", null, true, true);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return null;
+        }
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-
-
 
 }

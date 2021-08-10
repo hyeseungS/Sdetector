@@ -24,6 +24,10 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
+    //인터넷 서버 통신 코드
+    private static String ID_ADDRESS = "52.78.1.186";   //매번 ip주소 바꿔줄 것
+    private static String TAG = "phptest";
+
     private AppBarConfiguration mAppBarConfiguration;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private NavController navController;
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_report, R.id.navigation_diary,
                 R.id.navigation_settings).setDrawerLayout(drawer).build();
+
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
