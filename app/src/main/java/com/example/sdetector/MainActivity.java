@@ -47,45 +47,50 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        BottomNavigationView bottom_nav_view = findViewById(R.id.bottom_nav_view);
+        BottomNavigationView bottom_nav_view = findViewById(R.id.bottom_nav_view); // 아래 Navigation
         NavigationUI.setupWithNavController(bottom_nav_view, navController);
 
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main, menu); // 상단바의 알림 버튼 메뉴 추가
         return true;
     }
 
+    // 햄버거 버튼
     public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
 
+    // HomeFragment(홈)에서 Graph3Fragment(일간, 주간, 월간 앱 사용 시간)로 이동
     public void moveToDetail(){
         navController.navigate(R.id.action_navigation_home_to_more_graph);
     }
 
+    // DiaryFragment(감정 일기) --> DiaryListFragment(일기 목록)
     public void moveToDiaryList(){
         navController.navigate(R.id.action_navigation_diary_to_diary_list);
     }
 
+    // SettingsFragment(환경 설정) --> Settings2Fragment(회원 정보)
     public void moveToMEMSettings(){
         navController.navigate(R.id.action_navigation_settings_to_mem_settings);
     }
-
+    // SettingsFragment(환경 설정) --> Settings3Fragment(이용 약관 확인)
     public void moveToTACSettings(){
         navController.navigate(R.id.action_navigation_settings_to_tnc_settings);
     }
+    // Settings2Fragment(회원 정보) --> Settings2_1Fragment(ID 변경)
     public void moveToIDSettings(){
         navController.navigate(R.id.action_mem_settings_to_mem_settingsID);
     }
-
+    // Settings2Fragment(회원 정보) --> Settings2_2Fragment(PW 변경)
     public void moveToPWSettings(){
         navController.navigate(R.id.action_mem_settings_to_mem_settingsPW);
     }
-
+    // Settings2Fragment(회원 정보) --> Settings2_3Fragment(개인 정보 변경)
     public void moveToINFOSettings(){
         navController.navigate(R.id.action_mem_settings_to_mem_settingsINFO);
     }

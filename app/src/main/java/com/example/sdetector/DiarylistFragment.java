@@ -24,7 +24,7 @@ public class DiarylistFragment extends Fragment {
 
         List<EventDay> events = new ArrayList<>();
 
-        // 저장된 일기 캘린더에 감정으로 표시
+        // 저장된 일기 캘린더에 감정으로 표시 (일기 목록 데이터) (추후 변경)
         Calendar calendar1 = Calendar.getInstance();
         calendar1.set(2021, 6, 22);
         events.add(new EventDay(calendar1, R.drawable.happy_emoticon));
@@ -37,6 +37,7 @@ public class DiarylistFragment extends Fragment {
         calendar3.set(2021, 7, 5);
         events.add(new EventDay(calendar3, R.drawable.sad_emoticon));
 
+        // 달력에 아이콘과 함께 이벤트 등록
         com.applandeo.materialcalendarview.CalendarView calendarView = (com.applandeo.materialcalendarview.CalendarView) rootView.findViewById(R.id.calendarView);
         calendarView.setEvents(events);
 

@@ -29,18 +29,19 @@ public class Settings2Fragment extends Fragment {
         return rootView;
     }
 
+    // ID 변경, PW 변경, 개인 정보 변경 버튼 클릭 이벤트
     public void onClick(View view) {
 
         MainActivity activity = (MainActivity) getActivity();
 
         switch (view.getId()) {
             case R.id.changeIdBtn:
-                activity.moveToIDSettings();
+                activity.moveToIDSettings(); // ID 변경 창으로 이동
                 break;
             case R.id.changePwBtn:
-                activity.moveToPWSettings();
+                activity.moveToPWSettings(); // PW 변경 창으로 이동
                 break;
-            case R.id.changeInfoBtn:
+            case R.id.changeInfoBtn: // 개인 정보 변경 창으로 이동
                 activity.moveToINFOSettings();
                 break;
         }

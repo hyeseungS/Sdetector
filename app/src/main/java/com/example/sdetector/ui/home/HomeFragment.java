@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
@@ -33,6 +31,11 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +58,8 @@ public class HomeFragment extends Fragment {
             @Override
             public Unit invoke(User user, Throwable throwable) {
                 if (user != null) {
-                    home_text.setText(user.getKakaoAccount().getProfile().getNickname()+"님,\n    스트레스 상태");
+                    name = user.getKakaoAccount().getProfile().getNickname();
+                    home_text.setText(name+"님,\n    스트레스 상태");
                 }
                 else {
                     home_text.setText("로그아웃 상태입니다");

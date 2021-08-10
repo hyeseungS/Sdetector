@@ -35,13 +35,15 @@ public class SettingsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_settings, container, false);
         Button memberButton = (Button) rootView.findViewById(R.id.member_info);
         Button tacButton = (Button) rootView.findViewById(R.id.tac_info);
         ToggleButton alarmToggle = (ToggleButton) rootView.findViewById(R.id.toggle_);
         Button logoutBtn = (Button) rootView.findViewById(R.id.logoutBtn);
 
-        memberButton.setOnClickListener(new View.OnClickListener() {
+        // 회원 정보 버튼 클릭 시 Settings2Fragment로 이동
+       memberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -50,6 +52,8 @@ public class SettingsFragment extends Fragment {
 
             }
         });
+
+       // 이용 약관 확인 버튼 클릭 시 Settings3Fragment로 이동
         tacButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +63,9 @@ public class SettingsFragment extends Fragment {
 
             }
         });
-        alarmToggle.setOnCheckedChangeListener(
+
+        // 알림 수신 여부 Toggle Button 이벤트
+       alarmToggle.setOnCheckedChangeListener(
                 //CompundButton.OnCheckedChangedListener을 새로 선언
                 new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -77,6 +83,8 @@ public class SettingsFragment extends Fragment {
                     }
                 }
         );
+
+       // 로그아웃 버튼 클릭 시 로그인 화면으로 이동
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
