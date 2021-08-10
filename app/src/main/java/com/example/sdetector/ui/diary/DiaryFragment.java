@@ -1,9 +1,12 @@
 package com.example.sdetector.ui.diary;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,7 +20,15 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -27,6 +38,10 @@ import java.util.Calendar;
 import android.widget.Toast;
 
 public class DiaryFragment extends Fragment {
+
+    //인터넷 서버 통신 코드
+    private static String IP_ADDRESS = "52.78.1.186";   //매번 ip주소 바꿔줄 것
+    //private static String TAG = "phptest";
 
     private DiaryViewModel diaryViewModel;
     private FragmentDiaryBinding binding;
@@ -116,6 +131,15 @@ public class DiaryFragment extends Fragment {
         @Override
         public void onClick(View view) {
             if (view.getId() == R.id.saveBtn) {
+
+                // DB로 전송
+                String diaryContent = minputText.getText().toString();
+
+                InsertData task = new InsertData();
+                task.execute("http://"+IP_ADDRESS+"/insert.php",diaryContent);
+
+                minputText.setText("");
+
                 Log.i("TAG", "save 진행");
                 FileOutputStream fos = null;
 
@@ -137,6 +161,7 @@ public class DiaryFragment extends Fragment {
                 }
             }
         }
+
         
         {
             if(mDatePickerListener != null){
@@ -146,13 +171,71 @@ public class DiaryFragment extends Fragment {
 
     };
 
+    class InsertData extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected String doInBackground(String... params) {
+            String diaryContent = (String)params[1];
+
+            String serverURL = (String)params[0];
+            String postParameters = "diary="+diaryContent;
+
+
+            try {
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                LOG.d(TAG, "POST response code - "+responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString();
+
+
+            } catch (Exception e) {
+                Log.d(TAG, "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+        }
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-
-
 
 }
