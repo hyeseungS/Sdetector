@@ -70,6 +70,7 @@ public class Settings3Fragment extends Fragment {
         return rootView;
     }
 
+    // 이용 약관 확인 버튼 이벤트
     public void onClick(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         switch (view.getId()) {
@@ -114,6 +115,7 @@ public class Settings3Fragment extends Fragment {
         }
     }
 
+    // 이용 약관 변경 Toggle Button 이벤트
     public void onCheckedChange(CompoundButton compoundButton, boolean isChecked) {
 
         String toastMessage;

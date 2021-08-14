@@ -10,6 +10,10 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
 
+/*
+    Graph3Fragment(일간, 주간, 월간 앱 사용 시간)의 선 그래프에서
+    특정 데이터 클릭 시 데이터 값을 말풍선으로 보여준다.
+ */
 public class MyMarkerView extends MarkerView {
 
     private TextView tvContent;

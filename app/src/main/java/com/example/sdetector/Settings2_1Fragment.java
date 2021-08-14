@@ -25,7 +25,6 @@ public class Settings2_1Fragment extends Fragment {
 
     public void onClick(View view) {
 
-
         switch (view.getId()) {
             case R.id.changeIDBtn:
 
