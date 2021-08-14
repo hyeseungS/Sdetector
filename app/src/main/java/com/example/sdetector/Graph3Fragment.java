@@ -49,11 +49,11 @@ public class Graph3Fragment extends Fragment {
         // 그래프 날짜 지정(일간)
         Calendar cal = new GregorianCalendar(Locale.KOREA);
         SimpleDateFormat formatter = new SimpleDateFormat("MM.dd");
-        int i=3;
+        int i = 3;
         do {
             LABEL[0][i--] = formatter.format(cal.getTime());
             cal.add(Calendar.DATE, -1);
-        } while(i>=0);
+        } while (i >= 0);
 
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_graph3, container, false);
 
@@ -115,11 +115,13 @@ public class Graph3Fragment extends Fragment {
         }
     }
 
-
-    // 선 그래프 틀 커스텀
+    // LineChart 기본 세팅
     private void configureChartAppearance(LineChart lineChart, int range) {
-        lineChart.setExtraBottomOffset(15f);
-        lineChart.getDescription().setEnabled(false);
+
+        lineChart.setExtraBottomOffset(15f); // 간격
+        lineChart.getDescription().setEnabled(false); // chart 밑에 description 표시 유무
+
+        // Legend는 차트의 범례
         Legend legend = lineChart.getLegend();
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
@@ -128,7 +130,6 @@ public class Graph3Fragment extends Fragment {
         legend.setTextSize(13);
         legend.setTextColor(Color.parseColor("#A3A3A3"));
         legend.setOrientation(Legend.LegendOrientation.VERTICAL);
-
         legend.setDrawInside(false);
         legend.setYEntrySpace(5);
         legend.setWordWrapEnabled(true);
@@ -136,36 +137,38 @@ public class Graph3Fragment extends Fragment {
         legend.setYOffset(20f);
         legend.getCalculatedLineSizes();
 
+        // XAxis (아래쪽) - 선 유무, 사이즈, 색상, 축 위치 설정
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setDrawAxisLine(false);
         xAxis.setDrawGridLines(false);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // x축 데이터 표시 위치
         xAxis.setGranularity(1f);
         xAxis.setTextSize(14f);
         xAxis.setTextColor(Color.rgb(118, 118, 118));
-        xAxis.setSpaceMin(0.1f);
-        xAxis.setSpaceMax(0.1f);
+        xAxis.setSpaceMin(0.1f); // Chart 맨 왼쪽 간격 띄우기
+        xAxis.setSpaceMax(0.1f); // Chart 맨 오른쪽 간격 띄우기
 
-        YAxis yAxis = lineChart.getAxisRight();
-        yAxis.setDrawLabels(false);
-        yAxis.setDrawAxisLine(false);
-        yAxis.setTextColor(Color.LTGRAY);
-
-        yAxis.setGranularity((float) RANGE[1][range]);
-        yAxis.setAxisMinimum(0f); // 최솟값
-        yAxis.setAxisLineWidth(2);
-
-        yAxis.setAxisMaximum((float) RANGE[0][range]); // 최댓값
-
+        // YAxis(Right) (왼쪽) - 선 유무, 데이터 최솟값/최댓값, 색상
         YAxis yAxisLeft = lineChart.getAxisLeft();
-        yAxisLeft.setDrawAxisLine(false);
         yAxisLeft.setTextSize(14f);
+        yAxisLeft.setTextColor(Color.rgb(163, 163, 163));
+        yAxisLeft.setDrawAxisLine(false);
         yAxisLeft.setAxisLineWidth(2);
         yAxisLeft.setAxisMinimum(0f); // 최솟값
         yAxisLeft.setAxisMaximum((float) RANGE[0][range]); // 최댓값
         yAxisLeft.setGranularity((float) RANGE[1][range]);
-        yAxisLeft.setTextColor(Color.rgb(163, 163, 163));
 
+        // YAxis(Left) (오른쪽) - 선 유무, 데이터 최솟값/최댓값, 색상
+        YAxis yAxis = lineChart.getAxisRight();
+        yAxis.setDrawLabels(false); // label 삭제
+        yAxis.setTextColor(Color.rgb(163, 163, 163));
+        yAxis.setDrawAxisLine(false);
+        yAxis.setAxisLineWidth(2);
+        yAxis.setAxisMinimum(0f); // 최솟값
+        yAxis.setAxisMaximum((float) RANGE[0][range]); // 최댓값
+        yAxis.setGranularity((float) RANGE[1][range]);
+
+        // XAxis에 원하는 String 설정하기 (날짜)
         xAxis.setValueFormatter(new ValueFormatter() {
 
             @Override
@@ -255,14 +258,14 @@ public class Graph3Fragment extends Fragment {
         lineDataSet4.setColor(Color.rgb(31, 120, 180));
         lineDataSet4.setCircleColor(Color.rgb(31, 120, 180));
 
+        chartData.setValueTextSize(15);
         return chartData;
     }
 
     // LineChart에 LineData 설정
     private void prepareChartData(LineData data, LineChart lineChart) {
-        data.setValueTextSize(15);
-        lineChart.setData(data);
-        lineChart.invalidate();
+        lineChart.setData(data); // LineData 전달
+        lineChart.invalidate(); // LineChart 갱신해 데이터 표시
     }
 
 }

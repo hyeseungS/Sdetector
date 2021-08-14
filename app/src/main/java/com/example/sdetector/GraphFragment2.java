@@ -18,7 +18,6 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -41,9 +40,13 @@ public class GraphFragment2 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_graph2, container, false);
         Button graphButton2 = (Button) rootView.findViewById(R.id.app_count_button);
+
+        // 주간 앱 사용 횟수(회색) 버튼 이벤트
         graphButton2.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // 주간 앱 사용 횟수 BarChart 보여주기
                 graphButton2.setVisibility(View.GONE);
                 barChart2 = rootView.findViewById(R.id.chart2);
 
@@ -55,37 +58,42 @@ public class GraphFragment2 extends Fragment {
         });
 
         return rootView;
-        //xml 레이아웃이 인플레이트 되고 자바소스 코드와 연결이된다.
     }
 
+    // BarChart 기본 세팅
     private void configureChartAppearance() {
-        barChart2.getDescription().setEnabled(false);
-        barChart2.setTouchEnabled(false);
-        barChart2.getLegend().setEnabled(false);
+
+        barChart2.getDescription().setEnabled(false); // chart 밑에 description 표시 유무
+        barChart2.setTouchEnabled(false); // 터치 유무
+        barChart2.getLegend().setEnabled(false); // Legend는 차트의 범례
         barChart2.setExtraOffsets(10f, 0f, 40f, 0f);
 
+        // XAxis (수평 막대 기준 왼쪽) - 선 유무, 사이즈, 색상, 축 위치 설정
         XAxis xAxis = barChart2.getXAxis();
         xAxis.setDrawAxisLine(false);
         xAxis.setGranularity(1f);
         xAxis.setTextSize(15f);
         xAxis.setGridLineWidth(25f);
         xAxis.setGridColor(Color.parseColor("#80E5E5E5"));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // X 축 데이터 표시 위치
 
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        // YAxis(Left) (수평 막대 기준 아래쪽) - 선 유무, 데이터 최솟값/최댓값, label 유무
         YAxis axisLeft = barChart2.getAxisLeft();
         axisLeft.setDrawGridLines(false);
         axisLeft.setDrawAxisLine(false);
-        axisLeft.setAxisMinimum(0f); // 최소값
-        axisLeft.setAxisMaximum(50f); // 최대값
-        axisLeft.setGranularity(1f); // 값 만큼 라인선 설정
-        axisLeft.setDrawLabels(false); // 값 셋팅 설정
+        axisLeft.setAxisMinimum(0f); // 최솟값
+        axisLeft.setAxisMaximum(50f); // 최댓값
+        axisLeft.setGranularity(1f); // 값만큼 라인선 설정
+        axisLeft.setDrawLabels(false); // label 삭제
 
+        // YAxis(Right) (수평 막대 기준 위쪽) - 사이즈, 선 유무
         YAxis axisRight = barChart2.getAxisRight();
         axisRight.setTextSize(15f);
-        axisRight.setDrawLabels(false);
+        axisRight.setDrawLabels(false); // label 삭제
         axisRight.setDrawGridLines(false);
         axisRight.setDrawAxisLine(false);
 
+        // XAxis에 원하는 String 설정하기 (앱 이름)
         xAxis.setValueFormatter(new ValueFormatter() {
 
             @Override
@@ -95,17 +103,23 @@ public class GraphFragment2 extends Fragment {
         });
     }
 
+    // BarChart에 BarData 생성
     private BarData createChartData() {
+
+        // 1. [BarEntry] BarChart에 표시될 데이터 값 생성
         ArrayList<BarEntry> values = new ArrayList<>();
         for (int i = 0; i < MAX_X_VALUE; i++) {
             float x = i;
             float y = new Random().nextFloat() * (MAX_Y_VALUE - MIN_Y_VALUE) + MIN_Y_VALUE;
             values.add(new BarEntry(x, y));
         }
+
+        // 2. [BarDataSet] 단순 데이터를 막대 모양으로 표시, BarChart의 막대 커스텀
         BarDataSet set2 = new BarDataSet(values, SET_LABEL);
         set2.setDrawIcons(false);
         set2.setDrawValues(true);
-        set2.setColor(Color.parseColor("#66767676"));
+        set2.setColor(Color.parseColor("#66767676")); // 색상 설정
+        // 데이터 값 원하는 String 포맷으로 설정하기 (ex. ~회)
         set2.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
@@ -113,18 +127,17 @@ public class GraphFragment2 extends Fragment {
             }
         });
 
-        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set2);
-
-        BarData data = new BarData(dataSets);
+        // 3. [BarData] 보여질 데이터 구성
+        BarData data = new BarData(set2);
         data.setBarWidth(0.5f);
+        data.setValueTextSize(15);
 
         return data;
     }
 
+    // BarChart에 BarData 설정
     private void prepareChartData(BarData data) {
-        data.setValueTextSize(15);
-        barChart2.setData(data);
-        barChart2.invalidate();
+        barChart2.setData(data); // BarData 전달
+        barChart2.invalidate(); // BarChart 갱신해 데이터 표시
     }
 }
