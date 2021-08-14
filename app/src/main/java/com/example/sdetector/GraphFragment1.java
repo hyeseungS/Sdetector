@@ -65,11 +65,12 @@ public class GraphFragment1 extends Fragment {
             @Override
             public void onClick(View view) {
 
-                // 아래 코드 디버깅용. 앱 이름, 시간 제대로 찍히는 거 확인! 권한 허용 해줘야 함.
-                String ret[] = get_apps_name();
-                for (String s : ret){
-                    System.out.println(s);
-                }
+                // 아래 코드 디버깅용. 앱 이름, 시간 제대로 찍히는 거 확인!
+                // (get_apps_name 사용 시 권한 허용 필요)
+//                String ret[] = get_apps_name();
+//                for (String s : ret){
+//                    System.out.println(s);
+//                }
 
                 graphButton1.setVisibility(View.GONE);
                 barChart1 = rootView.findViewById(R.id.chart1);
