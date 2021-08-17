@@ -53,10 +53,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="90dp"
-                    android:text="Hello World!"
-                    android:textColor="@color/black"
-                    android:textSize="26sp"
-                    android:textStyle="normal" />
+                    android:text="DATE"
+                    android:textColor="#292929"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/DatePickerBtn"
@@ -70,7 +70,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
                 android:gravity="center"
                 android:text="오늘의 감정을 선택하세요."
