@@ -70,13 +70,13 @@ public class GraphFragment1 extends Fragment {
 
                 // 아래 코드 디버깅용. 앱 이름, 시간 제대로 찍히는 거 확인!
                 // (get_apps_name 사용 시 권한 허용 필요)
-                String ret[] = get_apps_name2();
-                for (String s : ret){
-                    System.out.println(s);
-                }
+//                String ret[] = get_apps_name_daily();
+//                for (String s : ret){
+//                    System.out.println(s);
+//                }
 
                 // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
-                APPS = get_apps_name();
+                APPS = get_apps_name_weekly();
                 int index1 = 3, index2 = 3;
                 for (int i = 0; i < APPS.length; i++) {
                     if (i % 2 == 0) TIME_NAME[index1--] = APPS[i];
@@ -189,40 +189,34 @@ public class GraphFragment1 extends Fragment {
         barChart1.invalidate(); // BarChart 갱신해 데이터 표시
     }
 
-    // 아래부터 예슬
+
+
     private class Pair {
         String name;
         long time;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private String[] get_apps_name() {
+    private String[] get_apps_name_weekly() {
         if (!checkPermission())
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
-        String PackageName = "Nothing";
-        long TimeInforground = 500;
-        int minutes = 500, seconds = 500, hours = 500;
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -7);
+//        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
         long cur_time = System.currentTimeMillis(), begin_time = cal.getTimeInMillis();
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begin_time, cur_time);
+//        System.out.println(cur_time + " " + begin_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, begin_time, cur_time);
         if (stats != null) {
             ArrayList<Pair> list = new ArrayList<>();
 
             SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
             for (UsageStats usageStats : stats) {
-                TimeInforground = usageStats.getTotalTimeInForeground();
-                PackageName = usageStats.getPackageName();
                 Pair tmp = new Pair();
-                tmp.name = PackageName;
-                tmp.time = TimeInforground;
+                tmp.name = usageStats.getPackageName();
+                tmp.time = usageStats.getTotalTimeInForeground();
                 list.add(tmp);
-                //minutes = (int) ((TimeInforground / (1000 * 60)) % 60);
-                //seconds = (int) (TimeInforground / 1000) % 60;
-                //hours = (int) ((TimeInforground / (1000 * 60 * 60)) % 24);
-                //System.out.println("PackageName is" + PackageName + "Time is: " + hours + "h" + ":" + minutes + "m" + seconds + "s");
             }
 
             Collections.sort(list, new Comparator<Pair>() {
@@ -240,9 +234,8 @@ public class GraphFragment1 extends Fragment {
             for (Pair p : list) {
                 if (i > 3)
                     break;
-                minutes = (int) ((p.time / (1000 * 60)) % 60);
-                seconds = (int) (p.time / 1000) % 60;
-                hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
+                int minutes = (int) ((p.time / (1000 * 60)) % 60);
+                int hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
                 // System.out.println("PackageName is" + p.name + "Time is: " + hours + "h" + ":" + minutes + "m" + seconds + "s");
                 String s = p.name;
                 String[] s2 = s.split("\\.");
@@ -254,86 +247,101 @@ public class GraphFragment1 extends Fragment {
         return ret;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public String[] get_apps_name2() {
-
-        // UsageStatsManager 선언
-        UsageStatsManager usageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
-
-        long lastRunAppTimeStamp = 0L;
-
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -7);
-        final long end = System.currentTimeMillis();
-        // 1 minute ago
-        final long begin = cal.getTimeInMillis();
-
-        //
-        LongSparseArray packageNameMap = new LongSparseArray<>();
-
-        // 수집한 이벤트들을 담기 위한 UsageEvents
-        final UsageEvents usageEvents = usageStatsManager.queryEvents(begin, end);
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
-
-        // 이벤트가 여러개 있을 경우 (최소 존재는 해야 hasNextEvent가 null이 아니니까)
-        while (usageEvents.hasNextEvent()) {
-
-            // 현재 이벤트를 가져오기
-            UsageEvents.Event event = new UsageEvents.Event();
-            usageEvents.getNextEvent(event);
-
-            int eventType = event.getEventType();
-            if (eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
-                String name = event.getPackageName();
-                if (map.get(name) == null)
-                    map.put(name, 1);
-                else
-                    map.put(name, map.get(name) + 1);
-            }
-
-            // 현재 이벤트가 포그라운드 상태라면 = 현재 화면에 보이는 앱이라면
-//            if (isForeGroundEvent(event)) {
-//                // 해당 앱 이름을 packageNameMap에 넣는다.
-//                packageNameMap.put(event.getTimeStamp(), event.getPackageName());
-//                // 가장 최근에 실행 된 이벤트에 대한 타임스탬프를 업데이트 해준다.
-//                if (event.getTimeStamp() > lastRunAppTimeStamp) {
-//                    lastRunAppTimeStamp = event.getTimeStamp();
-//                }
-//            }
-        }
-
-        ArrayList<Pair> result = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            Pair tmp = new Pair();
-            tmp.name = entry.getKey();
-            tmp.time = entry.getValue();
-            result.add(tmp);
-        }
-
-        Collections.sort(result, new Comparator<Pair>() {
-            @Override
-            public int compare(Pair a, Pair b) {
-                if (a.time < b.time)
-                    return 1;
-                else if (a.time == b.time)
-                    return 0;
-                return -1;
-            }
-        });
-
+    private String[] get_apps_name_daily() {
+        if (!checkPermission())
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+//        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
+        long cur_time = System.currentTimeMillis(), begin_time = cal.getTimeInMillis();
+//        System.out.println(cur_time + " " + begin_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time, cur_time);
+        if (stats != null) {
+            ArrayList<Pair> list = new ArrayList<>();
 
-        int i = 0;
-        for (Pair p : result) {
-            if (i > 3)
-                break;
-            String s = p.name;
-            String[] s2 = s.split("\\.");
-            ret[i * 2] = s2[s2.length - 1];
-            ret[i * 2 + 1] = Integer.toString((int)p.time);
-            ++i;
+            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
+            for (UsageStats usageStats : stats) {
+                Pair tmp = new Pair();
+                tmp.name = usageStats.getPackageName();
+                tmp.time = usageStats.getTotalTimeInForeground();
+                list.add(tmp);
+            }
+
+            Collections.sort(list, new Comparator<Pair>() {
+                @Override
+                public int compare(Pair a, Pair b) {
+                    if (a.time < b.time)
+                        return 1;
+                    else if (a.time == b.time)
+                        return 0;
+                    return -1;
+                }
+            });
+
+            int i = 0;
+            for (Pair p : list) {
+                if (i > 3)
+                    break;
+                int minutes = (int) ((p.time / (1000 * 60)) % 60);
+                int hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
+                String s = p.name;
+                String[] s2 = s.split("\\.");
+                ret[i * 2] = s2[s2.length - 1];
+                ret[i * 2 + 1] = Integer.toString(hours) + "." + Integer.toString(minutes);
+                ++i;
+            }
         }
+        return ret;
+    }
 
+    private String[] get_apps_name_monthly() {
+        if (!checkPermission())
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+        String[] ret = new String[8];
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, -1);
+//        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
+        long cur_time = System.currentTimeMillis(), begin_time = cal.getTimeInMillis();
+//        System.out.println(cur_time + " " + begin_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin_time, cur_time);
+        if (stats != null) {
+            ArrayList<Pair> list = new ArrayList<>();
+
+            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
+            for (UsageStats usageStats : stats) {
+                Pair tmp = new Pair();
+                tmp.name = usageStats.getPackageName();
+                tmp.time = usageStats.getTotalTimeInForeground();
+                list.add(tmp);
+            }
+
+            Collections.sort(list, new Comparator<Pair>() {
+                @Override
+                public int compare(Pair a, Pair b) {
+                    if (a.time < b.time)
+                        return 1;
+                    else if (a.time == b.time)
+                        return 0;
+                    return -1;
+                }
+            });
+
+            int i = 0;
+            for (Pair p : list) {
+                if (i > 3)
+                    break;
+                int minutes = (int) ((p.time / (1000 * 60)) % 60);
+                int hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
+                String s = p.name;
+                String[] s2 = s.split("\\.");
+                ret[i * 2] = s2[s2.length - 1];
+                ret[i * 2 + 1] = Integer.toString(hours) + "." + Integer.toString(minutes);
+                ++i;
+            }
+        }
         return ret;
     }
 

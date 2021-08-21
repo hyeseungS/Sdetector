@@ -1,7 +1,11 @@
 package com.example.sdetector;
 
+import android.app.usage.UsageEvents;
+import android.app.usage.UsageStatsManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -20,7 +25,14 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+
+import static android.content.Context.USAGE_STATS_SERVICE;
 
 public class GraphFragment2 extends Fragment {
     @Override
@@ -140,4 +152,75 @@ public class GraphFragment2 extends Fragment {
         barChart2.setData(data); // BarData 전달
         barChart2.invalidate(); // BarChart 갱신해 데이터 표시
     }
+
+
+
+    private class Pair {
+        String name;
+        long time;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private String[] get_apps_name() {
+
+        UsageStatsManager usageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -7);
+        final long end = System.currentTimeMillis();
+        final long begin = cal.getTimeInMillis();
+
+        final UsageEvents usageEvents = usageStatsManager.queryEvents(begin, end);
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+
+        while (usageEvents.hasNextEvent()) {
+
+            UsageEvents.Event event = new UsageEvents.Event();
+            usageEvents.getNextEvent(event);
+
+            int eventType = event.getEventType();
+            if (eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
+                String name = event.getPackageName();
+                if (map.get(name) == null)
+                    map.put(name, 1);
+                else
+                    map.put(name, map.get(name) + 1);
+            }
+        }
+
+        ArrayList<Pair> result = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            Pair tmp = new Pair();
+            tmp.name = entry.getKey();
+            tmp.time = entry.getValue();
+            result.add(tmp);
+        }
+
+        Collections.sort(result, new Comparator<Pair>() {
+            @Override
+            public int compare(Pair a, Pair b) {
+                if (a.time < b.time)
+                    return 1;
+                else if (a.time == b.time)
+                    return 0;
+                return -1;
+            }
+        });
+
+        String[] ret = new String[8];
+
+        int i = 0;
+        for (Pair p : result) {
+            if (i > 3)
+                break;
+            String s = p.name;
+            String[] s2 = s.split("\\.");
+            ret[i * 2] = s2[s2.length - 1];
+            ret[i * 2 + 1] = Integer.toString((int)p.time);
+            ++i;
+        }
+
+        return ret;
+    }
+
 }
