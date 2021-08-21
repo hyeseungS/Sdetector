@@ -54,6 +54,50 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
     //저장버튼
     Button msaveBtn;
 
+    @Override
+    public void onClick(View view) {
+
+        if (view.getId() == R.id.saveBtn) {
+            // DB로 전송
+
+            //감정 넘버 emotionInt를 String으로 넘기기
+            String emotionString = String.valueOf(emotionInt);
+
+            //일기 내용
+            String diaryContent = mDiaryContent.getText().toString();
+
+            //데이터 넘검 - emotionString, diaryContent
+            InsertData task = new InsertData();
+            task.execute("http://" + IP_ADDRESS + "/insert.php", emotionString, diaryContent);
+            Toast.makeText(getActivity().getApplicationContext(), "데이터 웹으로 넘김", Toast.LENGTH_SHORT).show();
+
+            mDiaryContent.setText("");
+
+            Log.i("TAG", "save 진행");
+            FileOutputStream fos = null;
+
+            /*try {
+                fos = getActivity().openFileOutput("memo.txt", Context.MODE_PRIVATE);
+                String out = mDiaryContent.getText().toString();
+                fos.write(out.getBytes());
+                Toast.makeText(getActivity().getApplicationContext(), "저장 완료", Toast.LENGTH_SHORT).show();
+                MainActivity activity = (MainActivity) getActivity();
+                activity.moveToDiaryList();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fos != null) fos.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }*/
+        }
+        if (mDatePickerListener != null) {
+            mDatePickerListener.DatePickerData(DiaryFragment.this.toString());
+        }
+    }
+
     public interface DatePickerListener {
         void DatePickerData(String data);
     }
@@ -74,6 +118,10 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                              ViewGroup container, Bundle savedInstanceState) {
         View myview = inflater.inflate(R.layout.fragment_diary, container, false);
 
+        //저장버튼(saveBtn) 과 onClickListener 연결
+        msaveBtn = (Button) myview.findViewById(R.id.saveBtn);
+        msaveBtn.setOnClickListener(this);
+
         RadioGroup radioGroup = (RadioGroup) myview.findViewById(R.id.emotion_diary);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -82,12 +130,15 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                 switch (checkedId) {
                     case R.id.bad_radioBtn:
                         emotionInt = 1;
+                        Toast.makeText(getActivity().getApplicationContext(), "1", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.normal_radioBtn:
                         emotionInt = 2;
+                        Toast.makeText(getActivity().getApplicationContext(), "2", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.good_radioBtn:
                         emotionInt = 3;
+                        Toast.makeText(getActivity().getApplicationContext(), "3", Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -120,48 +171,6 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
         msaveBtn = getView().findViewById(R.id.saveBtn);
     }
 
-    @Override
-    public void onClick(View view) {
-
-        if (view.getId() == R.id.saveBtn) {
-            // DB로 전송
-
-            //감정 넘버 emotionInt를 String으로 넘기기
-            String emotionString = String.valueOf(emotionInt);
-
-            //일기 내용
-            String diaryContent = mDiaryContent.getText().toString();
-
-            //데이터 넘검 - emotionString, diaryContent
-            InsertData task = new InsertData();
-            task.execute("http://" + IP_ADDRESS + "/insert.php", emotionString, diaryContent);
-
-            mDiaryContent.setText("");
-
-            Log.i("TAG", "save 진행");
-            FileOutputStream fos = null;
-
-            /*try {
-                fos = getActivity().openFileOutput("memo.txt", Context.MODE_PRIVATE);
-                String out = mDiaryContent.getText().toString();
-                fos.write(out.getBytes());
-                Toast.makeText(getActivity().getApplicationContext(), "저장 완료", Toast.LENGTH_SHORT).show();
-                MainActivity activity = (MainActivity) getActivity();
-                activity.moveToDiaryList();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (fos != null) fos.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }*/
-        }
-        if (mDatePickerListener != null) {
-            mDatePickerListener.DatePickerData(DiaryFragment.this.toString());
-        }
-    }
 
     class InsertData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
@@ -170,8 +179,7 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(getContext(),
-                    "Please Wait", null, true, true);
+            progressDialog = ProgressDialog.show(getContext(), "Please Wait", null, true, true);
         }
 
 
@@ -191,7 +199,7 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
             String diaryContent = (String) params[2];
 
             String serverURL = (String) params[0];
-            String postParameters = "emotion=" + emotionContent + "&diary=" + diaryContent;
+            String postParameters = "emotion=" + emotionContent + "&content=" + diaryContent;
 
             try {
                 URL url = new URL(serverURL);
@@ -216,6 +224,10 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                 } else {
                     inputStream = httpURLConnection.getErrorStream();
                 }
+
+                Toast.makeText(getActivity().getApplicationContext(), "저장 완료", Toast.LENGTH_SHORT).show();
+                MainActivity activity = (MainActivity) getActivity();
+                activity.moveToDiaryList();
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
