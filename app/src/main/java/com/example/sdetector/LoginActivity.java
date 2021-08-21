@@ -2,6 +2,7 @@ package com.example.sdetector;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -63,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
                 if (oAuthToken != null) {
                     //
-                    System.out.println("oAuthToken is not null");
+                    System.out.println("oAuthToken is " + oAuthToken);
                 }
                 if (throwable != null) {
                     //
