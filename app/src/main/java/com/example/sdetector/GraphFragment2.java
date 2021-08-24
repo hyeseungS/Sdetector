@@ -41,10 +41,10 @@ public class GraphFragment2 extends Fragment {
     }
 
     private static final int MAX_X_VALUE = 4;
-    private static final int MAX_Y_VALUE = 50;
-    private static final int MIN_Y_VALUE = 0;
     private static final String SET_LABEL = " ";
-    private static final String[] APPS = {"인스타그램", "네이버", "카카오톡", "유튜브"};
+    private static String[] APPS;
+    private static String[] FREQ_NAME = new String[4]; // 앱 이름
+    private static float[] FREQ_DATA = new float[4]; // 앱 사용 빈도수 데이터
     private HorizontalBarChart barChart2;
 
     @Nullable
@@ -57,6 +57,19 @@ public class GraphFragment2 extends Fragment {
         graphButton2.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                String ret[] = get_apps_name();
+                for (String s : ret){
+                    System.out.println(s);
+                }
+
+                // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
+                APPS = get_apps_name();
+                int index1 = 3, index2 = 3;
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 == 0) FREQ_NAME[index1--] = APPS[i];
+                    else FREQ_DATA[index2--] = Float.parseFloat(APPS[i]);
+                }
 
                 // 주간 앱 사용 횟수 BarChart 보여주기
                 graphButton2.setVisibility(View.GONE);
@@ -94,7 +107,7 @@ public class GraphFragment2 extends Fragment {
         axisLeft.setDrawGridLines(false);
         axisLeft.setDrawAxisLine(false);
         axisLeft.setAxisMinimum(0f); // 최솟값
-        axisLeft.setAxisMaximum(50f); // 최댓값
+        axisLeft.setAxisMaximum(FREQ_DATA[3]+6f); // 최댓값
         axisLeft.setGranularity(1f); // 값만큼 라인선 설정
         axisLeft.setDrawLabels(false); // label 삭제
 
@@ -110,7 +123,7 @@ public class GraphFragment2 extends Fragment {
 
             @Override
             public String getFormattedValue(float value) {
-                return APPS[(int) value];
+                return FREQ_NAME[(int) value];
             }
         });
     }
@@ -122,7 +135,7 @@ public class GraphFragment2 extends Fragment {
         ArrayList<BarEntry> values = new ArrayList<>();
         for (int i = 0; i < MAX_X_VALUE; i++) {
             float x = i;
-            float y = new Random().nextFloat() * (MAX_Y_VALUE - MIN_Y_VALUE) + MIN_Y_VALUE;
+            float y = FREQ_DATA[i];
             values.add(new BarEntry(x, y));
         }
 

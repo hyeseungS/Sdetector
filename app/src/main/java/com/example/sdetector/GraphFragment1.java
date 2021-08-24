@@ -10,8 +10,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Settings;
-import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,13 +30,13 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -51,10 +51,19 @@ public class GraphFragment1 extends Fragment {
 
     private static final int MAX_X_VALUE = 4; // 보여줄 앱 개수
     private static final String SET_LABEL = " ";
-    private static String[] APPS;
-    private static String[] TIME_NAME = new String[4]; // 앱 이름
-    private static float[] TIME_DATA = new float[4]; // 앱 사용 시간 데이터
+    private static String[] WEEK_APPS;
+    private static String[] DAY_APPS;
+    private static String[] MONTH_APPS;
+    private static String[] WEEK_TIME_NAME = new String[4]; // 앱 이름
+    private static float[] WEEK_TIME_DATA = new float[4]; // 앱 사용 시간 데이터
+    private static String[] DAY_TIME_NAME = new String[4]; // 앱 이름
+    private static float[] DAY_TIME_DATA = new float[4]; // 앱 사용 시간 데이터
+    private static String[] MONTH_TIME_NAME = new String[4]; // 앱 이름
+    private static float[] MONTH_TIME_DATA = new float[4]; // 앱 사용 시간 데이터
     private HorizontalBarChart barChart1;
+    Graph3Fragment f;
+    MoreDataList datalist;
+    ArrayList<MoreData> list;
 
     @Nullable
     @Override
@@ -70,17 +79,17 @@ public class GraphFragment1 extends Fragment {
 
                 // 아래 코드 디버깅용. 앱 이름, 시간 제대로 찍히는 거 확인!
                 // (get_apps_name 사용 시 권한 허용 필요)
-//                String ret[] = get_apps_name_daily();
-//                for (String s : ret){
-//                    System.out.println(s);
-//                }
+                String ret[] = get_apps_name_weekly();
+                for (String s : ret){
+                    System.out.println(s);
+                }
 
                 // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
-                APPS = get_apps_name_weekly();
+                WEEK_APPS = get_apps_name_weekly();
                 int index1 = 3, index2 = 3;
-                for (int i = 0; i < APPS.length; i++) {
-                    if (i % 2 == 0) TIME_NAME[index1--] = APPS[i];
-                    else TIME_DATA[index2--] = Float.parseFloat(APPS[i]);
+                for (int i = 0; i < WEEK_APPS.length; i++) {
+                    if (i % 2 == 0) WEEK_TIME_NAME[index1--] = WEEK_APPS[i];
+                    else WEEK_TIME_DATA[index2--] = Float.parseFloat(WEEK_APPS[i]);
                 }
 
                 // 주간 앱 사용 시간 BarChart 보여주기
@@ -98,6 +107,7 @@ public class GraphFragment1 extends Fragment {
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 MainActivity activity = (MainActivity) getActivity();
                 activity.moveToDetail();
             }
@@ -127,7 +137,7 @@ public class GraphFragment1 extends Fragment {
         axisLeft.setDrawGridLines(false);
         axisLeft.setDrawAxisLine(false);
         axisLeft.setAxisMinimum(0f); // 최솟값
-        axisLeft.setAxisMaximum(TIME_DATA[3] + 6f); // 최댓값
+        axisLeft.setAxisMaximum(WEEK_TIME_DATA[3] + 6f); // 최댓값
         axisLeft.setGranularity(1f); // 값만큼 라인선 설정
         axisLeft.setDrawLabels(false); // label 삭제
 
@@ -143,7 +153,7 @@ public class GraphFragment1 extends Fragment {
 
             @Override
             public String getFormattedValue(float value) {
-                return TIME_NAME[(int) value];
+                return WEEK_TIME_NAME[(int) value];
             }
         });
     }
@@ -155,7 +165,7 @@ public class GraphFragment1 extends Fragment {
         ArrayList<BarEntry> values = new ArrayList<>();
         for (int i = 0; i < MAX_X_VALUE; i++) {
             float x = i;
-            float y = TIME_DATA[i];
+            float y = WEEK_TIME_DATA[i];
             values.add(new BarEntry(x, y));
         }
 
@@ -189,8 +199,6 @@ public class GraphFragment1 extends Fragment {
         barChart1.invalidate(); // BarChart 갱신해 데이터 표시
     }
 
-
-
     private class Pair {
         String name;
         long time;
@@ -201,7 +209,7 @@ public class GraphFragment1 extends Fragment {
         if (!checkPermission())
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
-        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -7);
 //        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
@@ -251,7 +259,7 @@ public class GraphFragment1 extends Fragment {
         if (!checkPermission())
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
-        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -1);
 //        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
@@ -300,7 +308,7 @@ public class GraphFragment1 extends Fragment {
         if (!checkPermission())
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
-        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, -1);
 //        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
@@ -375,4 +383,6 @@ public class GraphFragment1 extends Fragment {
 
         return granted;
     }
+
+
 }
