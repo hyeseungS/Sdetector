@@ -181,7 +181,7 @@ public class GraphFragment1 extends Fragment {
             public String getFormattedValue(float value) {
 
                 return (((int) value != 0) ? (String.valueOf((int) value)) + "시간 " : "")
-                        + (String.valueOf((int) ((value - (int) value) * 100))) + "분";
+                        + ((String.valueOf((int) ((value - (int) value) * 100))) + "분");
             }
         });
 
@@ -248,7 +248,7 @@ public class GraphFragment1 extends Fragment {
                 String s = p.name;
                 String[] s2 = s.split("\\.");
                 ret[i * 2] = s2[s2.length - 1];
-                ret[i * 2 + 1] = Integer.toString(hours) + "." + Integer.toString(minutes);
+                ret[i * 2 + 1] = Integer.toString(hours) + "." + (((int)Math.log10(minutes) == 0)? String.format("%02d", minutes) : Integer.toString(minutes));
                 ++i;
             }
         }
