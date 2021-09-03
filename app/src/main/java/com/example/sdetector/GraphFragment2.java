@@ -1,7 +1,11 @@
 package com.example.sdetector;
 
+import android.app.usage.UsageEvents;
+import android.app.usage.UsageStatsManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -20,7 +25,14 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+
+import static android.content.Context.USAGE_STATS_SERVICE;
 
 public class GraphFragment2 extends Fragment {
     @Override
@@ -29,10 +41,10 @@ public class GraphFragment2 extends Fragment {
     }
 
     private static final int MAX_X_VALUE = 4;
-    private static final int MAX_Y_VALUE = 50;
-    private static final int MIN_Y_VALUE = 0;
     private static final String SET_LABEL = " ";
-    private static final String[] APPS = {"인스타그램", "네이버", "카카오톡", "유튜브"};
+    private static String[] APPS;
+    private static String[] FREQ_NAME = new String[4]; // 앱 이름
+    private static float[] FREQ_DATA = new float[4]; // 앱 사용 빈도수 데이터
     private HorizontalBarChart barChart2;
 
     @Nullable
@@ -45,6 +57,19 @@ public class GraphFragment2 extends Fragment {
         graphButton2.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                String ret[] = get_apps_name();
+                for (String s : ret){
+                    System.out.println(s);
+                }
+
+                // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
+                APPS = get_apps_name();
+                int index1 = 3, index2 = 3;
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 == 0) FREQ_NAME[index1--] = APPS[i];
+                    else FREQ_DATA[index2--] = Float.parseFloat(APPS[i]);
+                }
 
                 // 주간 앱 사용 횟수 BarChart 보여주기
                 graphButton2.setVisibility(View.GONE);
@@ -82,7 +107,7 @@ public class GraphFragment2 extends Fragment {
         axisLeft.setDrawGridLines(false);
         axisLeft.setDrawAxisLine(false);
         axisLeft.setAxisMinimum(0f); // 최솟값
-        axisLeft.setAxisMaximum(50f); // 최댓값
+        axisLeft.setAxisMaximum(FREQ_DATA[3]+6f); // 최댓값
         axisLeft.setGranularity(1f); // 값만큼 라인선 설정
         axisLeft.setDrawLabels(false); // label 삭제
 
@@ -98,7 +123,7 @@ public class GraphFragment2 extends Fragment {
 
             @Override
             public String getFormattedValue(float value) {
-                return APPS[(int) value];
+                return FREQ_NAME[(int) value];
             }
         });
     }
@@ -110,7 +135,7 @@ public class GraphFragment2 extends Fragment {
         ArrayList<BarEntry> values = new ArrayList<>();
         for (int i = 0; i < MAX_X_VALUE; i++) {
             float x = i;
-            float y = new Random().nextFloat() * (MAX_Y_VALUE - MIN_Y_VALUE) + MIN_Y_VALUE;
+            float y = FREQ_DATA[i];
             values.add(new BarEntry(x, y));
         }
 
@@ -140,4 +165,75 @@ public class GraphFragment2 extends Fragment {
         barChart2.setData(data); // BarData 전달
         barChart2.invalidate(); // BarChart 갱신해 데이터 표시
     }
+
+
+
+    private class Pair {
+        String name;
+        long time;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private String[] get_apps_name() {
+
+        UsageStatsManager usageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -7);
+        final long end = System.currentTimeMillis();
+        final long begin = cal.getTimeInMillis();
+
+        final UsageEvents usageEvents = usageStatsManager.queryEvents(begin, end);
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+
+        while (usageEvents.hasNextEvent()) {
+
+            UsageEvents.Event event = new UsageEvents.Event();
+            usageEvents.getNextEvent(event);
+
+            int eventType = event.getEventType();
+            if (eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
+                String name = event.getPackageName();
+                if (map.get(name) == null)
+                    map.put(name, 1);
+                else
+                    map.put(name, map.get(name) + 1);
+            }
+        }
+
+        ArrayList<Pair> result = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            Pair tmp = new Pair();
+            tmp.name = entry.getKey();
+            tmp.time = entry.getValue();
+            result.add(tmp);
+        }
+
+        Collections.sort(result, new Comparator<Pair>() {
+            @Override
+            public int compare(Pair a, Pair b) {
+                if (a.time < b.time)
+                    return 1;
+                else if (a.time == b.time)
+                    return 0;
+                return -1;
+            }
+        });
+
+        String[] ret = new String[8];
+
+        int i = 0;
+        for (Pair p : result) {
+            if (i > 3)
+                break;
+            String s = p.name;
+            String[] s2 = s.split("\\.");
+            ret[i * 2] = s2[s2.length - 1];
+            ret[i * 2 + 1] = Integer.toString((int)p.time);
+            ++i;
+        }
+
+        return ret;
+    }
+
 }

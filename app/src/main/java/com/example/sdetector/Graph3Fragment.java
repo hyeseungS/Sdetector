@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 public class Graph3Fragment extends Fragment {
@@ -35,7 +36,7 @@ public class Graph3Fragment extends Fragment {
 
     private static final String[][] LABEL = {{"", "", "", ""}, {"3주 전", "2주 전", "1주 전", "이번 주"}, {"3달 전", "2달 전", "1달 전", "이번 달"}};
     private static final int[][] RANGE = {{8, 20, 40}, {2, 5, 10}};
-    private static final String[] APPS = {"인스타그램", "네이버", "카카오톡", "유튜브"};
+    private static final String[] APPS_NAME = {"인스타그램", "유튜브", "네이버", "구글"};
     ViewGroup rootView;
 
     @Override
@@ -203,7 +204,7 @@ public class Graph3Fragment extends Fragment {
         // 4개 앱의 DataSet 추가 및 선 커스텀 (추후 앱 이름 변경)
 
         // 앱1
-        LineDataSet lineDataSet1 = new LineDataSet(entry1, APPS[0]);
+        LineDataSet lineDataSet1 = new LineDataSet(entry1, APPS_NAME[0]);
         chartData.addDataSet(lineDataSet1);
 
         lineDataSet1.setLineWidth(3);
@@ -217,7 +218,7 @@ public class Graph3Fragment extends Fragment {
         lineDataSet1.setCircleColor(Color.rgb(255, 155, 155));
 
         // 앱2
-        LineDataSet lineDataSet2 = new LineDataSet(entry2, APPS[1]);
+        LineDataSet lineDataSet2 = new LineDataSet(entry2, APPS_NAME[1]);
         chartData.addDataSet(lineDataSet2);
 
         lineDataSet2.setLineWidth(3);
@@ -231,7 +232,7 @@ public class Graph3Fragment extends Fragment {
         lineDataSet2.setCircleColor(Color.rgb(178, 223, 138));
 
         // 앱3
-        LineDataSet lineDataSet3 = new LineDataSet(entry3, APPS[2]);
+        LineDataSet lineDataSet3 = new LineDataSet(entry3, APPS_NAME[2]);
         chartData.addDataSet(lineDataSet3);
 
         lineDataSet3.setLineWidth(3);
@@ -245,7 +246,7 @@ public class Graph3Fragment extends Fragment {
         lineDataSet3.setCircleColor(Color.rgb(166, 208, 227));
 
         // 앱4
-        LineDataSet lineDataSet4 = new LineDataSet(entry4, APPS[3]);
+        LineDataSet lineDataSet4 = new LineDataSet(entry4, APPS_NAME[3]);
         chartData.addDataSet(lineDataSet4);
 
         lineDataSet4.setLineWidth(3);

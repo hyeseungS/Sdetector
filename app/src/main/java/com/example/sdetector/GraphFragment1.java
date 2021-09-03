@@ -10,8 +10,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Settings;
-import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +30,12 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -49,10 +51,19 @@ public class GraphFragment1 extends Fragment {
 
     private static final int MAX_X_VALUE = 4; // 보여줄 앱 개수
     private static final String SET_LABEL = " ";
-    private static String[] APPS;
-    private static String[] TIME_NAME = new String[4]; // 앱 이름
-    private static float[] TIME_DATA = new float[4]; // 앱 사용 시간 데이터
+    private static String[] WEEK_APPS;
+    private static String[] DAY_APPS;
+    private static String[] MONTH_APPS;
+    private static String[] WEEK_TIME_NAME = new String[4]; // 앱 이름
+    private static float[] WEEK_TIME_DATA = new float[4]; // 앱 사용 시간 데이터
+    private static String[] DAY_TIME_NAME = new String[4]; // 앱 이름
+    private static float[] DAY_TIME_DATA = new float[4]; // 앱 사용 시간 데이터
+    private static String[] MONTH_TIME_NAME = new String[4]; // 앱 이름
+    private static float[] MONTH_TIME_DATA = new float[4]; // 앱 사용 시간 데이터
     private HorizontalBarChart barChart1;
+    Graph3Fragment f;
+    MoreDataList datalist;
+    ArrayList<MoreData> list;
 
     @Nullable
     @Override
@@ -68,17 +79,17 @@ public class GraphFragment1 extends Fragment {
 
                 // 아래 코드 디버깅용. 앱 이름, 시간 제대로 찍히는 거 확인!
                 // (get_apps_name 사용 시 권한 허용 필요)
-//                String ret[] = get_apps_name();
-//                for (String s : ret){
-//                    System.out.println(s);
-//                }
+                String ret[] = get_apps_name_weekly();
+                for (String s : ret){
+                    System.out.println(s);
+                }
 
                 // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
-                APPS = get_apps_name();
+                WEEK_APPS = get_apps_name_weekly();
                 int index1 = 3, index2 = 3;
-                for (int i = 0; i < APPS.length; i++) {
-                    if (i % 2 == 0) TIME_NAME[index1--] = APPS[i];
-                    else TIME_DATA[index2--] = Float.parseFloat(APPS[i]);
+                for (int i = 0; i < WEEK_APPS.length; i++) {
+                    if (i % 2 == 0) WEEK_TIME_NAME[index1--] = WEEK_APPS[i];
+                    else WEEK_TIME_DATA[index2--] = Float.parseFloat(WEEK_APPS[i]);
                 }
 
                 // 주간 앱 사용 시간 BarChart 보여주기
@@ -96,6 +107,7 @@ public class GraphFragment1 extends Fragment {
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 MainActivity activity = (MainActivity) getActivity();
                 activity.moveToDetail();
             }
@@ -125,7 +137,7 @@ public class GraphFragment1 extends Fragment {
         axisLeft.setDrawGridLines(false);
         axisLeft.setDrawAxisLine(false);
         axisLeft.setAxisMinimum(0f); // 최솟값
-        axisLeft.setAxisMaximum(TIME_DATA[3] + 6f); // 최댓값
+        axisLeft.setAxisMaximum(WEEK_TIME_DATA[3] + 6f); // 최댓값
         axisLeft.setGranularity(1f); // 값만큼 라인선 설정
         axisLeft.setDrawLabels(false); // label 삭제
 
@@ -141,7 +153,7 @@ public class GraphFragment1 extends Fragment {
 
             @Override
             public String getFormattedValue(float value) {
-                return TIME_NAME[(int) value];
+                return WEEK_TIME_NAME[(int) value];
             }
         });
     }
@@ -153,7 +165,7 @@ public class GraphFragment1 extends Fragment {
         ArrayList<BarEntry> values = new ArrayList<>();
         for (int i = 0; i < MAX_X_VALUE; i++) {
             float x = i;
-            float y = TIME_DATA[i];
+            float y = WEEK_TIME_DATA[i];
             values.add(new BarEntry(x, y));
         }
 
@@ -169,7 +181,7 @@ public class GraphFragment1 extends Fragment {
             public String getFormattedValue(float value) {
 
                 return (((int) value != 0) ? (String.valueOf((int) value)) + "시간 " : "")
-                        + (String.valueOf((int) ((value - (int) value) * 100))) + "분";
+                        + ((String.valueOf((int) ((value - (int) value) * 100))) + "분");
             }
         });
 
@@ -187,40 +199,32 @@ public class GraphFragment1 extends Fragment {
         barChart1.invalidate(); // BarChart 갱신해 데이터 표시
     }
 
-    // 아래부터 예슬
     private class Pair {
         String name;
         long time;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private String[] get_apps_name() {
+    private String[] get_apps_name_weekly() {
         if (!checkPermission())
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
-        String PackageName = "Nothing";
-        long TimeInforground = 500;
-        int minutes = 500, seconds = 500, hours = 500;
-        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -7);
+//        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
         long cur_time = System.currentTimeMillis(), begin_time = cal.getTimeInMillis();
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begin_time, cur_time);
+//        System.out.println(cur_time + " " + begin_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, begin_time, cur_time);
         if (stats != null) {
             ArrayList<Pair> list = new ArrayList<>();
 
             SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
             for (UsageStats usageStats : stats) {
-                TimeInforground = usageStats.getTotalTimeInForeground();
-                PackageName = usageStats.getPackageName();
                 Pair tmp = new Pair();
-                tmp.name = PackageName;
-                tmp.time = TimeInforground;
+                tmp.name = usageStats.getPackageName();
+                tmp.time = usageStats.getTotalTimeInForeground();
                 list.add(tmp);
-                //minutes = (int) ((TimeInforground / (1000 * 60)) % 60);
-                //seconds = (int) (TimeInforground / 1000) % 60;
-                //hours = (int) ((TimeInforground / (1000 * 60 * 60)) % 24);
-                //System.out.println("PackageName is" + PackageName + "Time is: " + hours + "h" + ":" + minutes + "m" + seconds + "s");
             }
 
             Collections.sort(list, new Comparator<Pair>() {
@@ -238,10 +242,58 @@ public class GraphFragment1 extends Fragment {
             for (Pair p : list) {
                 if (i > 3)
                     break;
-                minutes = (int) ((p.time / (1000 * 60)) % 60);
-                seconds = (int) (p.time / 1000) % 60;
-                hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
+                int minutes = (int) ((p.time / (1000 * 60)) % 60);
+                int hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
                 // System.out.println("PackageName is" + p.name + "Time is: " + hours + "h" + ":" + minutes + "m" + seconds + "s");
+                String s = p.name;
+                String[] s2 = s.split("\\.");
+                ret[i * 2] = s2[s2.length - 1];
+                ret[i * 2 + 1] = Integer.toString(hours) + "." + (((int)Math.log10(minutes) == 0)? String.format("%02d", minutes) : Integer.toString(minutes));
+                ++i;
+            }
+        }
+        return ret;
+    }
+
+    private String[] get_apps_name_daily() {
+        if (!checkPermission())
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+        String[] ret = new String[8];
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+//        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
+        long cur_time = System.currentTimeMillis(), begin_time = cal.getTimeInMillis();
+//        System.out.println(cur_time + " " + begin_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time, cur_time);
+        if (stats != null) {
+            ArrayList<Pair> list = new ArrayList<>();
+
+            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
+            for (UsageStats usageStats : stats) {
+                Pair tmp = new Pair();
+                tmp.name = usageStats.getPackageName();
+                tmp.time = usageStats.getTotalTimeInForeground();
+                list.add(tmp);
+            }
+
+            Collections.sort(list, new Comparator<Pair>() {
+                @Override
+                public int compare(Pair a, Pair b) {
+                    if (a.time < b.time)
+                        return 1;
+                    else if (a.time == b.time)
+                        return 0;
+                    return -1;
+                }
+            });
+
+            int i = 0;
+            for (Pair p : list) {
+                if (i > 3)
+                    break;
+                int minutes = (int) ((p.time / (1000 * 60)) % 60);
+                int hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
                 String s = p.name;
                 String[] s2 = s.split("\\.");
                 ret[i * 2] = s2[s2.length - 1];
@@ -252,45 +304,53 @@ public class GraphFragment1 extends Fragment {
         return ret;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static String getPackageName(@NonNull Context context) {
+    private String[] get_apps_name_monthly() {
+        if (!checkPermission())
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+        String[] ret = new String[8];
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, -1);
+//        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
+        long cur_time = System.currentTimeMillis(), begin_time = cal.getTimeInMillis();
+//        System.out.println(cur_time + " " + begin_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin_time, cur_time);
+        if (stats != null) {
+            ArrayList<Pair> list = new ArrayList<>();
 
-        // UsageStatsManager 선언
-        UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(USAGE_STATS_SERVICE);
+            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
+            for (UsageStats usageStats : stats) {
+                Pair tmp = new Pair();
+                tmp.name = usageStats.getPackageName();
+                tmp.time = usageStats.getTotalTimeInForeground();
+                list.add(tmp);
+            }
 
-        long lastRunAppTimeStamp = 0L;
-
-        // 얼마만큼의 시간동안 수집한 앱의 이름을 가져오는지 정하기 (begin ~ end 까지의 앱 이름을 수집한다)
-        final long INTERVAL = 10000;
-        final long end = System.currentTimeMillis();
-        // 1 minute ago
-        final long begin = end - INTERVAL;
-
-        //
-        LongSparseArray packageNameMap = new LongSparseArray<>();
-
-        // 수집한 이벤트들을 담기 위한 UsageEvents
-        final UsageEvents usageEvents = usageStatsManager.queryEvents(begin, end);
-
-        // 이벤트가 여러개 있을 경우 (최소 존재는 해야 hasNextEvent가 null이 아니니까)
-        while (usageEvents.hasNextEvent()) {
-
-            // 현재 이벤트를 가져오기
-            UsageEvents.Event event = new UsageEvents.Event();
-            usageEvents.getNextEvent(event);
-
-            // 현재 이벤트가 포그라운드 상태라면 = 현재 화면에 보이는 앱이라면
-            if (isForeGroundEvent(event)) {
-                // 해당 앱 이름을 packageNameMap에 넣는다.
-                packageNameMap.put(event.getTimeStamp(), event.getPackageName());
-                // 가장 최근에 실행 된 이벤트에 대한 타임스탬프를 업데이트 해준다.
-                if (event.getTimeStamp() > lastRunAppTimeStamp) {
-                    lastRunAppTimeStamp = event.getTimeStamp();
+            Collections.sort(list, new Comparator<Pair>() {
+                @Override
+                public int compare(Pair a, Pair b) {
+                    if (a.time < b.time)
+                        return 1;
+                    else if (a.time == b.time)
+                        return 0;
+                    return -1;
                 }
+            });
+
+            int i = 0;
+            for (Pair p : list) {
+                if (i > 3)
+                    break;
+                int minutes = (int) ((p.time / (1000 * 60)) % 60);
+                int hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
+                String s = p.name;
+                String[] s2 = s.split("\\.");
+                ret[i * 2] = s2[s2.length - 1];
+                ret[i * 2 + 1] = Integer.toString(hours) + "." + Integer.toString(minutes);
+                ++i;
             }
         }
-        // 가장 마지막까지 있는 앱의 이름을 리턴해준다.
-        return packageNameMap.get(lastRunAppTimeStamp, "").toString();
+        return ret;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -323,4 +383,6 @@ public class GraphFragment1 extends Fragment {
 
         return granted;
     }
+
+
 }

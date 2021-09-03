@@ -2,7 +2,6 @@ package com.example.sdetector;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -125,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 }
 
 
