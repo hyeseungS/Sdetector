@@ -77,22 +77,9 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
             Log.i("TAG", "save 진행");
             FileOutputStream fos = null;
 
-            /*try {
-                fos = getActivity().openFileOutput("memo.txt", Context.MODE_PRIVATE);
-                String out = mDiaryContent.getText().toString();
-                fos.write(out.getBytes());
-                Toast.makeText(getActivity().getApplicationContext(), "저장 완료", Toast.LENGTH_SHORT).show();
-                MainActivity activity = (MainActivity) getActivity();
-                activity.moveToDiaryList();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (fos != null) fos.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }*/
+            //달력으로 넘어가는 코드(일단은 주석)
+            //MainActivity activity = (MainActivity) getActivity();
+            //activity.moveToDiaryList();
         }
         if (mDatePickerListener != null) {
             mDatePickerListener.DatePickerData(DiaryFragment.this.toString());
@@ -131,15 +118,15 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                 switch (checkedId) {
                     case R.id.bad_radioBtn:
                         emotionInt = 1;
-                        Toast.makeText(getActivity().getApplicationContext(), "1", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity().getApplicationContext(), "1", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.normal_radioBtn:
                         emotionInt = 2;
-                        Toast.makeText(getActivity().getApplicationContext(), "2", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity().getApplicationContext(), "2", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.good_radioBtn:
                         emotionInt = 3;
-                        Toast.makeText(getActivity().getApplicationContext(), "3", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity().getApplicationContext(), "3", Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
