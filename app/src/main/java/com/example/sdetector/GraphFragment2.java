@@ -1,15 +1,19 @@
 package com.example.sdetector;
 
+import android.app.ProgressDialog;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +28,12 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -46,6 +56,8 @@ public class GraphFragment2 extends Fragment {
     private static String[] FREQ_NAME = new String[4]; // 앱 이름
     private static float[] FREQ_DATA = new float[4]; // 앱 사용 빈도수 데이터
     private HorizontalBarChart barChart2;
+    private static String IP_ADDRESS = "54.180.156.121";   //매번 ip주소 바꿔줄 것
+    private static String TAG = "GraphFragment2";
 
     @Nullable
     @Override
@@ -71,6 +83,10 @@ public class GraphFragment2 extends Fragment {
                     else FREQ_DATA[index2--] = Float.parseFloat(APPS[i]);
                 }
 
+                //데이터 넘검 - emotionString, diaryContent
+                InsertData task = new InsertData();
+                task.execute("http://" + IP_ADDRESS + "/insertfrequency.php", FREQ_NAME[3], Float.toString(FREQ_DATA[3]));
+
                 // 주간 앱 사용 횟수 BarChart 보여주기
                 graphButton2.setVisibility(View.GONE);
                 barChart2 = rootView.findViewById(R.id.chart2);
@@ -83,6 +99,84 @@ public class GraphFragment2 extends Fragment {
         });
 
         return rootView;
+    }
+
+    class InsertData extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(getContext(), "Please Wait", null, true, true);
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            //mTextViewResult.setText(result);
+            Log.d(TAG, "POST response  - " + result);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String app =  (String) params[1];
+            String frequency = (String) params[2];
+            String serverURL = (String) params[0];
+            String postParameters = "app=" + app + "&frequency=" + frequency;
+
+            try {
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                Toast.makeText(getActivity().getApplicationContext(), "저장 완료", Toast.LENGTH_SHORT).show();
+                MainActivity activity = (MainActivity) getActivity();
+                activity.moveToDiaryList();
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString();
+
+            } catch (Exception e) {
+                Log.d(TAG, "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+        }
     }
 
     // BarChart 기본 세팅
