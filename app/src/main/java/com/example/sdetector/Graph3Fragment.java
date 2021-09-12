@@ -7,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -42,6 +44,7 @@ public class Graph3Fragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -55,7 +58,6 @@ public class Graph3Fragment extends Fragment {
             LABEL[0][i--] = formatter.format(cal.getTime());
             cal.add(Calendar.DATE, -1);
         } while (i >= 0);
-
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_graph3, container, false);
 
         Button button1 = (Button) rootView.findViewById(R.id.day_button);
