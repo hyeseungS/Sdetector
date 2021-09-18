@@ -46,9 +46,14 @@ public class ReportFragment extends Fragment {
     private static String[] APPS;
     private static String[] TIME_NAME = new String[4]; // 앱 이름
     private static float[] TIME_DATA = new float[4]; // 앱 사용 시간 데이터
+    //저번주 데이터
+    private static String[] APPS_Lastweek;
+    private static String[] TIME_NAME_Lastweek = new String[4]; // 앱 이름
+    private static float[] TIME_DATA_Lastweek = new float[4]; // 앱 사용 시간 데이터
 
     String AppTimeReport;
     float AppTime_Week;
+    float AppTime_LastWeek;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -94,9 +99,9 @@ public class ReportFragment extends Fragment {
         long time;
     }
 
-    // 가져올 기간 정하기
+    // 가져올 기간 정하기-termStart부터 termEnd까지의 기간
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private String[] get_apps_name() {
+    private String[] get_apps_name(int term) {
         if (!checkPermission())
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
@@ -105,7 +110,7 @@ public class ReportFragment extends Fragment {
         int minutes = 500, seconds = 500, hours = 500;
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -7);
+        cal.add(Calendar.DAY_OF_MONTH, term);
         long cur_time = System.currentTimeMillis(), begin_time = cal.getTimeInMillis();
         List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begin_time, cur_time);
         if (stats != null) {
@@ -227,13 +232,12 @@ public class ReportFragment extends Fragment {
     }
 
 
-
     // 앱 사용 시간에 따른 결과 분석
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public String AppTimeReport() {
 
         // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
-        APPS = get_apps_name();
+        APPS = get_apps_name(-6);
         int index1 = 3, index2 = 3;
         for (int i = 0; i < APPS.length; i++) {
             if (i % 2 == 0) TIME_NAME[index1--] = APPS[i];
@@ -260,9 +264,19 @@ public class ReportFragment extends Fragment {
         // 일주일간 전체 앱 사용 횟수
 
         // 저번주 앱 사용시간과 비교
+        APPS_Lastweek = get_apps_name(-13);
+        int index1_Lastweek = 3, index2_Lastweek = 3;
+        for (int i = 0; i < APPS.length; i++) {
+            if (i % 2 == 0) TIME_NAME_Lastweek[index1_Lastweek--] = APPS[i];
+            else TIME_DATA_Lastweek[index2_Lastweek--] = Float.parseFloat(APPS[i]);
+        }
+
+        AppTime_LastWeek = TIME_DATA_Lastweek[0]+TIME_DATA_Lastweek[1]+TIME_DATA_Lastweek[2]+TIME_DATA_Lastweek[3] - AppTime_Week;
+
+        String allTime_Lastweek = "@사용자 가 저번주 사용한 앱 시간은 총 "+AppTime_LastWeek+"시간 입니다. ";
 
 
-        AppTimeReport = allTime + avgTime;
+        AppTimeReport = allTime +"\n"+ avgTime+"\n\n"+allTime_Lastweek;
         return AppTimeReport;
     }
 }
