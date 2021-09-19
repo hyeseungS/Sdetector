@@ -46,6 +46,8 @@ public class ReportFragment extends Fragment {
     private static String[] APPS;
     private static String[] TIME_NAME = new String[4]; // 앱 이름
     private static float[] TIME_DATA = new float[4]; // 앱 사용 시간 데이터
+    private static String mostUseApp_Name;
+    private static float mostUseApp_Time;
     //저번주 데이터
     private static String[] APPS_Lastweek;
     private static String[] TIME_NAME_Lastweek = new String[4]; // 앱 이름
@@ -236,32 +238,28 @@ public class ReportFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public String AppTimeReport() {
 
-        // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
+        // 이번주 앱 사용시간과 비교
         APPS = get_apps_name(-6);
         int index1 = 3, index2 = 3;
         for (int i = 0; i < APPS.length; i++) {
             if (i % 2 == 0) TIME_NAME[index1--] = APPS[i];
             else TIME_DATA[index2--] = Float.parseFloat(APPS[i]);
         }
-
-        // 일주일간 전체 앱 사용 시간 (30이하/31-50/51이상)
-        // 통계결과에 따라 일평균 사용시간=6시간 > 주평균 사용시간=42시간
         AppTime_Week = TIME_DATA[0]+TIME_DATA[1]+TIME_DATA[2]+TIME_DATA[3];
 
-        String allTime = "@사용자 가 이번주 사용한 앱 시간은 총 "+AppTime_Week+"시간 입니다. ";
+        //이번주 가장 많이 사용한 앱
+        for (int i=0;i<3;i++) {
+            if (TIME_DATA[i] < TIME_DATA[i+1]) {
+                mostUseApp_Name = TIME_NAME[i+1];
+                mostUseApp_Time = TIME_DATA[i+1];
+            }
+            else {
+                mostUseApp_Time = TIME_DATA[i];
+                mostUseApp_Name = TIME_NAME[i];
+            }
+        }
+        String AppReport3 = "이번주에 가장 많이 사용한 앱은 "+mostUseApp_Name+"으로, 총 "+mostUseApp_Time+"시간 사용하였습니다.";
 
-        String avgTime = " ";
-        if (AppTime_Week < 30) {
-            avgTime = "평균 스마트폰 사용시간보다 적게 사용하셨습니다. 이번주는 부지런히 건강한 하루를 보내셨군요!";
-        }
-        else if (30<AppTime_Week && AppTime_Week<51) {
-            avgTime = "평균 스마트폰 사용시간 범위입니다. 이번주도 수고하셨습니다:)";
-        }
-        else if (51<AppTime_Week) {
-            avgTime = "평균 스마트폰 사용시간보다 많이 사용하셨습니다. 눈의 피로를 풀어주세요!";
-        }
-
-        // 일주일간 전체 앱 사용 횟수
 
         // 저번주 앱 사용시간과 비교
         APPS_Lastweek = get_apps_name(-13);
@@ -270,13 +268,34 @@ public class ReportFragment extends Fragment {
             if (i % 2 == 0) TIME_NAME_Lastweek[index1_Lastweek--] = APPS[i];
             else TIME_DATA_Lastweek[index2_Lastweek--] = Float.parseFloat(APPS[i]);
         }
-
         AppTime_LastWeek = TIME_DATA_Lastweek[0]+TIME_DATA_Lastweek[1]+TIME_DATA_Lastweek[2]+TIME_DATA_Lastweek[3] - AppTime_Week;
 
-        String allTime_Lastweek = "@사용자 가 저번주 사용한 앱 시간은 총 "+AppTime_LastWeek+"시간 입니다. ";
+
+        String AppReport1 = "이번주 스마트폰 총 사용 시간은 "+AppTime_Week+"시간으로 ";
+
+        String Appreport2 = " ";
+        if (AppTime_Week >= AppTime_LastWeek) {
+            float inter1 = AppTime_Week-AppTime_LastWeek;
+            Appreport2 = "저번주 스마트폰 총 사용 시간인 " + AppTime_LastWeek + "보다 "+inter1+"시간 증가하였습니다.";
+        }
+        else if (AppTime_Week < AppTime_LastWeek) {
+            float inter2 = AppTime_LastWeek-AppTime_Week;
+            Appreport2 = "저번주 스마트폰 총 사용 시간인 " + AppTime_LastWeek + "보다 "+inter2+"시간 감소하였습니다.";
+        }
 
 
-        AppTimeReport = allTime +"\n"+ avgTime+"\n\n"+allTime_Lastweek;
+        AppTimeReport = AppReport1 +Appreport2+"\n"+AppReport3;
         return AppTimeReport;
+
+        /*String avgTime = " ";
+        if (AppTime_Week < 30) {
+            avgTime = "평균 스마트폰 사용시간보다 적게 사용하셨습니다. 이번주는 부지런히 건강한 하루를 보내셨군요!";
+        }
+        else if (30<AppTime_Week && AppTime_Week<51) {
+            avgTime = "평균 스마트폰 사용시간 범위입니다. 이번주도 수고하셨습니다:)";
+        }
+        else if (51<AppTime_Week) {
+            avgTime = "평균 스마트폰 사용시간보다 많이 사용하셨습니다. 눈의 피로를 풀어주세요!";
+        }*/
     }
 }
