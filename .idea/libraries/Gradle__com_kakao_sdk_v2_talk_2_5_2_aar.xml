@@ -4,9 +4,10 @@
       <root url="jar://$PROJECT_DIR$/../.gradle/caches/transforms-2/files-2.1/8b86c95125aea09e913183c12489ca9d/v2-talk-2.5.2/jars/classes.jar!/" />
       <root url="file://$PROJECT_DIR$/../.gradle/caches/transforms-2/files-2.1/8b86c95125aea09e913183c12489ca9d/v2-talk-2.5.2/res" />
       <root url="file://$PROJECT_DIR$/../.gradle/caches/transforms-2/files-2.1/8b86c95125aea09e913183c12489ca9d/v2-talk-2.5.2/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8b86c95125aea09e913183c12489ca9d/v2-talk-2.5.2/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8b86c95125aea09e913183c12489ca9d/v2-talk-2.5.2/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8b86c95125aea09e913183c12489ca9d/v2-talk-2.5.2/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/42ecec7cd089f4d2adf70218da46137a/transformed/v2-talk-2.5.2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/42ecec7cd089f4d2adf70218da46137a/transformed/v2-talk-2.5.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/42ecec7cd089f4d2adf70218da46137a/transformed/v2-talk-2.5.2/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
