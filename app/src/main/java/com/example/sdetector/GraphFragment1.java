@@ -94,13 +94,13 @@ public class GraphFragment1 extends Fragment {
 
                 // 아래 코드 디버깅용. 앱 이름, 시간 제대로 찍히는 거 확인!
                 // (get_apps_name 사용 시 권한 허용 필요)
-                String ret[] = get_apps_name_weekly();
+                String ret[] = get_apps_name_weekly(-7, 0);
                 for (String s : ret){
                     System.out.println(s);
                 }
 
                 // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
-                WEEK_APPS = get_apps_name_weekly();
+                WEEK_APPS = get_apps_name_weekly(-7, 0);
                 int index1 = 3, index2 = 3;
                 for (int i = 0; i < WEEK_APPS.length; i++) {
                     if (i % 2 == 0) WEEK_TIME_NAME[index1--] = WEEK_APPS[i];
@@ -311,17 +311,18 @@ public class GraphFragment1 extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private String[] get_apps_name_weekly() {
+    private String[] get_apps_name_weekly(int begin, int end) { // end를 현재 날짜로 주려면 0. (begin은 항상 음수) && (begin < end)
         if (!checkPermission())
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -7);
+        Calendar cal_begin = Calendar.getInstance(), cal_end = Calendar.getInstance();
+        cal_begin.add(Calendar.DAY_OF_MONTH, begin);
+        cal_end.add(Calendar.DAY_OF_MONTH, end);
 //        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
-        long cur_time = System.currentTimeMillis(), begin_time = cal.getTimeInMillis();
+        long end_time = cal_end.getTimeInMillis(), begin_time = cal_begin.getTimeInMillis();
 //        System.out.println(cur_time + " " + begin_time);
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, begin_time, cur_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, begin_time, end_time);
         if (stats != null) {
             ArrayList<Pair> list = new ArrayList<>();
 
@@ -361,17 +362,18 @@ public class GraphFragment1 extends Fragment {
         return ret;
     }
 
-    private String[] get_apps_name_daily() {
+    private String[] get_apps_name_daily(int begin, int end) { // end를 현재 날짜로 주려면 0. begin은 항상 음수 && begin < end
         if (!checkPermission())
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -1);
+        Calendar cal_begin = Calendar.getInstance(), cal_end = Calendar.getInstance();
+        cal_begin.add(Calendar.DAY_OF_MONTH, begin);
+        cal_end.add(Calendar.DAY_OF_MONTH, end);
 //        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
-        long cur_time = System.currentTimeMillis(), begin_time = cal.getTimeInMillis();
+        long end_time = cal_end.getTimeInMillis(), begin_time = cal_begin.getTimeInMillis();
 //        System.out.println(cur_time + " " + begin_time);
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time, cur_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time, end_time);
         if (stats != null) {
             ArrayList<Pair> list = new ArrayList<>();
 
@@ -410,17 +412,18 @@ public class GraphFragment1 extends Fragment {
         return ret;
     }
 
-    private String[] get_apps_name_monthly() {
+    private String[] get_apps_name_monthly(int begin, int end) { // end의 경우 현재 날짜이면 0
         if (!checkPermission())
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, -1);
+        Calendar cal_begin = Calendar.getInstance(), cal_end = Calendar.getInstance();
+        cal_begin.add(Calendar.MONTH, begin);
+        cal_end.add(Calendar.MONTH, end);
 //        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
-        long cur_time = System.currentTimeMillis(), begin_time = cal.getTimeInMillis();
+        long end_time = cal_end.getTimeInMillis(), begin_time = cal_begin.getTimeInMillis();
 //        System.out.println(cur_time + " " + begin_time);
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin_time, cur_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin_time, end_time);
         if (stats != null) {
             ArrayList<Pair> list = new ArrayList<>();
 

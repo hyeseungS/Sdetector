@@ -126,17 +126,17 @@ public class GraphFragment2 extends Fragment {
 
             String app1 =  (String) params[1];
             String frequency1 = (String) params[2];
-            String app2 =  (String) params[1];
-            String frequency2 = (String) params[2];
-            String app3 =  (String) params[1];
-            String frequency3 = (String) params[2];
-            String app4 =  (String) params[1];
-            String frequency4 = (String) params[2];
+            String app2 =  (String) params[3];
+            String frequency2 = (String) params[4];
+            String app3 =  (String) params[5];
+            String frequency3 = (String) params[6];
+            String app4 =  (String) params[7];
+            String frequency4 = (String) params[8];
             String serverURL = (String) params[0];
-            String postParameters1 = "app=" + app1 + "&frequency=" + frequency1;
-            String postParameters2 = "app=" + app2 + "&frequency=" + frequency2;
-            String postParameters3 = "app=" + app3 + "&frequency=" + frequency3;
-            String postParameters4 = "app=" + app4 + "&frequency=" + frequency4;
+            String postParameters = "app1=" + app1 + "&frequency1=" + frequency1
+                    + "&app2=" + app2 + "&frequency2=" + frequency2
+                    + "&app3=" + app3 + "&frequency3=" + frequency3
+                    + "&app4=" + app4 + "&frequency4=" + frequency4;
 
             try {
                 URL url = new URL(serverURL);
@@ -148,10 +148,7 @@ public class GraphFragment2 extends Fragment {
                 httpURLConnection.connect();
 
                 OutputStream outputStream = httpURLConnection.getOutputStream();
-                outputStream.write(postParameters1.getBytes("UTF-8"));
-                outputStream.write(postParameters2.getBytes("UTF-8"));
-                outputStream.write(postParameters3.getBytes("UTF-8"));
-                outputStream.write(postParameters4.getBytes("UTF-8"));
+                outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 

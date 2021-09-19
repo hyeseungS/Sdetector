@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
+=======
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/yoon/Desktop/2021_project/hanium/show_your/21_hf140/app/src/main/res/layout/activity_login.xml" value="0.18385416666666668" />
+        <entry key="..\:/Users/yoon/Desktop/2021_project/hanium/show_your/21_hf140/app/src/main/res/layout/activity_login2.xml" value="0.18385416666666668" />
+        <entry key="..\:/Users/yoon/Desktop/2021_project/hanium/show_your/21_hf140/app/src/main/res/layout/activity_login3.xml" value="0.18385416666666668" />
+        <entry key="..\:/Users/yoon/Desktop/2021_project/hanium/show_your/21_hf140/app/src/main/res/layout/activity_login4.xml" value="0.18385416666666668" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+>>>>>>> 310b96942b1e28f2f76220f21fc4d7552587dca2
   <component name="ProjectType">
     <option name="id" value="Android" />
   </component>
