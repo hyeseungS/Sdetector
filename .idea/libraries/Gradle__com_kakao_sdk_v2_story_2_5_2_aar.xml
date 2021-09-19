@@ -1,16 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.kakao.sdk:v2-story:2.5.2@aar">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/transforms-2/files-2.1/b1508ade5b4468d2f3d096ce8e049311/v2-story-2.5.2/jars/classes.jar!/" />
-      <root url="file://$PROJECT_DIR$/../.gradle/caches/transforms-2/files-2.1/b1508ade5b4468d2f3d096ce8e049311/v2-story-2.5.2/res" />
-      <root url="file://$PROJECT_DIR$/../.gradle/caches/transforms-2/files-2.1/b1508ade5b4468d2f3d096ce8e049311/v2-story-2.5.2/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b1508ade5b4468d2f3d096ce8e049311/v2-story-2.5.2/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b1508ade5b4468d2f3d096ce8e049311/v2-story-2.5.2/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b1508ade5b4468d2f3d096ce8e049311/v2-story-2.5.2/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/com.kakao.sdk/v2-story/2.5.2/e370dbda7b04940344df8a7254d69586ac8d6b29/v2-story-2.5.2-sources.jar!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.kakao.sdk/v2-story/2.5.2/e370dbda7b04940344df8a7254d69586ac8d6b29/v2-story-2.5.2-sources.jar!/" />
     </SOURCES>
   </library>

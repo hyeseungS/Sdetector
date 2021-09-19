@@ -107,10 +107,9 @@ public class GraphFragment1 extends Fragment {
                     else WEEK_TIME_DATA[index2--] = Float.parseFloat(WEEK_APPS[i]);
                 }
 
-                //데이터 넘검 - emotionString, diaryContent
+                //데이터 넘검 - WEEK_TIME_APP, WEEK_TIME_DATA
                 InsertData task = new InsertData();
-                task.execute("http://" + IP_ADDRESS + "/inserttime.php", WEEK_TIME_NAME[3], Float.toString(WEEK_TIME_DATA[3]));
-
+                task.execute("http://" + IP_ADDRESS + "/inserttime.php", WEEK_TIME_NAME[3], Float.toString(WEEK_TIME_DATA[3]), WEEK_TIME_NAME[2], Float.toString(WEEK_TIME_DATA[2]), WEEK_TIME_NAME[1], Float.toString(WEEK_TIME_DATA[1]), WEEK_TIME_NAME[0], Float.toString(WEEK_TIME_DATA[0]));
                 // 주간 앱 사용 시간 BarChart 보여주기
                 graphButton1.setVisibility(View.GONE);
                 barChart1 = rootView.findViewById(R.id.chart1);
@@ -159,10 +158,19 @@ public class GraphFragment1 extends Fragment {
         @Override
         protected String doInBackground(String... params) {
 
-            String app =  (String) params[1];
-            String time = (String) params[2];
+            String app1 =  (String) params[1];
+            String time1 = (String) params[2];
+            String app2 =  (String) params[3];
+            String time2 = (String) params[4];
+            String app3 =  (String) params[5];
+            String time3 = (String) params[6];
+            String app4 =  (String) params[7];
+            String time4 = (String) params[8];
             String serverURL = (String) params[0];
-            String postParameters = "app=" + app + "&time=" + time;
+            String postParameters = "app1=" + app1 + "&time1=" + time1
+                    + "&app2=" + app2 + "&time2=" + time2
+                    + "&app3=" + app3 + "&time3=" + time3
+                    + "&app4=" + app4 + "&time4=" + time4;
 
             try {
                 URL url = new URL(serverURL);

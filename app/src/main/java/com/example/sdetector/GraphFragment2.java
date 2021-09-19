@@ -85,7 +85,7 @@ public class GraphFragment2 extends Fragment {
 
                 //데이터 넘검 - emotionString, diaryContent
                 InsertData task = new InsertData();
-                task.execute("http://" + IP_ADDRESS + "/insertfrequency.php", FREQ_NAME[3], Float.toString(FREQ_DATA[3]));
+                task.execute("http://" + IP_ADDRESS + "/insertfrequency.php", FREQ_NAME[3], Float.toString(FREQ_DATA[3]), FREQ_NAME[2], Float.toString(FREQ_DATA[2]), FREQ_NAME[1], Float.toString(FREQ_DATA[1]),FREQ_NAME[0], Float.toString(FREQ_DATA[0]));
 
                 // 주간 앱 사용 횟수 BarChart 보여주기
                 graphButton2.setVisibility(View.GONE);
@@ -124,10 +124,19 @@ public class GraphFragment2 extends Fragment {
         @Override
         protected String doInBackground(String... params) {
 
-            String app =  (String) params[1];
-            String frequency = (String) params[2];
+            String app1 =  (String) params[1];
+            String frequency1 = (String) params[2];
+            String app2 =  (String) params[1];
+            String frequency2 = (String) params[2];
+            String app3 =  (String) params[1];
+            String frequency3 = (String) params[2];
+            String app4 =  (String) params[1];
+            String frequency4 = (String) params[2];
             String serverURL = (String) params[0];
-            String postParameters = "app=" + app + "&frequency=" + frequency;
+            String postParameters1 = "app=" + app1 + "&frequency=" + frequency1;
+            String postParameters2 = "app=" + app2 + "&frequency=" + frequency2;
+            String postParameters3 = "app=" + app3 + "&frequency=" + frequency3;
+            String postParameters4 = "app=" + app4 + "&frequency=" + frequency4;
 
             try {
                 URL url = new URL(serverURL);
@@ -139,7 +148,10 @@ public class GraphFragment2 extends Fragment {
                 httpURLConnection.connect();
 
                 OutputStream outputStream = httpURLConnection.getOutputStream();
-                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.write(postParameters1.getBytes("UTF-8"));
+                outputStream.write(postParameters2.getBytes("UTF-8"));
+                outputStream.write(postParameters3.getBytes("UTF-8"));
+                outputStream.write(postParameters4.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
