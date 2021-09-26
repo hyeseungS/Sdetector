@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:paddingStart="40dp"
-            android:text="- 일간 앱 사용 시간"
+            android:text="위 3가지 중 하나의 탭을 클릭하시오"
             android:textColor="#767676"
             android:textSize="18sp"
             android:textStyle="bold" />

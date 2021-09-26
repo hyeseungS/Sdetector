@@ -1,19 +1,30 @@
 package com.example.sdetector;
 
+import static android.content.Context.USAGE_STATS_SERVICE;
+
+import android.app.AppOpsManager;
+import android.app.usage.UsageEvents;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
 
+import com.github.mikephil.charting.BuildConfig;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -26,9 +37,14 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class Graph3Fragment extends Fragment {
 
@@ -37,8 +53,11 @@ public class Graph3Fragment extends Fragment {
     public LineChart lineChart3;
 
     private static final String[][] LABEL = {{"", "", "", ""}, {"3주 전", "2주 전", "1주 전", "이번 주"}, {"3달 전", "2달 전", "1달 전", "이번 달"}};
-    private static final int[][] RANGE = {{8, 20, 40}, {2, 5, 10}};
-    private static final String[] APPS_NAME = {"인스타그램", "유튜브", "네이버", "구글"};
+    private static int[][] RANGE = {{8, 20, 40}, {2, 5, 10}};
+    private static String[] APPS;
+    private static String[] temp;
+    private static String[] APPS_NAME = new String[4];
+    private static float[][] APPS_DATA = new float[4][4];
     ViewGroup rootView;
 
     @Override
@@ -55,8 +74,8 @@ public class Graph3Fragment extends Fragment {
         SimpleDateFormat formatter = new SimpleDateFormat("MM.dd");
         int i = 3;
         do {
-            LABEL[0][i--] = formatter.format(cal.getTime());
             cal.add(Calendar.DATE, -1);
+            LABEL[0][i--] = formatter.format(cal.getTime());
         } while (i >= 0);
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_graph3, container, false);
 
@@ -70,47 +89,125 @@ public class Graph3Fragment extends Fragment {
         lineChart1 = rootView.findViewById(R.id.day_time_chart);
         lineChart2 = rootView.findViewById(R.id.week_time_chart);
         lineChart3 = rootView.findViewById(R.id.month_time_chart);
-
-        LineData data1 = createChartData(0);
-        configureChartAppearance(lineChart1, 0);
-        prepareChartData(data1, lineChart1);
-        LineData data2 = createChartData(1);
-        configureChartAppearance(lineChart2, 1);
-        prepareChartData(data2, lineChart2);
-        LineData data3 = createChartData(2);
-        configureChartAppearance(lineChart3, 2);
-        prepareChartData(data3, lineChart3);
-        MyMarkerView mv1 = new MyMarkerView(getContext(), R.layout.custom_marker_view);
-        mv1.setChartView(lineChart1);
-        MyMarkerView mv2 = new MyMarkerView(getContext(), R.layout.custom_marker_view);
-        mv2.setChartView(lineChart2);
-        MyMarkerView mv3 = new MyMarkerView(getContext(), R.layout.custom_marker_view);
-        mv3.setChartView(lineChart3);
-        lineChart1.setMarker(mv1);
-        lineChart2.setMarker(mv2);
-        lineChart3.setMarker(mv3);
-
         return rootView;
     }
 
     public void onClick(View view) {
         TextView time_text = (TextView) rootView.findViewById(R.id.detail_text);
-
+        float max=0;
+        float [] temp_data = new float[4];
+        temp = getAppsNameDaily(-1);
         switch (view.getId()) {
             case R.id.day_button:
                 time_text.setText("- 일간 앱 사용 시간");
+                // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
+                for (int i = APPS.length-1; i>-1 ; i--) {
+                    if (i % 2 != 0) temp_data[i/2] = Float.parseFloat(temp[i]);
+                }
+                APPS = getAppsNameDaily(-2);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 == 0) APPS_NAME[i/2] = APPS[i];
+                    else APPS_DATA[i/2][3] = Float.parseFloat(APPS[i]) - temp_data[i/2];
+                }
+                APPS = getAppsNameDaily(-3);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 != 0) APPS_DATA[i/2][2] = Float.parseFloat(APPS[i])-APPS_DATA[i/2][3] - temp_data[i/2];
+                }
+                APPS = getAppsNameDaily(-4);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 != 0) APPS_DATA[i/2][1] = Float.parseFloat(APPS[i])-APPS_DATA[i/2][3]-APPS_DATA[i/2][2] - temp_data[i/2];
+                }
+                APPS = getAppsNameDaily(-5);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 != 0) APPS_DATA[i/2][0] = Float.parseFloat(APPS[i])-APPS_DATA[i/2][3]-APPS_DATA[i/2][2]-APPS_DATA[i/2][1]- temp_data[i/2];
+                }
+                for(int i=0; i< 4; i++) {
+                    if(APPS_DATA[0][i]>max) {
+                        max = APPS_DATA[0][i];
+                    }
+                }
+                RANGE[0][0] = (int) (max + 3);
+                RANGE[1][0] = RANGE[0][0]/4;
+                LineData data1 = createChartData(0);
+                configureChartAppearance(lineChart1, 0);
+                prepareChartData(data1, lineChart1);
+                MyMarkerView mv1 = new MyMarkerView(getContext(), R.layout.custom_marker_view);
+                mv1.setChartView(lineChart1);
+                lineChart1.setMarker(mv1);
                 lineChart2.setVisibility(View.GONE);
                 lineChart3.setVisibility(View.GONE);
                 lineChart1.setVisibility(View.VISIBLE);
                 break;
             case R.id.week_button:
                 time_text.setText("- 주간 앱 사용 시간");
+                // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
+                APPS = getAppsNameDaily(-8);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 == 0) APPS_NAME[i/2] = APPS[i];
+                    else APPS_DATA[i/2][3] = Float.parseFloat(APPS[i])- temp_data[i/2];
+                }
+                APPS = getAppsNameDaily(-15);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 != 0) APPS_DATA[i/2][2] = Float.parseFloat(APPS[i])-APPS_DATA[i/2][3]- temp_data[i/2];
+                }
+                APPS = getAppsNameDaily(-22);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 != 0) APPS_DATA[i/2][1] = Float.parseFloat(APPS[i])-APPS_DATA[i/2][3]-APPS_DATA[i/2][2]- temp_data[i/2];
+                }
+                APPS = getAppsNameDaily(-29);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 != 0) APPS_DATA[i/2][0] = Float.parseFloat(APPS[i])-APPS_DATA[i/2][3]-APPS_DATA[i/2][2]-APPS_DATA[i/2][1]- temp_data[i/2];
+                }
+                for(int i=0; i< 4; i++) {
+                    if(APPS_DATA[0][i]>max) {
+                            max = APPS_DATA[0][i];
+                    }
+                }
+                RANGE[0][1] = (int) (max + 3);
+                RANGE[1][1] = RANGE[0][1]/4;
+
+                LineData data2 = createChartData(1);
+                configureChartAppearance(lineChart2, 1);
+                prepareChartData(data2, lineChart2);
+                MyMarkerView mv2 = new MyMarkerView(getContext(), R.layout.custom_marker_view);
+                mv2.setChartView(lineChart2);
+                lineChart2.setMarker(mv2);
                 lineChart1.setVisibility(View.GONE);
                 lineChart3.setVisibility(View.GONE);
                 lineChart2.setVisibility(View.VISIBLE);
                 break;
             case R.id.month_button:
                 time_text.setText("- 월간 앱 사용 시간");
+                APPS = getAppsNameMonthly(-1);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 == 0) APPS_NAME[i/2] = APPS[i];
+                    else APPS_DATA[i/2][3] = Float.parseFloat(APPS[i]) - temp_data[i/2];
+                }
+                APPS = getAppsNameMonthly(-2);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 != 0) APPS_DATA[i/2][2] = Float.parseFloat(APPS[i])-APPS_DATA[i/2][3] - temp_data[i/2];
+                }
+                APPS = getAppsNameMonthly(-3);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 != 0) APPS_DATA[i/2][1] = Float.parseFloat(APPS[i])-APPS_DATA[i/2][3]-APPS_DATA[i/2][2] - temp_data[i/2];
+                }
+                APPS = getAppsNameMonthly(-4);
+                for (int i = 0; i < APPS.length; i++) {
+                    if (i % 2 != 0) APPS_DATA[i/2][0] = Float.parseFloat(APPS[i])-APPS_DATA[i/2][3]-APPS_DATA[i/2][2]-APPS_DATA[i/2][1] - temp_data[i/2];
+                }
+                for(int i=0; i < 4; i++) {
+                    if(APPS_DATA[0][i]>max) {
+                        max = APPS_DATA[0][i];
+                    }
+                }
+                RANGE[0][2] = (int) (max + 3);
+                RANGE[1][2] = RANGE[0][2]/4;
+                LineData data3 = createChartData(2);
+                configureChartAppearance(lineChart3, 2);
+                prepareChartData(data3, lineChart3);
+                MyMarkerView mv3 = new MyMarkerView(getContext(), R.layout.custom_marker_view);
+                mv3.setChartView(lineChart3);
+                lineChart3.setMarker(mv3);
                 lineChart1.setVisibility(View.GONE);
                 lineChart2.setVisibility(View.GONE);
                 lineChart3.setVisibility(View.VISIBLE);
@@ -192,11 +289,10 @@ public class Graph3Fragment extends Fragment {
 
         // 랜덤 데이터 추출 (추후 변경)
         for (int i = 0; i < 4; i++) {
-
-            float val1 = (float) (Math.random() * RANGE[0][range]); // 앱1 값
-            float val2 = (float) (Math.random() * RANGE[0][range]); // 앱2 값
-            float val3 = (float) (Math.random() * RANGE[0][range]); // 앱3 값
-            float val4 = (float) (Math.random() * RANGE[0][range]); // 앱4 값
+            float val1 = APPS_DATA[0][i]; // 앱1 값
+            float val2 = APPS_DATA[1][i]; // 앱2 값
+            float val3 = APPS_DATA[2][i]; // 앱3 값
+            float val4 = APPS_DATA[3][i]; // 앱4 값
             entry1.add(new Entry(i, val1));
             entry2.add(new Entry(i, val2));
             entry3.add(new Entry(i, val3));
@@ -269,6 +365,144 @@ public class Graph3Fragment extends Fragment {
     private void prepareChartData(LineData data, LineChart lineChart) {
         lineChart.setData(data); // LineData 전달
         lineChart.invalidate(); // LineChart 갱신해 데이터 표시
+    }
+
+    private class Pair {
+        String name;
+        long time;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private static boolean isForeGroundEvent(UsageEvents.Event event) {
+
+        if (event == null) return false;
+
+        if (BuildConfig.VERSION_CODE >= 29)
+            return event.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED;
+
+        return event.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND;
+    }
+
+    private boolean checkPermission() {
+
+        boolean granted = false;
+
+        AppOpsManager appOps = (AppOpsManager) getActivity().getApplicationContext()
+                .getSystemService(Context.APP_OPS_SERVICE);
+
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(), getActivity().getApplicationContext().getPackageName());
+
+        if (mode == AppOpsManager.MODE_DEFAULT) {
+            granted = (getActivity().getApplicationContext().checkCallingOrSelfPermission(
+                    android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
+        } else {
+            granted = (mode == AppOpsManager.MODE_ALLOWED);
+        }
+
+        return granted;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private String[] getAppsNameDaily(int begin) { // (begin은 항상 음수)
+        if (!checkPermission())
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+        String[] ret = new String[8];
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
+        Calendar cal_begin = new GregorianCalendar(Locale.KOREA), cal_end = new GregorianCalendar(Locale.KOREA);
+        cal_begin.add(Calendar.DATE, begin);
+        cal_end.add(Calendar.DATE, -1);
+        long begin_time = cal_begin.getTimeInMillis();
+        long end_time = cal_end.getTimeInMillis();
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time, System.currentTimeMillis());
+        if (stats != null) {
+            ArrayList<Graph3Fragment.Pair> list = new ArrayList<>();
+
+            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
+            for (UsageStats usageStats : stats) {
+                Graph3Fragment.Pair tmp = new Graph3Fragment.Pair();
+                tmp.name = usageStats.getPackageName();
+                tmp.time = usageStats.getTotalTimeInForeground();
+                list.add(tmp);
+            }
+
+            Collections.sort(list, new Comparator<Graph3Fragment.Pair>() {
+                @Override
+                public int compare(Graph3Fragment.Pair a, Graph3Fragment.Pair b) {
+                    if (a.time < b.time)
+                        return 1;
+                    else if (a.time == b.time)
+                        return 0;
+                    return -1;
+                }
+            });
+
+            int i = 0;
+            for (Graph3Fragment.Pair p : list) {
+                if (i > 3)
+                    break;
+                int minutes = (int) ((p.time / (1000 * 60)) % 60);
+                int hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
+                // System.out.println("PackageName is" + p.name + "Time is: " + hours + "h" + ":" + minutes + "m" + seconds + "s");
+                String s = p.name;
+                String[] s2 = s.split("\\.");
+                ret[i * 2] = s2[s2.length - 1];
+                ret[i * 2 + 1] = Integer.toString(hours) + "." + (((int)Math.log10(minutes) == 0)? String.format("%02d", minutes) : Integer.toString(minutes));
+                ++i;
+            }
+        }
+        return ret;
+    }
+
+    private String[] getAppsNameMonthly(int begin) { // end의 경우 현재 날짜이면 0
+        if (!checkPermission())
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+        String[] ret = new String[8];
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
+        Calendar cal_begin = new GregorianCalendar(Locale.KOREA);
+        Calendar cal_end = new GregorianCalendar(Locale.KOREA);
+        cal_begin.add(Calendar.MONTH, begin);
+        cal_end.add(Calendar.DATE, -1);
+//        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
+        long end_time = cal_end.getTimeInMillis(), begin_time = cal_begin.getTimeInMillis();
+//        System.out.println(cur_time + " " + begin_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin_time, end_time);
+        if (stats != null) {
+            ArrayList<Graph3Fragment.Pair> list = new ArrayList<>();
+
+            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
+            for (UsageStats usageStats : stats) {
+                Graph3Fragment.Pair tmp = new Graph3Fragment.Pair();
+                tmp.name = usageStats.getPackageName();
+                tmp.time = usageStats.getTotalTimeInForeground();
+                list.add(tmp);
+            }
+
+            Collections.sort(list, new Comparator<Graph3Fragment.Pair>() {
+                @Override
+                public int compare(Graph3Fragment.Pair a, Graph3Fragment.Pair b) {
+                    if (a.time < b.time)
+                        return 1;
+                    else if (a.time == b.time)
+                        return 0;
+                    return -1;
+                }
+            });
+
+            int i = 0;
+            for (Graph3Fragment.Pair p : list) {
+                if (i > 3)
+                    break;
+                int minutes = (int) ((p.time / (1000 * 60)) % 60);
+                int hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
+                String s = p.name;
+                String[] s2 = s.split("\\.");
+                ret[i * 2] = s2[s2.length - 1];
+                ret[i * 2 + 1] = Integer.toString(hours) + "." + Integer.toString(minutes);
+                ++i;
+            }
+        }
+        return ret;
     }
 
 }

@@ -49,8 +49,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -66,19 +68,11 @@ public class GraphFragment1 extends Fragment {
     private static final int MAX_X_VALUE = 4; // 보여줄 앱 개수
     private static final String SET_LABEL = " ";
     private static String[] WEEK_APPS;
-    private static String[] DAY_APPS;
-    private static String[] MONTH_APPS;
     private static String[] WEEK_TIME_NAME = new String[4]; // 앱 이름
     private static float[] WEEK_TIME_DATA = new float[4]; // 앱 사용 시간 데이터
-    private static String[] DAY_TIME_NAME = new String[4]; // 앱 이름
-    private static float[] DAY_TIME_DATA = new float[4]; // 앱 사용 시간 데이터
-    private static String[] MONTH_TIME_NAME = new String[4]; // 앱 이름
-    private static float[] MONTH_TIME_DATA = new float[4]; // 앱 사용 시간 데이터
     private HorizontalBarChart barChart1;
     private static String IP_ADDRESS = "54.180.156.121";   //매번 ip주소 바꿔줄 것
     private static String TAG = "GraphFragment1";
-    MoreDataList datalist;
-    ArrayList<MoreData> list;
 
     @Nullable
     @Override
@@ -94,13 +88,13 @@ public class GraphFragment1 extends Fragment {
 
                 // 아래 코드 디버깅용. 앱 이름, 시간 제대로 찍히는 거 확인!
                 // (get_apps_name 사용 시 권한 허용 필요)
-                String ret[] = get_apps_name_weekly(-7, 0);
+                String ret[] = getAppsName(-8);
                 for (String s : ret){
                     System.out.println(s);
                 }
 
                 // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
-                WEEK_APPS = get_apps_name_weekly(-7, 0);
+                WEEK_APPS = getAppsName(-8);
                 int index1 = 3, index2 = 3;
                 for (int i = 0; i < WEEK_APPS.length; i++) {
                     if (i % 2 == 0) WEEK_TIME_NAME[index1--] = WEEK_APPS[i];
@@ -311,18 +305,17 @@ public class GraphFragment1 extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private String[] get_apps_name_weekly(int begin, int end) { // end를 현재 날짜로 주려면 0. (begin은 항상 음수) && (begin < end)
+    private String[] getAppsName(int begin) { // (begin은 항상 음수)
         if (!checkPermission())
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
-        Calendar cal_begin = Calendar.getInstance(), cal_end = Calendar.getInstance();
-        cal_begin.add(Calendar.DAY_OF_MONTH, begin);
-        cal_end.add(Calendar.DAY_OF_MONTH, end);
-//        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
-        long end_time = cal_end.getTimeInMillis(), begin_time = cal_begin.getTimeInMillis();
-//        System.out.println(cur_time + " " + begin_time);
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, begin_time, end_time);
+        Calendar cal_begin = new GregorianCalendar(Locale.KOREA), cal_end = new GregorianCalendar(Locale.KOREA);
+        cal_begin.add(Calendar.DATE, begin);
+        cal_end.add(Calendar.DATE, -1);
+        long begin_time = cal_begin.getTimeInMillis();
+        long end_time = cal_end.getTimeInMillis();
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time, end_time);
         if (stats != null) {
             ArrayList<Pair> list = new ArrayList<>();
 
@@ -356,106 +349,6 @@ public class GraphFragment1 extends Fragment {
                 String[] s2 = s.split("\\.");
                 ret[i * 2] = s2[s2.length - 1];
                 ret[i * 2 + 1] = Integer.toString(hours) + "." + (((int)Math.log10(minutes) == 0)? String.format("%02d", minutes) : Integer.toString(minutes));
-                ++i;
-            }
-        }
-        return ret;
-    }
-
-    private String[] get_apps_name_daily(int begin, int end) { // end를 현재 날짜로 주려면 0. begin은 항상 음수 && begin < end
-        if (!checkPermission())
-            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
-        String[] ret = new String[8];
-        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
-        Calendar cal_begin = Calendar.getInstance(), cal_end = Calendar.getInstance();
-        cal_begin.add(Calendar.DAY_OF_MONTH, begin);
-        cal_end.add(Calendar.DAY_OF_MONTH, end);
-//        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
-        long end_time = cal_end.getTimeInMillis(), begin_time = cal_begin.getTimeInMillis();
-//        System.out.println(cur_time + " " + begin_time);
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time, end_time);
-        if (stats != null) {
-            ArrayList<Pair> list = new ArrayList<>();
-
-            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
-            for (UsageStats usageStats : stats) {
-                Pair tmp = new Pair();
-                tmp.name = usageStats.getPackageName();
-                tmp.time = usageStats.getTotalTimeInForeground();
-                list.add(tmp);
-            }
-
-            Collections.sort(list, new Comparator<Pair>() {
-                @Override
-                public int compare(Pair a, Pair b) {
-                    if (a.time < b.time)
-                        return 1;
-                    else if (a.time == b.time)
-                        return 0;
-                    return -1;
-                }
-            });
-
-            int i = 0;
-            for (Pair p : list) {
-                if (i > 3)
-                    break;
-                int minutes = (int) ((p.time / (1000 * 60)) % 60);
-                int hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
-                String s = p.name;
-                String[] s2 = s.split("\\.");
-                ret[i * 2] = s2[s2.length - 1];
-                ret[i * 2 + 1] = Integer.toString(hours) + "." + Integer.toString(minutes);
-                ++i;
-            }
-        }
-        return ret;
-    }
-
-    private String[] get_apps_name_monthly(int begin, int end) { // end의 경우 현재 날짜이면 0
-        if (!checkPermission())
-            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
-        String[] ret = new String[8];
-        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
-        Calendar cal_begin = Calendar.getInstance(), cal_end = Calendar.getInstance();
-        cal_begin.add(Calendar.MONTH, begin);
-        cal_end.add(Calendar.MONTH, end);
-//        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
-        long end_time = cal_end.getTimeInMillis(), begin_time = cal_begin.getTimeInMillis();
-//        System.out.println(cur_time + " " + begin_time);
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin_time, end_time);
-        if (stats != null) {
-            ArrayList<Pair> list = new ArrayList<>();
-
-            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
-            for (UsageStats usageStats : stats) {
-                Pair tmp = new Pair();
-                tmp.name = usageStats.getPackageName();
-                tmp.time = usageStats.getTotalTimeInForeground();
-                list.add(tmp);
-            }
-
-            Collections.sort(list, new Comparator<Pair>() {
-                @Override
-                public int compare(Pair a, Pair b) {
-                    if (a.time < b.time)
-                        return 1;
-                    else if (a.time == b.time)
-                        return 0;
-                    return -1;
-                }
-            });
-
-            int i = 0;
-            for (Pair p : list) {
-                if (i > 3)
-                    break;
-                int minutes = (int) ((p.time / (1000 * 60)) % 60);
-                int hours = (int) ((p.time / (1000 * 60 * 60)) % 24);
-                String s = p.name;
-                String[] s2 = s.split("\\.");
-                ret[i * 2] = s2[s2.length - 1];
-                ret[i * 2 + 1] = Integer.toString(hours) + "." + Integer.toString(minutes);
                 ++i;
             }
         }
