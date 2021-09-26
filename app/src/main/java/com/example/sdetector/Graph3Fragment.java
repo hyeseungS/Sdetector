@@ -55,7 +55,6 @@ public class Graph3Fragment extends Fragment {
     private static final String[][] LABEL = {{"", "", "", ""}, {"3주 전", "2주 전", "1주 전", "이번 주"}, {"3달 전", "2달 전", "1달 전", "이번 달"}};
     private static int[][] RANGE = {{8, 20, 40}, {2, 5, 10}};
     private static String[] APPS;
-    private static String[] temp;
     private static String[] APPS_NAME = new String[4];
     private static float[][] APPS_DATA = new float[4][4];
     ViewGroup rootView;
@@ -96,14 +95,14 @@ public class Graph3Fragment extends Fragment {
         TextView time_text = (TextView) rootView.findViewById(R.id.detail_text);
         float max=0;
         float [] temp_data = new float[4];
-        temp = getAppsNameDaily(-1);
+        String[] temp = getAppsNameDaily(-1);
+        for (int i = 0; i<4; i++) {
+            if (i % 2 != 0) temp_data[i/2] = Float.parseFloat(temp[i]);
+        }
         switch (view.getId()) {
             case R.id.day_button:
                 time_text.setText("- 일간 앱 사용 시간");
                 // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
-                for (int i = APPS.length-1; i>-1 ; i--) {
-                    if (i % 2 != 0) temp_data[i/2] = Float.parseFloat(temp[i]);
-                }
                 APPS = getAppsNameDaily(-2);
                 for (int i = 0; i < APPS.length; i++) {
                     if (i % 2 == 0) APPS_NAME[i/2] = APPS[i];
@@ -409,11 +408,9 @@ public class Graph3Fragment extends Fragment {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
-        Calendar cal_begin = new GregorianCalendar(Locale.KOREA), cal_end = new GregorianCalendar(Locale.KOREA);
+        Calendar cal_begin = new GregorianCalendar(Locale.KOREA);
         cal_begin.add(Calendar.DATE, begin);
-        cal_end.add(Calendar.DATE, -1);
         long begin_time = cal_begin.getTimeInMillis();
-        long end_time = cal_end.getTimeInMillis();
         List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time, System.currentTimeMillis());
         if (stats != null) {
             ArrayList<Graph3Fragment.Pair> list = new ArrayList<>();
@@ -463,9 +460,7 @@ public class Graph3Fragment extends Fragment {
         Calendar cal_end = new GregorianCalendar(Locale.KOREA);
         cal_begin.add(Calendar.MONTH, begin);
         cal_end.add(Calendar.DATE, -1);
-//        System.out.println("Calendar ::::   " + cal.get(Calendar.YEAR) + "년 " + (cal.get(Calendar.MONTH) + 1) + "월 " + cal.get(Calendar.DAY_OF_MONTH));
         long end_time = cal_end.getTimeInMillis(), begin_time = cal_begin.getTimeInMillis();
-//        System.out.println(cur_time + " " + begin_time);
         List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin_time, end_time);
         if (stats != null) {
             ArrayList<Graph3Fragment.Pair> list = new ArrayList<>();

@@ -88,10 +88,10 @@ public class GraphFragment1 extends Fragment {
 
                 // 아래 코드 디버깅용. 앱 이름, 시간 제대로 찍히는 거 확인!
                 // (get_apps_name 사용 시 권한 허용 필요)
-                String ret[] = getAppsName(-8);
-                for (String s : ret){
-                    System.out.println(s);
-                }
+//                String ret[] = getAppsName(-8);
+//                for (String s : ret){
+//                    System.out.println(s);
+//                }
 
                 // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
                 WEEK_APPS = getAppsName(-8);

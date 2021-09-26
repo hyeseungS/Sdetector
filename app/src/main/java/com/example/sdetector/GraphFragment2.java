@@ -38,7 +38,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -70,13 +72,13 @@ public class GraphFragment2 extends Fragment {
             @Override
             public void onClick(View view) {
 
-                String ret[] = get_apps_name();
+                String ret[] = getAppsName(-8);
                 for (String s : ret){
                     System.out.println(s);
                 }
 
                 // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
-                APPS = get_apps_name();
+                APPS = getAppsName(-8);
                 int index1 = 3, index2 = 3;
                 for (int i = 0; i < APPS.length; i++) {
                     if (i % 2 == 0) FREQ_NAME[index1--] = APPS[i];
@@ -277,16 +279,16 @@ public class GraphFragment2 extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private String[] get_apps_name() {
+    private String[] getAppsName(int begin) {
 
         UsageStatsManager usageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
 
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -7);
-        final long end = System.currentTimeMillis();
-        final long begin = cal.getTimeInMillis();
-
-        final UsageEvents usageEvents = usageStatsManager.queryEvents(begin, end);
+        Calendar cal_begin = new GregorianCalendar(Locale.KOREA), cal_end = new GregorianCalendar(Locale.KOREA);
+        cal_begin.add(Calendar.DATE, begin);
+        cal_end.add(Calendar.DATE, -1);
+        long begin_time = cal_begin.getTimeInMillis();
+        long end_time = cal_end.getTimeInMillis();
+        final UsageEvents usageEvents = usageStatsManager.queryEvents(begin_time, end_time);
         HashMap<String, Integer> map = new HashMap<String, Integer>();
 
         while (usageEvents.hasNextEvent()) {
