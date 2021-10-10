@@ -71,7 +71,7 @@ public class GraphFragment1 extends Fragment {
     private static String[] WEEK_TIME_NAME = new String[4]; // 앱 이름
     private static float[] WEEK_TIME_DATA = new float[4]; // 앱 사용 시간 데이터
     private HorizontalBarChart barChart1;
-    private static String IP_ADDRESS = "54.180.156.121";   //매번 ip주소 바꿔줄 것
+    private static String IP_ADDRESS = "52.79.58.204";   //매번 ip주소 바꿔줄 것
     private static String TAG = "GraphFragment1";
 
     @Nullable

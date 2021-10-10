@@ -58,7 +58,7 @@ public class GraphFragment2 extends Fragment {
     private static String[] FREQ_NAME = new String[4]; // 앱 이름
     private static float[] FREQ_DATA = new float[4]; // 앱 사용 빈도수 데이터
     private HorizontalBarChart barChart2;
-    private static String IP_ADDRESS = "54.180.156.121";   //매번 ip주소 바꿔줄 것
+    private static String IP_ADDRESS = "52.79.58.204";   //매번 ip주소 바꿔줄 것
     private static String TAG = "GraphFragment2";
 
     @Nullable
