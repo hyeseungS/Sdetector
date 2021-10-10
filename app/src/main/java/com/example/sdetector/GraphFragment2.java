@@ -79,10 +79,11 @@ public class GraphFragment2 extends Fragment {
 
                 // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
                 APPS = getAppsName(-8);
+                String temp[] = getAppsName(-1);
                 int index1 = 3, index2 = 3;
                 for (int i = 0; i < APPS.length; i++) {
                     if (i % 2 == 0) FREQ_NAME[index1--] = APPS[i];
-                    else FREQ_DATA[index2--] = Float.parseFloat(APPS[i]);
+                    else FREQ_DATA[index2--] = Float.parseFloat(APPS[i])-Float.parseFloat(temp[i]);
                 }
 
                 //데이터 넘검 - emotionString, diaryContent
@@ -283,12 +284,10 @@ public class GraphFragment2 extends Fragment {
 
         UsageStatsManager usageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
 
-        Calendar cal_begin = new GregorianCalendar(Locale.KOREA), cal_end = new GregorianCalendar(Locale.KOREA);
+        Calendar cal_begin = Calendar.getInstance();
         cal_begin.add(Calendar.DATE, begin);
-        cal_end.add(Calendar.DATE, -1);
         long begin_time = cal_begin.getTimeInMillis();
-        long end_time = cal_end.getTimeInMillis();
-        final UsageEvents usageEvents = usageStatsManager.queryEvents(begin_time, end_time);
+        final UsageEvents usageEvents = usageStatsManager.queryEvents(begin_time, System.currentTimeMillis());
         HashMap<String, Integer> map = new HashMap<String, Integer>();
 
         while (usageEvents.hasNextEvent()) {

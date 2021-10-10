@@ -88,17 +88,14 @@ public class GraphFragment1 extends Fragment {
 
                 // 아래 코드 디버깅용. 앱 이름, 시간 제대로 찍히는 거 확인!
                 // (get_apps_name 사용 시 권한 허용 필요)
-//                String ret[] = getAppsName(-8);
-//                for (String s : ret){
-//                    System.out.println(s);
-//                }
 
                 // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
                 WEEK_APPS = getAppsName(-8);
+                String temp[] = getAppsName(-1);
                 int index1 = 3, index2 = 3;
                 for (int i = 0; i < WEEK_APPS.length; i++) {
                     if (i % 2 == 0) WEEK_TIME_NAME[index1--] = WEEK_APPS[i];
-                    else WEEK_TIME_DATA[index2--] = Float.parseFloat(WEEK_APPS[i]);
+                    else WEEK_TIME_DATA[index2--] = Float.parseFloat(WEEK_APPS[i])-Float.parseFloat(temp[i]);
                 }
 
                 //데이터 넘검 - WEEK_TIME_APP, WEEK_TIME_DATA
@@ -312,10 +309,8 @@ public class GraphFragment1 extends Fragment {
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
         Calendar cal_begin = new GregorianCalendar(Locale.KOREA), cal_end = new GregorianCalendar(Locale.KOREA);
         cal_begin.add(Calendar.DATE, begin);
-        cal_end.add(Calendar.DATE, -1);
         long begin_time = cal_begin.getTimeInMillis();
-        long end_time = cal_end.getTimeInMillis();
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time, end_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begin_time,  cal_end.getTimeInMillis());
         if (stats != null) {
             ArrayList<Pair> list = new ArrayList<>();
 

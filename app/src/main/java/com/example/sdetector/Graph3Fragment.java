@@ -96,7 +96,7 @@ public class Graph3Fragment extends Fragment {
         float max=0;
         float [] temp_data = new float[4];
         String[] temp = getAppsNameDaily(-1);
-        for (int i = 0; i<4; i++) {
+        for (int i = 0; i < temp.length; i++) {
             if (i % 2 != 0) temp_data[i/2] = Float.parseFloat(temp[i]);
         }
         switch (view.getId()) {
@@ -180,8 +180,9 @@ public class Graph3Fragment extends Fragment {
                 APPS = getAppsNameMonthly(-1);
                 for (int i = 0; i < APPS.length; i++) {
                     if (i % 2 == 0) APPS_NAME[i/2] = APPS[i];
-                    else APPS_DATA[i/2][3] = Float.parseFloat(APPS[i]) - temp_data[i/2];
+                    else APPS_DATA[i/2][0] = Float.parseFloat(APPS[i]) - temp_data[i/2];
                 }
+
                 APPS = getAppsNameMonthly(-2);
                 for (int i = 0; i < APPS.length; i++) {
                     if (i % 2 != 0) APPS_DATA[i/2][2] = Float.parseFloat(APPS[i])-APPS_DATA[i/2][3] - temp_data[i/2];
@@ -408,7 +409,7 @@ public class Graph3Fragment extends Fragment {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
-        Calendar cal_begin = new GregorianCalendar(Locale.KOREA);
+        Calendar cal_begin = Calendar.getInstance();
         cal_begin.add(Calendar.DATE, begin);
         long begin_time = cal_begin.getTimeInMillis();
         List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time, System.currentTimeMillis());
@@ -456,12 +457,10 @@ public class Graph3Fragment extends Fragment {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         String[] ret = new String[8];
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getActivity().getSystemService(USAGE_STATS_SERVICE);
-        Calendar cal_begin = new GregorianCalendar(Locale.KOREA);
-        Calendar cal_end = new GregorianCalendar(Locale.KOREA);
+        Calendar cal_begin = Calendar.getInstance();
         cal_begin.add(Calendar.MONTH, begin);
-        cal_end.add(Calendar.DATE, -1);
-        long end_time = cal_end.getTimeInMillis(), begin_time = cal_begin.getTimeInMillis();
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin_time, end_time);
+        long begin_time = cal_begin.getTimeInMillis();
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin_time, System.currentTimeMillis());
         if (stats != null) {
             ArrayList<Graph3Fragment.Pair> list = new ArrayList<>();
 
