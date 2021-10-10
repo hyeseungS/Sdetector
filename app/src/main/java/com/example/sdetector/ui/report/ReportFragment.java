@@ -42,7 +42,7 @@ public class ReportFragment extends Fragment {
     private FragmentReportBinding binding;
 
     // 가져올 변수
-    private static final int MAX_X_VALUE = 4; // 보여줄 앱 개수
+    //private static final int MAX_X_VALUE = 4; // 보여줄 앱 개수
     private static String[] APPS;
     private static String[] TIME_NAME = new String[4]; // 앱 이름
     private static float[] TIME_DATA = new float[4]; // 앱 사용 시간 데이터
@@ -101,7 +101,7 @@ public class ReportFragment extends Fragment {
         long time;
     }
 
-    // 가져올 기간 정하기-termStart부터 termEnd까지의 기간
+    // 가져올 기간 정하기-현재부터 몇일전(term)까지의 사용결과를 분석할것인지
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private String[] get_apps_name(int term) {
         if (!checkPermission())
@@ -114,7 +114,7 @@ public class ReportFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, term);
         long cur_time = System.currentTimeMillis(), begin_time = cal.getTimeInMillis();
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begin_time, cur_time);
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time, cur_time);
         if (stats != null) {
             ArrayList<ReportFragment.Pair> list = new ArrayList<>();
 
@@ -233,7 +233,6 @@ public class ReportFragment extends Fragment {
         return granted;
     }
 
-
     // 앱 사용 시간에 따른 결과 분석
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public String AppTimeReport() {
@@ -269,9 +268,21 @@ public class ReportFragment extends Fragment {
             else TIME_DATA_Lastweek[index2_Lastweek--] = Float.parseFloat(APPS[i]);
         }
         AppTime_LastWeek = TIME_DATA_Lastweek[0]+TIME_DATA_Lastweek[1]+TIME_DATA_Lastweek[2]+TIME_DATA_Lastweek[3] - AppTime_Week;
+//이번주 가장 많이 사용한 앱
+        for (int i=0;i<3;i++) {
+            if (TIME_DATA[i] < TIME_DATA[i+1]) {
+                mostUseApp_Name = TIME_NAME[i+1];
+                mostUseApp_Time = TIME_DATA[i+1];
+            }
+            else {
+                mostUseApp_Time = TIME_DATA[i];
+                mostUseApp_Name = TIME_NAME[i];
+            }
+        }
+        String AppReport4 = "이번주에 가장 많이 사용한 앱은 "+mostUseApp_Name+"으로, 총 "+mostUseApp_Time+"시간 사용하였습니다.";
 
 
-        String AppReport1 = "이번주 스마트폰 총 사용 시간은 "+AppTime_Week+"시간으로 ";
+        String AppReport1 = "이번주 스마트폰 총 사용 시간은 "+AppTime_Week+"시간으로, ";
 
         String Appreport2 = " ";
         if (AppTime_Week >= AppTime_LastWeek) {
@@ -283,8 +294,7 @@ public class ReportFragment extends Fragment {
             Appreport2 = "저번주 스마트폰 총 사용 시간인 " + AppTime_LastWeek + "보다 "+inter2+"시간 감소하였습니다.";
         }
 
-
-        AppTimeReport = AppReport1 +Appreport2+"\n"+AppReport3;
+        AppTimeReport = AppReport1 +Appreport2+"\n"+AppReport3+AppReport4;
         return AppTimeReport;
 
         /*String avgTime = " ";
