@@ -1,21 +1,27 @@
 package com.example.sdetector.ui.report;
 
 import android.app.AppOpsManager;
+import android.app.ProgressDialog;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -26,36 +32,58 @@ import com.example.sdetector.BuildConfig;
 import com.example.sdetector.R;
 import com.example.sdetector.databinding.FragmentReportBinding;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import static android.content.Context.USAGE_STATS_SERVICE;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ReportFragment extends Fragment {
 
+    private static Context context;
     private ReportViewModel reportViewModel;
     private FragmentReportBinding binding;
+    private static String TAG = "ReportFragment_emotion";
 
     // 가져올 변수
     //private static final int MAX_X_VALUE = 4; // 보여줄 앱 개수
-    private static String[] APPS;
-    private static String[] TIME_NAME = new String[4]; // 앱 이름
-    private static float[] TIME_DATA = new float[4]; // 앱 사용 시간 데이터
-    private static String mostUseApp_Name;
-    private static float mostUseApp_Time;
+    private String[] APPS;
+    private String[] TIME_NAME = new String[4]; // 앱 이름
+    private float[] TIME_DATA = new float[4]; // 앱 사용 시간 데이터
+    private String mostUseApp_Name;
+    private float mostUseApp_Time;
     //저번주 데이터
-    private static String[] APPS_Lastweek;
-    private static String[] TIME_NAME_Lastweek = new String[4]; // 앱 이름
-    private static float[] TIME_DATA_Lastweek = new float[4]; // 앱 사용 시간 데이터
+    private String[] APPS_Lastweek;
+    private String[] TIME_NAME_Lastweek = new String[4]; // 앱 이름
+    private float[] TIME_DATA_Lastweek = new float[4]; // 앱 사용 시간 데이터
 
     String AppTimeReport;
-    float AppTime_Week;
+    static float AppTime_Week;
     float AppTime_LastWeek;
+
+    ArrayList<HashMap<String, String>> mArrayList;
+    private static final String TAG_JSON = "webnautes";
+    private static final String TAG_num_good = "num_Good";
+    private static final String TAG_num_normal = "num_Normal";
+    private static final String TAG_num_bad = "num_Bad";
+    
+    String DiaryReport1, DiaryReport2, mJsonString;
+
+    String FinalReport1;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -81,7 +109,7 @@ public class ReportFragment extends Fragment {
         // 앱 사용 분석 내용
         report_appText.setText(AppTimeReport());
         // 감정 일기 분석 내용
-        report_diaryText.setText(R.string.report_diary);
+        report_diaryText.setText(DiaryReport());
         // 관리 방법 내용
         report_treatText.setText(R.string.report_treat);
         // 종합 의견 내용
@@ -213,7 +241,7 @@ public class ReportFragment extends Fragment {
         return event.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND;
     }
 
-    private boolean checkPermission() {
+    public boolean checkPermission() {
 
         boolean granted = false;
 
@@ -244,20 +272,19 @@ public class ReportFragment extends Fragment {
             if (i % 2 == 0) TIME_NAME[index1--] = APPS[i];
             else TIME_DATA[index2--] = Float.parseFloat(APPS[i]);
         }
-        AppTime_Week = TIME_DATA[0]+TIME_DATA[1]+TIME_DATA[2]+TIME_DATA[3];
+        AppTime_Week = TIME_DATA[0] + TIME_DATA[1] + TIME_DATA[2] + TIME_DATA[3];
 
         //이번주 가장 많이 사용한 앱
-        for (int i=0;i<3;i++) {
-            if (TIME_DATA[i] < TIME_DATA[i+1]) {
-                mostUseApp_Name = TIME_NAME[i+1];
-                mostUseApp_Time = TIME_DATA[i+1];
-            }
-            else {
+        for (int i = 0; i < 3; i++) {
+            if (TIME_DATA[i] < TIME_DATA[i + 1]) {
+                mostUseApp_Name = TIME_NAME[i + 1];
+                mostUseApp_Time = TIME_DATA[i + 1];
+            } else {
                 mostUseApp_Time = TIME_DATA[i];
                 mostUseApp_Name = TIME_NAME[i];
             }
         }
-        String AppReport3 = "이번주에 가장 많이 사용한 앱은 "+mostUseApp_Name+"으로, 총 "+mostUseApp_Time+"시간 사용하였습니다.";
+        String AppReport3 = "이번주에 가장 많이 사용한 앱은 " + mostUseApp_Name + "으로, 총 " + mostUseApp_Time + "시간 사용하였습니다.";
 
 
         // 저번주 앱 사용시간과 비교
@@ -267,34 +294,32 @@ public class ReportFragment extends Fragment {
             if (i % 2 == 0) TIME_NAME_Lastweek[index1_Lastweek--] = APPS[i];
             else TIME_DATA_Lastweek[index2_Lastweek--] = Float.parseFloat(APPS[i]);
         }
-        AppTime_LastWeek = TIME_DATA_Lastweek[0]+TIME_DATA_Lastweek[1]+TIME_DATA_Lastweek[2]+TIME_DATA_Lastweek[3] - AppTime_Week;
+        AppTime_LastWeek = TIME_DATA_Lastweek[0] + TIME_DATA_Lastweek[1] + TIME_DATA_Lastweek[2] + TIME_DATA_Lastweek[3] - AppTime_Week;
 //이번주 가장 많이 사용한 앱
-        for (int i=0;i<3;i++) {
-            if (TIME_DATA[i] < TIME_DATA[i+1]) {
-                mostUseApp_Name = TIME_NAME[i+1];
-                mostUseApp_Time = TIME_DATA[i+1];
-            }
-            else {
+        for (int i = 0; i < 3; i++) {
+            if (TIME_DATA[i] < TIME_DATA[i + 1]) {
+                mostUseApp_Name = TIME_NAME[i + 1];
+                mostUseApp_Time = TIME_DATA[i + 1];
+            } else {
                 mostUseApp_Time = TIME_DATA[i];
                 mostUseApp_Name = TIME_NAME[i];
             }
         }
-        String AppReport4 = "이번주에 가장 많이 사용한 앱은 "+mostUseApp_Name+"으로, 총 "+mostUseApp_Time+"시간 사용하였습니다.";
+        String AppReport4 = "이번주에 가장 많이 사용한 앱은 " + mostUseApp_Name + "으로, 총 " + mostUseApp_Time + "시간 사용하였습니다.";
 
 
-        String AppReport1 = "이번주 스마트폰 총 사용 시간은 "+AppTime_Week+"시간으로, ";
+        String AppReport1 = "이번주 스마트폰 총 사용 시간은 " + AppTime_Week + "시간으로, ";
 
         String Appreport2 = " ";
         if (AppTime_Week >= AppTime_LastWeek) {
-            float inter1 = AppTime_Week-AppTime_LastWeek;
-            Appreport2 = "저번주 스마트폰 총 사용 시간인 " + AppTime_LastWeek + "보다 "+inter1+"시간 증가하였습니다.";
-        }
-        else if (AppTime_Week < AppTime_LastWeek) {
-            float inter2 = AppTime_LastWeek-AppTime_Week;
-            Appreport2 = "저번주 스마트폰 총 사용 시간인 " + AppTime_LastWeek + "보다 "+inter2+"시간 감소하였습니다.";
+            float inter1 = AppTime_Week - AppTime_LastWeek;
+            Appreport2 = "저번주 스마트폰 총 사용 시간인 " + AppTime_LastWeek + "보다 " + inter1 + "시간 증가하였습니다.";
+        } else if (AppTime_Week < AppTime_LastWeek) {
+            float inter2 = AppTime_LastWeek - AppTime_Week;
+            Appreport2 = "저번주 스마트폰 총 사용 시간인 " + AppTime_LastWeek + "보다 " + inter2 + "시간 감소하였습니다.";
         }
 
-        AppTimeReport = AppReport1 +Appreport2+"\n"+AppReport3+AppReport4;
+        AppTimeReport = AppReport1 + Appreport2 + "\n" + AppReport3 + AppReport4;
         return AppTimeReport;
 
         /*String avgTime = " ";
@@ -307,5 +332,165 @@ public class ReportFragment extends Fragment {
         else if (51<AppTime_Week) {
             avgTime = "평균 스마트폰 사용시간보다 많이 사용하셨습니다. 눈의 피로를 풀어주세요!";
         }*/
+    }
+
+    //getdata class
+    private class GetData extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(ReportFragment.context, "Please Wait", null, true, true);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            DiaryReport2=result;
+            Log.d(TAG, "response  - " + result);
+
+            if (result == null){
+
+                DiaryReport2=errorString;
+            }
+            else {
+
+                mJsonString = result;
+                showResult();
+            }
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = params[0];
+
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.connect();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString().trim();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
+    }
+
+
+    private void showResult(){
+        try {
+            JSONObject jsonObject = new JSONObject(mJsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+
+            for(int i=0;i<jsonArray.length();i++){
+
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                String num_G = item.getString(TAG_num_good);
+                String num_N = item.getString(TAG_num_normal);
+                String num_B = item.getString(TAG_num_bad);
+
+                HashMap<String,String> hashMap = new HashMap<>();
+
+                hashMap.put(TAG_num_good, num_G);
+                hashMap.put(TAG_num_normal, num_N);
+                hashMap.put(TAG_num_bad, num_B);
+
+                mArrayList.add(hashMap);
+            }
+
+            /*ListAdapter adapter = new SimpleAdapter(
+                    ReportFragment.this, mArrayList, R.layout.item_list,
+                    new String[]{TAG_num_good,TAG_num_normal, TAG_num_bad},
+                    new int[]{R.id.textView_list_id, R.id.textView_list_name, R.id.textView_list_address}
+            );
+
+            mlistView.setAdapter(adapter);*/
+
+        } catch (JSONException e) {
+
+            Log.d(TAG, "showResult : ", e);
+        }
+
+    }
+
+    // 일기 감정에 따른 결과 분석
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public String DiaryReport() {
+
+        GetData task = new GetData();
+        task.execute("http://10.0.2.2/getjson.php");
+
+        // 이번주 일기에서 '좋음' 감정 단어는 ㅇ번, '보통' 감정 단어는 ㅇ번, '나쁨' 감정 단어는 ㅇ번 나타났습니다.
+        System.out.println(mArrayList);
+
+        return DiaryReport1;
+    }
+
+
+    // 최종 분석
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public String FinalReport() {
+        if (AppTime_LastWeek > 0) { // 저번주 앱 사용량이 존재할 때
+            if (AppTime_Week >= AppTime_LastWeek * 1.05) {
+                //감정 나쁨 30%
+            } else if (AppTime_Week <= AppTime_LastWeek * 0.95) {
+                //감정 좋음 30%
+            } else {
+                //감정 보통 30%
+            }
+        } else {
+            //저번주 앱 사용량 없음
+        }
+
+        FinalReport1 = "";
+        return FinalReport1;
     }
 }
