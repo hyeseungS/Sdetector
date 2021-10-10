@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.sdetector.MainActivity;
 import com.example.sdetector.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.content.Context;
 import android.util.Log;
