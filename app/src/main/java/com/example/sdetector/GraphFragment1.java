@@ -1,7 +1,8 @@
 package com.example.sdetector;
 
+import static android.content.Context.USAGE_STATS_SERVICE;
+
 import android.app.AppOpsManager;
-import android.app.AsyncNotedAppOp;
 import android.app.ProgressDialog;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
@@ -13,7 +14,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,10 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.example.sdetector.ui.diary.DiaryFragment;
-import com.github.mikephil.charting.BuildConfig;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -42,7 +39,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -50,13 +46,10 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import static android.content.Context.USAGE_STATS_SERVICE;
 
 public class GraphFragment1 extends Fragment {
 
@@ -71,7 +64,7 @@ public class GraphFragment1 extends Fragment {
     private static String[] WEEK_TIME_NAME = new String[4]; // 앱 이름
     private static float[] WEEK_TIME_DATA = new float[4]; // 앱 사용 시간 데이터
     private HorizontalBarChart barChart1;
-    private static String IP_ADDRESS = "52.79.58.204";   //매번 ip주소 바꿔줄 것
+    private static String IP_ADDRESS = "3.38.106.240";   //매번 ip주소 바꿔줄 것
     private static String TAG = "GraphFragment1";
 
     @Nullable
@@ -127,13 +120,13 @@ public class GraphFragment1 extends Fragment {
     }
 
     class InsertData extends AsyncTask<String, Void, String> {
-        ProgressDialog progressDialog;
+        //ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(getContext(), "Please Wait", null, true, true);
+            //progressDialog = ProgressDialog.show(getContext(), "Please Wait", null, true, true);
         }
 
 
@@ -141,7 +134,7 @@ public class GraphFragment1 extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            progressDialog.dismiss();
+            //progressDialog.dismiss();
             //mTextViewResult.setText(result);
             Log.d(TAG, "POST response  - " + result);
         }

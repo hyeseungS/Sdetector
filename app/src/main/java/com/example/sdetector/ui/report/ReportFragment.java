@@ -1,10 +1,10 @@
 package com.example.sdetector.ui.report;
 
 import android.app.AppOpsManager;
-import android.app.ProgressDialog;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,9 +34,12 @@ import com.example.sdetector.R;
 import com.example.sdetector.databinding.FragmentReportBinding;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,6 +47,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -57,7 +62,8 @@ public class ReportFragment extends Fragment {
     private static Context context;
     private ReportViewModel reportViewModel;
     private FragmentReportBinding binding;
-    private static String TAG = "ReportFragment_emotion";
+    private static String TAG = "ReportFragment";
+    private static String IP_ADDRESS = "3.38.106.240";   //매번 ip주소 바꿔줄 것
 
     // 가져올 변수
     //private static final int MAX_X_VALUE = 4; // 보여줄 앱 개수
@@ -75,13 +81,16 @@ public class ReportFragment extends Fragment {
     static float AppTime_Week;
     float AppTime_LastWeek;
 
+    private static final String TAG_JSON="webnautes";
+    private static final String TAG_GOOD = "num_good";
+    private static final String TAG_NORMAL = "num_normal";
+    private static final String TAG_BAD ="num_bad";
+
     ArrayList<HashMap<String, String>> mArrayList;
-    private static final String TAG_JSON = "webnautes";
-    private static final String TAG_num_good = "num_Good";
-    private static final String TAG_num_normal = "num_Normal";
-    private static final String TAG_num_bad = "num_Bad";
+    //ListView mlistView;
+    String mJsonString;
     
-    String DiaryReport1, DiaryReport2, mJsonString;
+    String DiaryReport1, DiaryReport2, DiaryReport3="원본", DiaryError;
 
     String FinalReport1;
 
@@ -334,54 +343,43 @@ public class ReportFragment extends Fragment {
         }*/
     }
 
-    //getdata class
-    private class GetData extends AsyncTask<String, Void, String> {
-        ProgressDialog progressDialog;
+    //일기 분석 관련
+    private class GetData extends AsyncTask<String, Void, String>{
         String errorString = null;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-            progressDialog = ProgressDialog.show(ReportFragment.context, "Please Wait", null, true, true);
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            progressDialog.dismiss();
-            DiaryReport2=result;
+            DiaryError = result;
             Log.d(TAG, "response  - " + result);
 
             if (result == null){
-
-                DiaryReport2=errorString;
+                DiaryError = errorString;
             }
             else {
-
                 mJsonString = result;
                 showResult();
             }
         }
-
 
         @Override
         protected String doInBackground(String... params) {
 
             String serverURL = params[0];
 
-
             try {
-
                 URL url = new URL(serverURL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
-
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setReadTimeout(10000);
+                httpURLConnection.setConnectTimeout(10000);
                 httpURLConnection.connect();
-
 
                 int responseStatusCode = httpURLConnection.getResponseCode();
                 Log.d(TAG, "response code - " + responseStatusCode);
@@ -394,7 +392,6 @@ public class ReportFragment extends Fragment {
                     inputStream = httpURLConnection.getErrorStream();
                 }
 
-
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
@@ -405,15 +402,11 @@ public class ReportFragment extends Fragment {
                     sb.append(line);
                 }
 
-
                 bufferedReader.close();
-
 
                 return sb.toString().trim();
 
-
             } catch (Exception e) {
-
                 Log.d(TAG, "InsertData: Error ", e);
                 errorString = e.toString();
 
@@ -433,29 +426,32 @@ public class ReportFragment extends Fragment {
 
                 JSONObject item = jsonArray.getJSONObject(i);
 
-                String num_G = item.getString(TAG_num_good);
-                String num_N = item.getString(TAG_num_normal);
-                String num_B = item.getString(TAG_num_bad);
+                String Ngood = item.getString(TAG_GOOD);
+                String Nnor = item.getString(TAG_NORMAL);
+                String Nbad = item.getString(TAG_BAD);
 
                 HashMap<String,String> hashMap = new HashMap<>();
 
-                hashMap.put(TAG_num_good, num_G);
-                hashMap.put(TAG_num_normal, num_N);
-                hashMap.put(TAG_num_bad, num_B);
+                hashMap.put(TAG_GOOD, Ngood);
+                hashMap.put(TAG_NORMAL, Nnor);
+                hashMap.put(TAG_BAD, Nbad);
 
                 mArrayList.add(hashMap);
             }
 
             /*ListAdapter adapter = new SimpleAdapter(
-                    ReportFragment.this, mArrayList, R.layout.item_list,
-                    new String[]{TAG_num_good,TAG_num_normal, TAG_num_bad},
+                    ReportFragment.context, mArrayList, R.layout.item_list,
+                    new String[]{TAG_GOOD,TAG_NORMAL, TAG_BAD},
                     new int[]{R.id.textView_list_id, R.id.textView_list_name, R.id.textView_list_address}
             );
 
             mlistView.setAdapter(adapter);*/
 
-        } catch (JSONException e) {
+            for (int i=0; i<1; i++) {
+                DiaryReport3 ="바뀐것 제발돼라";
+            }
 
+        } catch (JSONException e) {
             Log.d(TAG, "showResult : ", e);
         }
 
@@ -465,12 +461,13 @@ public class ReportFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public String DiaryReport() {
 
+        mArrayList = new ArrayList<>();
+
         GetData task = new GetData();
-        task.execute("http://10.0.2.2/getjson.php");
+        task.execute("http://"+IP_ADDRESS+"/getjson.php");
 
-        // 이번주 일기에서 '좋음' 감정 단어는 ㅇ번, '보통' 감정 단어는 ㅇ번, '나쁨' 감정 단어는 ㅇ번 나타났습니다.
-        System.out.println(mArrayList);
-
+        DiaryReport2 = "이번주 일기에서 '좋음' 감정 단어는 ㅇ번, '보통' 감정 단어는 ㅇ번, '나쁨' 감정 단어는 ㅇ번 나타났습니다.";
+        DiaryReport1 = DiaryReport3;
         return DiaryReport1;
     }
 
