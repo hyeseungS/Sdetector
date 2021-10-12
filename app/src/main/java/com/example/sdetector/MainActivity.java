@@ -29,7 +29,7 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
 
     //인터넷 서버 통신 코드
-    private static String ID_ADDRESS = "52.78.1.186";   //매번 ip주소 바꿔줄 것
+    private static String ID_ADDRESS = "3.38.106.240";   //매번 ip주소 바꿔줄 것
     private static String TAG = "phptest";
 
     private AppBarConfiguration mAppBarConfiguration;
