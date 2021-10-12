@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 
 import static android.content.Context.USAGE_STATS_SERVICE;
 
@@ -72,21 +70,20 @@ public class GraphFragment2 extends Fragment {
             @Override
             public void onClick(View view) {
 
-                String ret[] = getAppsName(-8);
+                String ret[] = getAppsName(-7);
                 for (String s : ret){
                     System.out.println(s);
                 }
 
-                // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
-                APPS = getAppsName(-8);
-                String temp[] = getAppsName(-1);
+                // 앱 이름(TIME_NAME), 빈도수(FREQ_DATA) 불러오기
+                APPS = getAppsName(-7);
                 int index1 = 3, index2 = 3;
                 for (int i = 0; i < APPS.length; i++) {
                     if (i % 2 == 0) FREQ_NAME[index1--] = APPS[i];
-                    else FREQ_DATA[index2--] = Float.parseFloat(APPS[i])-Float.parseFloat(temp[i]);
+                    else FREQ_DATA[index2--] = Float.parseFloat(APPS[i]);
                 }
 
-                //데이터 넘검 - emotionString, diaryContent
+                //데이터 넘김 - WEEK_FREQ_APP, WEEK_FREQ_DATA
                 InsertData task = new InsertData();
                 task.execute("http://" + IP_ADDRESS + "/insertfrequency.php", FREQ_NAME[3], Float.toString(FREQ_DATA[3]), FREQ_NAME[2], Float.toString(FREQ_DATA[2]), FREQ_NAME[1], Float.toString(FREQ_DATA[1]),FREQ_NAME[0], Float.toString(FREQ_DATA[0]));
 
@@ -284,10 +281,10 @@ public class GraphFragment2 extends Fragment {
 
         UsageStatsManager usageStatsManager = (UsageStatsManager) getContext().getSystemService(USAGE_STATS_SERVICE);
 
-        Calendar cal_begin = Calendar.getInstance();
+        Calendar cal_begin = new GregorianCalendar(Locale.KOREA); Calendar cal_end = new GregorianCalendar(Locale.KOREA);
         cal_begin.add(Calendar.DATE, begin);
         long begin_time = cal_begin.getTimeInMillis();
-        final UsageEvents usageEvents = usageStatsManager.queryEvents(begin_time, System.currentTimeMillis());
+        final UsageEvents usageEvents = usageStatsManager.queryEvents(begin_time, cal_end.getTimeInMillis());
         HashMap<String, Integer> map = new HashMap<String, Integer>();
 
         while (usageEvents.hasNextEvent()) {

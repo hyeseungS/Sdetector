@@ -1,7 +1,5 @@
 package com.example.sdetector;
 
-import static android.content.Context.USAGE_STATS_SERVICE;
-
 import android.app.AppOpsManager;
 import android.app.ProgressDialog;
 import android.app.usage.UsageEvents;
@@ -26,7 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-
+import com.github.mikephil.charting.BuildConfig;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -50,6 +48,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import static android.content.Context.USAGE_STATS_SERVICE;
 
 public class GraphFragment1 extends Fragment {
 
@@ -79,16 +79,12 @@ public class GraphFragment1 extends Fragment {
             @Override
             public void onClick(View view) {
 
-                // 아래 코드 디버깅용. 앱 이름, 시간 제대로 찍히는 거 확인!
-                // (get_apps_name 사용 시 권한 허용 필요)
-
                 // 앱 이름(TIME_NAME), 시간(TIME_DATA) 불러오기
-                WEEK_APPS = getAppsName(-8);
-                String temp[] = getAppsName(-1);
+                WEEK_APPS = getAppsName(-7);
                 int index1 = 3, index2 = 3;
                 for (int i = 0; i < WEEK_APPS.length; i++) {
                     if (i % 2 == 0) WEEK_TIME_NAME[index1--] = WEEK_APPS[i];
-                    else WEEK_TIME_DATA[index2--] = Float.parseFloat(WEEK_APPS[i])-Float.parseFloat(temp[i]);
+                    else WEEK_TIME_DATA[index2--] = Float.parseFloat(WEEK_APPS[i]);
                 }
 
                 //데이터 넘검 - WEEK_TIME_APP, WEEK_TIME_DATA
@@ -120,13 +116,13 @@ public class GraphFragment1 extends Fragment {
     }
 
     class InsertData extends AsyncTask<String, Void, String> {
-        //ProgressDialog progressDialog;
+        ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            //progressDialog = ProgressDialog.show(getContext(), "Please Wait", null, true, true);
+            progressDialog = ProgressDialog.show(getContext(), "Please Wait", null, true, true);
         }
 
 
@@ -134,7 +130,7 @@ public class GraphFragment1 extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            //progressDialog.dismiss();
+            progressDialog.dismiss();
             //mTextViewResult.setText(result);
             Log.d(TAG, "POST response  - " + result);
         }
@@ -303,7 +299,7 @@ public class GraphFragment1 extends Fragment {
         Calendar cal_begin = new GregorianCalendar(Locale.KOREA), cal_end = new GregorianCalendar(Locale.KOREA);
         cal_begin.add(Calendar.DATE, begin);
         long begin_time = cal_begin.getTimeInMillis();
-        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begin_time,  cal_end.getTimeInMillis());
+        List<UsageStats> stats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin_time,  cal_end.getTimeInMillis());
         if (stats != null) {
             ArrayList<Pair> list = new ArrayList<>();
 
