@@ -129,11 +129,14 @@ public class ReportFragment extends Fragment {
             case 1:
                 report_emotion.setImageResource(R.drawable.sad_emoticon);
                 break;
+            case 2:
+                report_emotion.setImageResource(R.drawable.normal_emoticon);
+                break;
             case 3:
                 report_emotion.setImageResource(R.drawable.happy_emoticon);
                 break;
             default:
-                report_emotion.setImageResource(R.drawable.normal_emoticon);
+                report_emotion.setImageResource(R.drawable.pre_emotion);
                 break;
         }
         return root;
@@ -652,8 +655,11 @@ public class ReportFragment extends Fragment {
         else if (EmotionOfWeek_int >0.3) {
             return 3;
         }
-        else {
+        else if (EmotionOfWeek_int>= -0.3 && EmotionOfWeek_int<= 0.3){
             return 2;
+        }
+        else {
+            return 5;
         }
     }
 }

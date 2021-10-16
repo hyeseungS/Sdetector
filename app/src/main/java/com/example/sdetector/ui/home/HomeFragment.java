@@ -71,19 +71,26 @@ public class HomeFragment extends Fragment {
             }
         });
         ImageView home_emotion = (ImageView) root.findViewById(R.id.home_emotion);
-        home_emotion.setImageResource(R.drawable.happy_emoticon);
 
         // 이번주 당신의 감정-에 따라 바뀌게
-        switch (ReportFragment.EmotionOftheWeek()) {
-            case 1:
-                home_emotion.setImageResource(R.drawable.sad_emoticon);
+        if (1<=ReportFragment.EmotionOftheWeek() && ReportFragment.EmotionOftheWeek()<=5) {
+            switch (ReportFragment.EmotionOftheWeek()) {
+                case 1:
+                    home_emotion.setImageResource(R.drawable.sad_emoticon);
+                    break;
+                case 2:
+                    home_emotion.setImageResource(R.drawable.normal_emoticon);
+                    break;
+                case 3:
+                    home_emotion.setImageResource(R.drawable.happy_emoticon);
+                    break;
+                default:
+                    home_emotion.setImageResource(R.drawable.pre_emotion);
                 break;
-            case 3:
-                home_emotion.setImageResource(R.drawable.happy_emoticon);
-                break;
-            default:
-                home_emotion.setImageResource(R.drawable.normal_emoticon);
-                break;
+            }
+        }
+        else {
+            home_emotion.setImageResource(R.drawable.pre_emotion);
         }
 
         ViewPager pager = root.findViewById(R.id.pager);
