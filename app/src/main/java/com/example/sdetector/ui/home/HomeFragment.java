@@ -19,6 +19,7 @@ import com.example.sdetector.GraphFragment1;
 import com.example.sdetector.GraphFragment2;
 import com.example.sdetector.R;
 import com.example.sdetector.databinding.FragmentHomeBinding;
+import com.example.sdetector.ui.report.ReportFragment;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
 
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
+
+import com.example.sdetector.ui.report.ReportFragment.*;
 
 public class HomeFragment extends Fragment {
 
@@ -68,7 +71,20 @@ public class HomeFragment extends Fragment {
             }
         });
         ImageView home_emotion = (ImageView) root.findViewById(R.id.home_emotion);
-        home_emotion.setImageResource(R.drawable.sad_emoticon);
+        home_emotion.setImageResource(R.drawable.happy_emoticon);
+
+        // 이번주 당신의 감정-에 따라 바뀌게
+        switch (ReportFragment.EmotionOftheWeek()) {
+            case 1:
+                home_emotion.setImageResource(R.drawable.sad_emoticon);
+                break;
+            case 3:
+                home_emotion.setImageResource(R.drawable.happy_emoticon);
+                break;
+            default:
+                home_emotion.setImageResource(R.drawable.normal_emoticon);
+                break;
+        }
 
         ViewPager pager = root.findViewById(R.id.pager);
         pager.setOffscreenPageLimit(2);

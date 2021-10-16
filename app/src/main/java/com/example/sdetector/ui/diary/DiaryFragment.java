@@ -37,7 +37,7 @@ import android.widget.Toast;
 public class DiaryFragment extends Fragment implements View.OnClickListener {
 
     //인터넷 서버 통신 코드
-    private static String IP_ADDRESS = "3.38.106.240";   //매번 ip주소 바꿔줄 것
+    private static String IP_ADDRESS = "52.78.165.117";   //매번 ip주소 바꿔줄 것
     private static String TAG = "DiaryFragment";
     private Object binding;
 

@@ -4,10 +4,10 @@ import android.app.AppOpsManager;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,12 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
@@ -32,14 +29,12 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.sdetector.BuildConfig;
 import com.example.sdetector.R;
 import com.example.sdetector.databinding.FragmentReportBinding;
+import com.example.sdetector.ui.home.HomeFragment;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,9 +42,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.USAGE_STATS_SERVICE;
 
@@ -63,7 +59,9 @@ public class ReportFragment extends Fragment {
     private ReportViewModel reportViewModel;
     private FragmentReportBinding binding;
     private static String TAG = "ReportFragment";
-    private static String IP_ADDRESS = "3.38.106.240";   //매번 ip주소 바꿔줄 것
+    private static String IP_ADDRESS = "52.78.165.117";   //매번 ip주소 바꿔줄 것
+
+    public String emotion_name;
 
     // 가져올 변수
     //private static final int MAX_X_VALUE = 4; // 보여줄 앱 개수
@@ -86,13 +84,18 @@ public class ReportFragment extends Fragment {
     private static final String TAG_NORMAL = "num_normal";
     private static final String TAG_BAD ="num_bad";
 
-    ArrayList<HashMap<String, String>> mArrayList;
+    ArrayList<HashMap<String, String>> mArrayList, mArrayList2;
     //ListView mlistView;
     String mJsonString;
     
-    String DiaryReport1, DiaryReport2, DiaryReport3="원본", DiaryError;
+    private String DiaryReport1, DiaryReport2, DiaryReport3, DiaryReport4, DiaryError;
+    private int DiaryCount=0;
+    private int GoodEmotionNum=0, NorEmotionNum=0, BadEmotionNum=0;
 
-    String FinalReport1;
+    private static double EmotionOfWeek_int;
+
+    private String ManagementReport1;
+    private String FinalReport1;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -113,16 +116,26 @@ public class ReportFragment extends Fragment {
         TextView report_treatText = (TextView) root.findViewById(R.id.report_text3);
         TextView report_totalText = (TextView) root.findViewById(R.id.report_text4);
 
-        // 이번주 당신의 감정
-        report_emotion.setImageResource(R.drawable.sad_emoticon);
         // 앱 사용 분석 내용
         report_appText.setText(AppTimeReport());
         // 감정 일기 분석 내용
         report_diaryText.setText(DiaryReport());
         // 관리 방법 내용
-        report_treatText.setText(R.string.report_treat);
+        report_treatText.setText(ManagementReport());
         // 종합 의견 내용
-        report_totalText.setText(R.string.report_total);
+        report_totalText.setText(FinalReport());
+        // 이번주 당신의 감정-에 따라 바뀌게
+        switch (EmotionOftheWeek()) {
+            case 1:
+                report_emotion.setImageResource(R.drawable.sad_emoticon);
+                break;
+            case 3:
+                report_emotion.setImageResource(R.drawable.happy_emoticon);
+                break;
+            default:
+                report_emotion.setImageResource(R.drawable.normal_emoticon);
+                break;
+        }
         return root;
     }
 
@@ -356,6 +369,7 @@ public class ReportFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
+            /*DiaryReport 함수 내로 보냄 ;doInBackground 리턴값 거기로 받음
             DiaryError = result;
             Log.d(TAG, "response  - " + result);
 
@@ -365,13 +379,13 @@ public class ReportFragment extends Fragment {
             else {
                 mJsonString = result;
                 showResult();
-            }
+            }*/
         }
 
         @Override
         protected String doInBackground(String... params) {
 
-            String serverURL = params[0];
+            String serverURL = (String) params[0];
 
             try {
                 URL url = new URL(serverURL);
@@ -379,16 +393,17 @@ public class ReportFragment extends Fragment {
 
                 httpURLConnection.setReadTimeout(10000);
                 httpURLConnection.setConnectTimeout(10000);
+                httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.connect();
 
+
                 int responseStatusCode = httpURLConnection.getResponseCode();
-                Log.d(TAG, "response code - " + responseStatusCode);
+                Log.d(TAG, "POST response code - " + responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
                     inputStream = httpURLConnection.getInputStream();
-                }
-                else{
+                } else {
                     inputStream = httpURLConnection.getErrorStream();
                 }
 
@@ -396,7 +411,7 @@ public class ReportFragment extends Fragment {
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
                 StringBuilder sb = new StringBuilder();
-                String line;
+                String line = null;
 
                 while((line = bufferedReader.readLine()) != null){
                     sb.append(line);
@@ -407,17 +422,15 @@ public class ReportFragment extends Fragment {
                 return sb.toString().trim();
 
             } catch (Exception e) {
-                Log.d(TAG, "InsertData: Error ", e);
+                Log.d(TAG, "GetData: Error ", e);
                 errorString = e.toString();
 
                 return null;
             }
-
         }
     }
 
-
-    private void showResult(){
+    private ArrayList<HashMap<String, String>> showResult(){
         try {
             JSONObject jsonObject = new JSONObject(mJsonString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
@@ -438,6 +451,14 @@ public class ReportFragment extends Fragment {
 
                 mArrayList.add(hashMap);
             }
+            /*ArrayList 제대로 들어갔는지 확인 코드
+            int j=0;
+            for (int i=0; i<mArrayList.size(); i++) {
+                j=j+1;
+                Diarying =String.valueOf(j);
+                Log.d(TAG, "for 안" +Diarying);
+            }
+            Log.d(TAG, "for 다음" +Diarying);*/
 
             /*ListAdapter adapter = new SimpleAdapter(
                     ReportFragment.context, mArrayList, R.layout.item_list,
@@ -447,14 +468,11 @@ public class ReportFragment extends Fragment {
 
             mlistView.setAdapter(adapter);*/
 
-            for (int i=0; i<1; i++) {
-                DiaryReport3 ="바뀐것 제발돼라";
-            }
-
         } catch (JSONException e) {
-            Log.d(TAG, "showResult : ", e);
+            Log.d(TAG, "showResult Error : ", e);
         }
 
+        return mArrayList;
     }
 
     // 일기 감정에 따른 결과 분석
@@ -464,30 +482,178 @@ public class ReportFragment extends Fragment {
         mArrayList = new ArrayList<>();
 
         GetData task = new GetData();
-        task.execute("http://"+IP_ADDRESS+"/getjson.php");
+        try {   //doInBackground 리턴값(String) 가져옴
+            String result2 =task.execute("http://"+IP_ADDRESS+"/getjson.php").get();
 
-        DiaryReport2 = "이번주 일기에서 '좋음' 감정 단어는 ㅇ번, '보통' 감정 단어는 ㅇ번, '나쁨' 감정 단어는 ㅇ번 나타났습니다.";
-        DiaryReport1 = DiaryReport3;
+            DiaryError = result2;
+            Log.d(TAG, "response  - " + result2);
+
+            if (result2 == null){
+                DiaryError = result2;
+            }
+            else {
+                mJsonString = result2;
+                mArrayList2 = showResult();
+
+                //일기 작성 횟수
+                DiaryCount = mArrayList2.size();
+                //0~2
+                if (DiaryCount <=2) {
+                    DiaryReport4 = "분석 결과의 정확도가 낮아질 수 있어요!";
+                }
+                //3~5
+                else if (DiaryCount >2 && DiaryCount <=5) {
+                    DiaryReport4 = "더 정확한 분석을 위해 일기를 자주 작성해 주세요!";
+                }
+                //6~7
+                else if (DiaryCount >5) {
+                    DiaryReport4 = "꾸준히 일기를 작성하셨네요. 부지런한 당신, 칭찬해요!";
+                }
+
+                for(int i=0;i<mArrayList2.size();i++) {
+                    GoodEmotionNum += Integer.parseInt(mArrayList2.get(i).get("num_good"));
+                    NorEmotionNum += Integer.parseInt(mArrayList2.get(i).get("num_normal"));
+                    BadEmotionNum += Integer.parseInt(mArrayList2.get(i).get("num_bad"));
+                }
+            }
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        DiaryReport2 = "이번주 일기에서 '좋음' 감정 단어는 "+Integer.toString(GoodEmotionNum)+"번, '보통' 감정 단어는 "+Integer.toString(NorEmotionNum)+"번, '나쁨' 감정 단어는 "+Integer.toString(BadEmotionNum)+"번 나타났습니다.";
+        DiaryReport3 = "이번주에는 일기를 "+DiaryCount+"회 작성하셨군요.";
+        DiaryReport1 = DiaryReport2+DiaryReport3+DiaryReport4;
         return DiaryReport1;
     }
 
-
-    // 최종 분석
+    // 최종 분석-이번주의 감정 분석
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public String FinalReport() {
-        if (AppTime_LastWeek > 0) { // 저번주 앱 사용량이 존재할 때
+        // 저번주 앱 사용량이 존재할 때
+        if (AppTime_LastWeek > 0) {
             if (AppTime_Week >= AppTime_LastWeek * 1.05) {
                 //감정 나쁨 30%
+                EmotionOfWeek_int = EmotionOfWeek_int-3;
             } else if (AppTime_Week <= AppTime_LastWeek * 0.95) {
                 //감정 좋음 30%
+                EmotionOfWeek_int = EmotionOfWeek_int+3;
             } else {
                 //감정 보통 30%
+                EmotionOfWeek_int = EmotionOfWeek_int+0;
             }
-        } else {
-            //저번주 앱 사용량 없음
+        }
+        //저번주 앱 사용량 없음 - 앱사용평균 42의 5% 위아래
+        else {
+            if (AppTime_Week >= 42*1.05) {
+                //감정 나쁨 30%
+                EmotionOfWeek_int = EmotionOfWeek_int-3;
+            }
+            else if (AppTime_Week <= 42*0.95) {
+                //감정 좋음 30%
+                EmotionOfWeek_int = EmotionOfWeek_int+3;
+            }
+            else {
+                //감정 보통 30%
+                EmotionOfWeek_int = EmotionOfWeek_int+0;
+            }
         }
 
-        FinalReport1 = "";
+        EmotionOfWeek_int = EmotionOfWeek_int + GoodEmotionNum*0.7+BadEmotionNum*0.7;
+
+        //이번주의 최종 감정 분석 [-1~-0.3 = 나쁨/0.3~1 = 좋음 /나머지 보통]
+        if (EmotionOfWeek_int > 0.3) {
+            FinalReport1 = "이번주 당신의 감정은 <좋음> 입니다. 행복한 한 주를 보내셨나요? 다음 주에도 좋은 날이 계속 되길 바랍니다.";
+        }
+        else if (EmotionOfWeek_int < -0.3) {
+            FinalReport1 = "이번주 당신의 감정은 나쁨 입니다. 스트레스를 받아 힘든 한 주를 보내신 것 같아요. 고민이나 걱정들이 잘 해결되길 바랍니다.";
+        }
+        else {
+            FinalReport1 = "이번주 당신의 감정은 보통입니다. 이번주도 평소와 같이 무사히 한 주를 보내셨군요. 평범한 하루가 모여 위대한 생이 된다고 합니다. 다음 주에도 소중한 일상을 보내길 바랍니다.";
+        }
+
         return FinalReport1;
+    }
+
+    // 관리 분석
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public String ManagementReport() {
+
+        //좋은 기분
+        if (EmotionOfWeek_int > 0.3) {
+            Random ran = new Random();
+            int random = ran.nextInt(3);
+            switch (random) {
+                case 0:
+                    ManagementReport1 = "평소 좋아하는 음악을 들으며 한 주를 완벽하게 마무리해요.";
+                    break;
+                case 1:
+                    ManagementReport1 = "오늘은 즐거운 기분으로 그동안 미루던 독서를 해볼까요?";
+                    break;
+                default:
+                    ManagementReport1 = "오늘은 즐거운 기분으로 그동안 미루던 일을 해볼까요?";
+                    break;
+            }
+        }
+        //나쁜 기분
+        else if (EmotionOfWeek_int < -0.3) {
+            Random ran = new Random();
+            int random = ran.nextInt(7);
+            switch (random) {
+                case 0:
+                    ManagementReport1 = "한 주간 쌓인 스트레스는 가벼운 운동으로 날려봐요!";
+                    break;
+                case 1:
+                    ManagementReport1 = "한 주간 쌓인 스트레스는 가벼운 러닝으로 날려봐요!";
+                    break;
+                case 2:
+                    ManagementReport1 = "한 주간 쌓인 스트레스는 가벼운 스트레칭으로 날려봐요!";
+                    break;
+                case 3:
+                    ManagementReport1 = "숙면을 취하는 것은 스트레스 해소에 좋은 방법입니다.";
+                    break;
+                case 4:
+                    ManagementReport1 = "오늘은 달콤한 케이크가 당기는 날이네요.";
+                    break;
+                case 5:
+                    ManagementReport1 = "오늘은 매콤한 떡볶이가 당기는 날이네요.";
+                    break;
+                default:
+                    ManagementReport1 = "오늘은 든든한 고기가 당기는 날이네요.";
+                    break;
+            }
+        }
+        //보통 기분
+        else {
+            Random ran = new Random();
+            int random = ran.nextInt(3);
+            switch (random) {
+                case 0:
+                    ManagementReport1 = "따뜻한 차를 마시며 한 주 간 쌓였던 마음을 되돌아 봅시다.";
+                    break;
+                case 1:
+                    ManagementReport1 = "다음에는 어디로 여행을 떠날지 구경해볼까요?";
+                    break;
+                default:
+                    ManagementReport1 = "내일 아침에는 상쾌한 공기를 마시며 산책 해봐요.";
+                    break;
+            }
+        }
+
+        return ManagementReport1;
+    }
+
+    public static int EmotionOftheWeek() {
+        if (EmotionOfWeek_int <-0.3) {
+            return 1;
+        }
+        else if (EmotionOfWeek_int >0.3) {
+            return 3;
+        }
+        else {
+            return 2;
+        }
     }
 }
