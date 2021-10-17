@@ -88,7 +88,8 @@ public class ReportFragment extends Fragment {
     //ListView mlistView;
     String mJsonString;
     
-    private String DiaryReport1, DiaryReport2, DiaryReport3, DiaryReport4, DiaryError;
+    private String DiaryReport1, DiaryReport2, DiaryReport3, DiaryError;
+    private  String DiaryReport4 = "감정 분석을 위해 일기를 작성해주세요!";
     private int DiaryCount=0;
     private int GoodEmotionNum=0, NorEmotionNum=0, BadEmotionNum=0;
 
@@ -500,8 +501,8 @@ public class ReportFragment extends Fragment {
 
                 //일기 작성 횟수
                 DiaryCount = mArrayList2.size();
-                //0~2
-                if (DiaryCount <=2) {
+                //1~2
+                if (DiaryCount <=2 && DiaryCount >0) {
                     DiaryReport4 = "분석 결과의 정확도가 낮아질 수 있어요!";
                 }
                 //3~5
