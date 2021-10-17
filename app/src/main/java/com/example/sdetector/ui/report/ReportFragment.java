@@ -79,6 +79,8 @@ public class ReportFragment extends Fragment {
     static float AppTime_Week;
     float AppTime_LastWeek;
 
+    private static String AppReport5 = "평균 스마트폰 사용시간보다 적게 사용하셨습니다. 이번주는 부지런히 건강한 하루를 보내셨군요!";
+
     private static final String TAG_JSON="webnautes";
     private static final String TAG_GOOD = "num_good";
     private static final String TAG_NORMAL = "num_normal";
@@ -345,19 +347,19 @@ public class ReportFragment extends Fragment {
             Appreport2 = "저번주 스마트폰 총 사용 시간인 " + AppTime_LastWeek + "보다 " + inter2 + "시간 감소하였습니다.";
         }
 
-        AppTimeReport = AppReport1 + Appreport2 + "\n" + AppReport3 + AppReport4;
-        return AppTimeReport;
-
-        /*String avgTime = " ";
-        if (AppTime_Week < 30) {
-            avgTime = "평균 스마트폰 사용시간보다 적게 사용하셨습니다. 이번주는 부지런히 건강한 하루를 보내셨군요!";
+        if (AppTime_Week < 42*0.95) {
+            AppReport5 = "평균 스마트폰 사용시간보다 적게 사용하셨습니다. 이번주는 부지런히 건강한 하루를 보내셨군요!";
         }
         else if (30<AppTime_Week && AppTime_Week<51) {
-            avgTime = "평균 스마트폰 사용시간 범위입니다. 이번주도 수고하셨습니다:)";
+            AppReport5 = "평균 스마트폰 사용시간 범위입니다. 이번주도 수고하셨습니다:)";
         }
         else if (51<AppTime_Week) {
-            avgTime = "평균 스마트폰 사용시간보다 많이 사용하셨습니다. 눈의 피로를 풀어주세요!";
-        }*/
+            AppReport5 = "평균 스마트폰 사용시간보다 많이 사용하셨습니다. 눈의 피로를 풀어주세요!";
+        }
+
+        AppTimeReport = AppReport1 + Appreport2 + "\n" + AppReport3 + AppReport4 + "\n" + AppReport5;
+        return AppTimeReport;
+
     }
 
     //일기 분석 관련
