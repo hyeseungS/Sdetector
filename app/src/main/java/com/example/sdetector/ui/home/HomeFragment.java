@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
-import com.example.sdetector.ui.report.ReportFragment.*;
-
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
@@ -39,6 +37,8 @@ public class HomeFragment extends Fragment {
     public String getName() {
         return name;
     }
+
+    public static int N = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,27 +71,14 @@ public class HomeFragment extends Fragment {
             }
         });
         ImageView home_emotion = (ImageView) root.findViewById(R.id.home_emotion);
+        home_emotion.setImageResource(R.drawable.pre_emotion);
 
         // 이번주 당신의 감정-에 따라 바뀌게
-        if (1<=ReportFragment.EmotionOftheWeek() && ReportFragment.EmotionOftheWeek()<=5) {
-            switch (ReportFragment.EmotionOftheWeek()) {
-                case 1:
-                    home_emotion.setImageResource(R.drawable.sad_emoticon);
-                    break;
-                case 2:
-                    home_emotion.setImageResource(R.drawable.normal_emoticon);
-                    break;
-                case 3:
-                    home_emotion.setImageResource(R.drawable.happy_emoticon);
-                    break;
-                default:
-                    home_emotion.setImageResource(R.drawable.pre_emotion);
-                break;
-            }
-        }
-        else {
-            home_emotion.setImageResource(R.drawable.pre_emotion);
-        }
+        if (N==1) {home_emotion.setImageResource(R.drawable.sad_emoticon);}
+        else if (N==2) {home_emotion.setImageResource(R.drawable.normal_emoticon);}
+        else if (N==3) {home_emotion.setImageResource(R.drawable.happy_emoticon);}
+        else {home_emotion.setImageResource(R.drawable.pre_emotion);}
+
 
         ViewPager pager = root.findViewById(R.id.pager);
         pager.setOffscreenPageLimit(2);
@@ -135,4 +122,28 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    public static void EmotionImage_Main() {
+        if (1 <= ReportFragment.EmotionOftheWeek() && ReportFragment.EmotionOftheWeek() <= 5) {
+            switch (ReportFragment.EmotionOftheWeek()) {
+                case 1:
+                    N = 1;
+                    //home_emotion.setImageResource(R.drawable.sad_emoticon);
+                    break;
+                case 2:
+                    N = 2;
+                    //home_emotion.setImageResource(R.drawable.normal_emoticon);
+                    break;
+                case 3:
+                    N = 3;
+                    //home_emotion.setImageResource(R.drawable.happy_emoticon);
+                    break;
+                default:
+                    //home_emotion.setImageResource(R.drawable.pre_emotion);
+                    break;
+            }
+        } else {
+            //N=0;
+            //home_emotion.setImageResource(R.drawable.pre_emotion);
+        }
+    }
 }

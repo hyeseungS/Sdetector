@@ -49,6 +49,8 @@ import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.USAGE_STATS_SERVICE;
 
+import static com.example.sdetector.ui.home.HomeFragment.EmotionImage_Main;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,19 +83,19 @@ public class ReportFragment extends Fragment {
 
     private static String AppReport5 = "평균 스마트폰 사용시간보다 적게 사용하셨습니다. 이번주는 부지런히 건강한 하루를 보내셨군요!";
 
-    private static final String TAG_JSON="webnautes";
+    private static final String TAG_JSON = "webnautes";
     private static final String TAG_GOOD = "num_good";
     private static final String TAG_NORMAL = "num_normal";
-    private static final String TAG_BAD ="num_bad";
+    private static final String TAG_BAD = "num_bad";
 
     ArrayList<HashMap<String, String>> mArrayList, mArrayList2;
     //ListView mlistView;
     String mJsonString;
-    
+
     private String DiaryReport1, DiaryReport2, DiaryReport3, DiaryError;
-    private  String DiaryReport4 = "감정 분석을 위해 일기를 작성해주세요!";
-    private int DiaryCount=0;
-    private int GoodEmotionNum=0, NorEmotionNum=0, BadEmotionNum=0;
+    private String DiaryReport4 = "감정 분석을 위해 일기를 작성해주세요!";
+    private int DiaryCount = 0;
+    private int GoodEmotionNum = 0, NorEmotionNum = 0, BadEmotionNum = 0;
 
     private static double EmotionOfWeek_int;
 
@@ -131,12 +133,15 @@ public class ReportFragment extends Fragment {
         switch (EmotionOftheWeek()) {
             case 1:
                 report_emotion.setImageResource(R.drawable.sad_emoticon);
+                EmotionImage_Main();
                 break;
             case 2:
                 report_emotion.setImageResource(R.drawable.normal_emoticon);
+                EmotionImage_Main();
                 break;
             case 3:
                 report_emotion.setImageResource(R.drawable.happy_emoticon);
+                EmotionImage_Main();
                 break;
             default:
                 report_emotion.setImageResource(R.drawable.pre_emotion);
@@ -347,13 +352,11 @@ public class ReportFragment extends Fragment {
             Appreport2 = "저번주 스마트폰 총 사용 시간인 " + AppTime_LastWeek + "보다 " + inter2 + "시간 감소하였습니다.";
         }
 
-        if (AppTime_Week < 42*0.95) {
+        if (AppTime_Week < 42 * 0.95) {
             AppReport5 = "평균 스마트폰 사용시간보다 적게 사용하셨습니다. 이번주는 부지런히 건강한 하루를 보내셨군요!";
-        }
-        else if (30<AppTime_Week && AppTime_Week<51) {
+        } else if (30 < AppTime_Week && AppTime_Week < 51) {
             AppReport5 = "평균 스마트폰 사용시간 범위입니다. 이번주도 수고하셨습니다:)";
-        }
-        else if (51<AppTime_Week) {
+        } else if (51 < AppTime_Week) {
             AppReport5 = "평균 스마트폰 사용시간보다 많이 사용하셨습니다. 눈의 피로를 풀어주세요!";
         }
 
@@ -362,8 +365,8 @@ public class ReportFragment extends Fragment {
 
     }
 
-    //일기 분석 관련
-    private class GetData extends AsyncTask<String, Void, String>{
+    //DB로 부터 일기 분석 데이터 받아 최종 분석
+    private class GetData extends AsyncTask<String, Void, String> {
         String errorString = null;
 
         @Override
@@ -419,7 +422,7 @@ public class ReportFragment extends Fragment {
                 StringBuilder sb = new StringBuilder();
                 String line = null;
 
-                while((line = bufferedReader.readLine()) != null){
+                while ((line = bufferedReader.readLine()) != null) {
                     sb.append(line);
                 }
 
@@ -436,12 +439,12 @@ public class ReportFragment extends Fragment {
         }
     }
 
-    private ArrayList<HashMap<String, String>> showResult(){
+    private ArrayList<HashMap<String, String>> showResult() {
         try {
             JSONObject jsonObject = new JSONObject(mJsonString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
 
-            for(int i=0;i<jsonArray.length();i++){
+            for (int i = 0; i < jsonArray.length(); i++) {
 
                 JSONObject item = jsonArray.getJSONObject(i);
 
@@ -449,7 +452,7 @@ public class ReportFragment extends Fragment {
                 String Nnor = item.getString(TAG_NORMAL);
                 String Nbad = item.getString(TAG_BAD);
 
-                HashMap<String,String> hashMap = new HashMap<>();
+                HashMap<String, String> hashMap = new HashMap<>();
 
                 hashMap.put(TAG_GOOD, Ngood);
                 hashMap.put(TAG_NORMAL, Nnor);
@@ -457,22 +460,6 @@ public class ReportFragment extends Fragment {
 
                 mArrayList.add(hashMap);
             }
-            /*ArrayList 제대로 들어갔는지 확인 코드
-            int j=0;
-            for (int i=0; i<mArrayList.size(); i++) {
-                j=j+1;
-                Diarying =String.valueOf(j);
-                Log.d(TAG, "for 안" +Diarying);
-            }
-            Log.d(TAG, "for 다음" +Diarying);*/
-
-            /*ListAdapter adapter = new SimpleAdapter(
-                    ReportFragment.context, mArrayList, R.layout.item_list,
-                    new String[]{TAG_GOOD,TAG_NORMAL, TAG_BAD},
-                    new int[]{R.id.textView_list_id, R.id.textView_list_name, R.id.textView_list_address}
-            );
-
-            mlistView.setAdapter(adapter);*/
 
         } catch (JSONException e) {
             Log.d(TAG, "showResult Error : ", e);
@@ -489,34 +476,33 @@ public class ReportFragment extends Fragment {
 
         GetData task = new GetData();
         try {   //doInBackground 리턴값(String) 가져옴
-            String result2 =task.execute("http://"+IP_ADDRESS+"/getjson.php").get();
+            String result2 = task.execute("http://" + IP_ADDRESS + "/getjson.php").get();
 
             DiaryError = result2;
             Log.d(TAG, "response  - " + result2);
 
-            if (result2 == null){
+            if (result2 == null) {
                 DiaryError = result2;
-            }
-            else {
+            } else {
                 mJsonString = result2;
                 mArrayList2 = showResult();
 
                 //일기 작성 횟수
                 DiaryCount = mArrayList2.size();
                 //1~2
-                if (DiaryCount <=2 && DiaryCount >0) {
+                if (DiaryCount <= 2 && DiaryCount > 0) {
                     DiaryReport4 = "분석 결과의 정확도가 낮아질 수 있어요!";
                 }
                 //3~5
-                else if (DiaryCount >2 && DiaryCount <=5) {
+                else if (DiaryCount > 2 && DiaryCount <= 5) {
                     DiaryReport4 = "더 정확한 분석을 위해 일기를 자주 작성해 주세요!";
                 }
                 //6~7
-                else if (DiaryCount >5) {
+                else if (DiaryCount > 5) {
                     DiaryReport4 = "꾸준히 일기를 작성하셨네요. 부지런한 당신, 칭찬해요!";
                 }
 
-                for(int i=0;i<mArrayList2.size();i++) {
+                for (int i = 0; i < mArrayList2.size(); i++) {
                     GoodEmotionNum += Integer.parseInt(mArrayList2.get(i).get("num_good"));
                     NorEmotionNum += Integer.parseInt(mArrayList2.get(i).get("num_normal"));
                     BadEmotionNum += Integer.parseInt(mArrayList2.get(i).get("num_bad"));
@@ -529,9 +515,9 @@ public class ReportFragment extends Fragment {
             e.printStackTrace();
         }
 
-        DiaryReport2 = "이번주 일기에서 '좋음' 감정 단어는 "+Integer.toString(GoodEmotionNum)+"번, '보통' 감정 단어는 "+Integer.toString(NorEmotionNum)+"번, '나쁨' 감정 단어는 "+Integer.toString(BadEmotionNum)+"번 나타났습니다.";
-        DiaryReport3 = "이번주에는 일기를 "+DiaryCount+"회 작성하셨군요.";
-        DiaryReport1 = DiaryReport2+DiaryReport3+DiaryReport4;
+        DiaryReport2 = "이번주 일기에서 '좋음' 감정 단어는 " + Integer.toString(GoodEmotionNum) + "번, '보통' 감정 단어는 " + Integer.toString(NorEmotionNum) + "번, '나쁨' 감정 단어는 " + Integer.toString(BadEmotionNum) + "번 나타났습니다.";
+        DiaryReport3 = "이번주에는 일기를 " + DiaryCount + "회 작성하셨군요.";
+        DiaryReport1 = DiaryReport2 + DiaryReport3 + DiaryReport4;
         return DiaryReport1;
     }
 
@@ -542,41 +528,37 @@ public class ReportFragment extends Fragment {
         if (AppTime_LastWeek > 0) {
             if (AppTime_Week >= AppTime_LastWeek * 1.05) {
                 //감정 나쁨 30%
-                EmotionOfWeek_int = EmotionOfWeek_int-3;
+                EmotionOfWeek_int = EmotionOfWeek_int - 3;
             } else if (AppTime_Week <= AppTime_LastWeek * 0.95) {
                 //감정 좋음 30%
-                EmotionOfWeek_int = EmotionOfWeek_int+3;
+                EmotionOfWeek_int = EmotionOfWeek_int + 3;
             } else {
                 //감정 보통 30%
-                EmotionOfWeek_int = EmotionOfWeek_int+0;
+                EmotionOfWeek_int = EmotionOfWeek_int + 0;
             }
         }
         //저번주 앱 사용량 없음 - 앱사용평균 42의 5% 위아래
         else {
-            if (AppTime_Week >= 42*1.05) {
+            if (AppTime_Week >= 42 * 1.05) {
                 //감정 나쁨 30%
-                EmotionOfWeek_int = EmotionOfWeek_int-3;
-            }
-            else if (AppTime_Week <= 42*0.95) {
+                EmotionOfWeek_int = EmotionOfWeek_int - 3;
+            } else if (AppTime_Week <= 42 * 0.95) {
                 //감정 좋음 30%
-                EmotionOfWeek_int = EmotionOfWeek_int+3;
-            }
-            else {
+                EmotionOfWeek_int = EmotionOfWeek_int + 3;
+            } else {
                 //감정 보통 30%
-                EmotionOfWeek_int = EmotionOfWeek_int+0;
+                EmotionOfWeek_int = EmotionOfWeek_int + 0;
             }
         }
 
-        EmotionOfWeek_int = EmotionOfWeek_int + GoodEmotionNum*0.7-BadEmotionNum*0.7;
+        EmotionOfWeek_int = EmotionOfWeek_int + GoodEmotionNum * 0.7 - BadEmotionNum * 0.7;
 
         //이번주의 최종 감정 분석 [-1~-0.3 = 나쁨/0.3~1 = 좋음 /나머지 보통]
         if (EmotionOfWeek_int > 0.3) {
             FinalReport1 = "이번주 당신의 감정은 <좋음> 입니다. 행복한 한 주를 보내셨나요? 다음 주에도 좋은 날이 계속 되길 바랍니다.";
-        }
-        else if (EmotionOfWeek_int < -0.3) {
+        } else if (EmotionOfWeek_int < -0.3) {
             FinalReport1 = "이번주 당신의 감정은 나쁨 입니다. 스트레스를 받아 힘든 한 주를 보내신 것 같아요. 고민이나 걱정들이 잘 해결되길 바랍니다.";
-        }
-        else {
+        } else {
             FinalReport1 = "이번주 당신의 감정은 보통입니다. 이번주도 평소와 같이 무사히 한 주를 보내셨군요. 평범한 하루가 모여 위대한 생이 된다고 합니다. 다음 주에도 소중한 일상을 보내길 바랍니다.";
         }
 
@@ -652,16 +634,13 @@ public class ReportFragment extends Fragment {
     }
 
     public static int EmotionOftheWeek() {
-        if (EmotionOfWeek_int <-0.3) {
+        if (EmotionOfWeek_int < -0.3) {
             return 1;
-        }
-        else if (EmotionOfWeek_int >0.3) {
+        } else if (EmotionOfWeek_int > 0.3) {
             return 3;
-        }
-        else if (EmotionOfWeek_int>= -0.3 && EmotionOfWeek_int<= 0.3){
+        } else if (EmotionOfWeek_int >= -0.3 && EmotionOfWeek_int <= 0.3) {
             return 2;
-        }
-        else {
+        } else {
             return 5;
         }
     }
