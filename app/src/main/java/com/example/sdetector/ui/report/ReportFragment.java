@@ -567,7 +567,7 @@ public class ReportFragment extends Fragment {
             }
         }
 
-        EmotionOfWeek_int = EmotionOfWeek_int + GoodEmotionNum*0.7+BadEmotionNum*0.7;
+        EmotionOfWeek_int = EmotionOfWeek_int + GoodEmotionNum*0.7-BadEmotionNum*0.7;
 
         //이번주의 최종 감정 분석 [-1~-0.3 = 나쁨/0.3~1 = 좋음 /나머지 보통]
         if (EmotionOfWeek_int > 0.3) {
