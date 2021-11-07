@@ -503,7 +503,9 @@ public class ReportFragment extends Fragment {
                 }
 
                 for (int i = 0; i < mArrayList2.size(); i++) {
-                    GoodEmotionNum += Integer.parseInt(mArrayList2.get(i).get("num_good"));
+                    //GoodEmotionNum += Integer.parseInt(mArrayList2.get(i).get("num_good"));
+                    //mysql에서 goodEmotion 갯수가 +1되어 나와 일단은 -1 해둔다.
+                    GoodEmotionNum = GoodEmotionNum  + Integer.parseInt(mArrayList2.get(i).get("num_good")) -1;
                     NorEmotionNum += Integer.parseInt(mArrayList2.get(i).get("num_normal"));
                     BadEmotionNum += Integer.parseInt(mArrayList2.get(i).get("num_bad"));
                 }
@@ -557,9 +559,9 @@ public class ReportFragment extends Fragment {
         if (EmotionOfWeek_int > 0.3) {
             FinalReport1 = "이번주 당신의 감정은 <좋음> 입니다. 행복한 한 주를 보내셨나요? 다음 주에도 좋은 날이 계속 되길 바랍니다.";
         } else if (EmotionOfWeek_int < -0.3) {
-            FinalReport1 = "이번주 당신의 감정은 나쁨 입니다. 스트레스를 받아 힘든 한 주를 보내신 것 같아요. 고민이나 걱정들이 잘 해결되길 바랍니다.";
+            FinalReport1 = "이번주 당신의 감정은 <나쁨> 입니다. 스트레스를 받아 힘든 한 주를 보내신 것 같아요. 고민이나 걱정들이 잘 해결되길 바랍니다.";
         } else {
-            FinalReport1 = "이번주 당신의 감정은 보통입니다. 이번주도 평소와 같이 무사히 한 주를 보내셨군요. 평범한 하루가 모여 위대한 생이 된다고 합니다. 다음 주에도 소중한 일상을 보내길 바랍니다.";
+            FinalReport1 = "이번주 당신의 감정은 <보통>입니다. 이번주도 평소와 같이 무사히 한 주를 보내셨군요. 평범한 하루가 모여 위대한 생이 된다고 합니다. 다음 주에도 소중한 일상을 보내길 바랍니다.";
         }
 
         return FinalReport1;
