@@ -11,7 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+
     </style>
 
     <style name="Theme.Sdetector.NoActionBar">
@@ -19,7 +19,21 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="toolbarMenuTheme">
+        <item name="android:fontFamily">@font/custom_font_style</item>
+    </style>
+
     <style name="Theme.Sdetector.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Sdetector.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/custom_font_style</item>
+    </style>
+
+    <style name="navigtaionText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">16dp</item>
+        <item name="android:fontFamily">@font/custom_font_style</item>
+    </style>
+
 </resources>

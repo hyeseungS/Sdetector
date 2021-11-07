@@ -308,7 +308,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/arrow_right/baseline_arrow_right_24.xml" />
+                                      <entry key="url" value="file:/$PROJECT_DIR$/../../../../Scoop/apps/android-sdk/current/icons/material/materialicons/sentiment_satisfied/baseline_sentiment_satisfied_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -318,8 +318,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="676767" />
-                            <entry key="outputName" value="ic_baseline_arrow_right_24" />
+                            <entry key="color" value="1f1d1d" />
+                            <entry key="outputName" value="normal_emoticon" />
                             <entry key="sourceFile" value="C:\Users\shinh\AndroidStudioProjects\Sdetector" />
                           </map>
                         </option>

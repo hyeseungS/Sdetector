@@ -12,8 +12,7 @@
         android:layout_height="match_parent"
         android:background="#33E3C7CB"
         android:gravity="center_horizontal"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="10dp"
+        android:padding="10dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,22 +20,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:text="환경 설정"
-            android:textColor="#504435"
-            android:textSize="32dp"
-            android:textStyle="bold" />
-
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -202,7 +190,7 @@
             android:onClick="backLogin"
             android:text="로그아웃"
             android:textSize="24dp"
-            android:textStyle="bold"
+            android:fontFamily="@font/custom_font_style"
             app:cornerRadius="36dp" />
 
 

@@ -13,29 +13,17 @@
         android:background="#33E3C7CB"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="10dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:text="마음정리 보고서"
-            android:textColor="#504435"
-            android:textSize="32dp"
-            android:textStyle="bold" />
-
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:layout_marginTop="10dp"
             android:paddingHorizontal="10dp">
 
             <LinearLayout

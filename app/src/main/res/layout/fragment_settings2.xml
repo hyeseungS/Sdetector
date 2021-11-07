@@ -19,18 +19,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:text="회원 정보"
-            android:textColor="#504435"
-            android:textSize="32dp"
-            android:textStyle="bold" />
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -110,7 +98,7 @@
             android:layout_marginTop="80dp"
             android:text="회원 탈퇴"
             android:textSize="24dp"
-            android:textStyle="bold"
+            android:fontFamily="@font/custom_font_style"
             app:cornerRadius="36dp" />
 
 

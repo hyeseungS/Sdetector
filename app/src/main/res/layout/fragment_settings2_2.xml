@@ -108,7 +108,7 @@
             android:layout_marginTop="10dp"
             android:text="PW 변경"
             android:textSize="24dp"
-            android:textStyle="bold"
+            android:fontFamily="@font/custom_font_style"
             app:cornerRadius="36dp" />
 
     </LinearLayout>

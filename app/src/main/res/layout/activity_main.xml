@@ -20,6 +20,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        app:itemTextAppearance="@style/navigtaionText"
         app:headerLayout="@layout/nav_header_main"
         app:itemIconTint="#676767"
         app:itemTextColor="#676767"
