@@ -1,14 +1,30 @@
-import json
-
 import pandas as pd
+import pymysql
+from sqlalchemy import create_engine
+
+conn = pymysql.connect(host='52.78.165.117', port=3306, user='mbit', password='sdetector2021', db='sys', charset='utf8')
+
+curs = conn.cursor()
+
+sql = """select * from diary"""
+curs.execute(sql)
+
+data = curs.fetchall()
+#print(data)
+
 
 #경로 변경
-df = pd.read_json("./example2.json")
-#print(df.columns)
+df_data = pd.DataFrame(data, columns=['ID', 'DATE', 'emotion', 'content'])
+#print(df_data)
+df_data.to_json('df_data.json', orient='table')
+df = pd.read_json('df_data.json', orient='table')
+#print(df)
 
-keywords_good = open('./good.txt', 'r').read().split('\n')
-keywords_normal = open('./normal.txt', 'r').read().split('\n')
-keywords_bad = open('./bad.txt', 'r').read().split('\n')
+conn.close()
+
+keywords_good = open('/home/ubuntu/pythonProject/good.txt', 'r').read().split('\n')
+keywords_normal = open('/home/ubuntu/pythonProject/normal.txt', 'r').read().split('\n')
+keywords_bad = open('/home/ubuntu/pythonProject/bad.txt', 'r').read().split('\n')
 
 #'DATE' 배열 저장
 dfSortedDATE = df.sort_values(['DATE'])
@@ -31,6 +47,7 @@ for i in range(dateCount):
     listArray.append(sub)
 
 #print(listArray)
+
 
 data_list =[]
 
@@ -70,7 +87,8 @@ dfSave = pd.DataFrame(columns=['ID', 'DATE', 'num_good', 'num_normal', 'num_bad'
 
 
 dfSaveSorted = dfSave.sort_values(['DATE'])
-print(dfSaveSorted)
 
-#json파일 내보내기 -> 경로 변경(서버로)
-jsSave = dfSaveSorted.to_json("/Users/eunji/Desktop/ex_saveSorted.json", orient='table')
+engine = create_engine('mysql+pymysql://mbit:sdetector2021@52.78.165.117/sys')
+conn = engine.connect()
+
+dfSaveSorted.to_sql(name='diary_pd', con=engine, if_exists='replace', index='False')
