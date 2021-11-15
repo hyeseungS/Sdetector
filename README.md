@@ -15,6 +15,7 @@ _Version1.0
 
 ㅇ 심리진단 결과 및 관리 방법 제공: 앱 사용 분석 데이터, 감정일기 데이터를 분석하여 심리진단 결과 및 적절한 관리 방법 제공함.
 
-![KakaoTalk_20210821_171509151_03](https://user-images.githubusercontent.com/73377952/130822924-f1e870e4-3654-4c09-87cd-e6a7daa56d3e.png)
+<img width="205" alt="Sdetector" src="https://user-images.githubusercontent.com/73929840/141708675-cebeb5cf-fbed-4cc0-a21f-7a4cbf67fd8d.png">
+
 
 
