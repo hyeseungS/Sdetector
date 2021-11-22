@@ -7,7 +7,7 @@
     android:background="#FFFFFF"
     android:clickable="true"
     android:clipChildren="true"
-    tools:context=".LoginActivity">
+    tools:context="com.mbIT.sdetector.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

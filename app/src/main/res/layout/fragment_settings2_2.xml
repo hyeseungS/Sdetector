@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Settings2_2Fragment">
+    tools:context="com.mbIT.sdetector.Settings2_2Fragment">
 
     <LinearLayout
         android:id="@+id/text_settings2_2"

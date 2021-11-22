@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.sdetector">
+    package="com.mbIT.sdetector">
 
     <!-- 인터넷 사용 권한 설정 (카카오 로그인 연동)-->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions"/>
 
     <application
-        android:name=".KakaoApplication"
+        android:name="com.mbIT.sdetector.KakaoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_sdetector"
         android:label="@string/app_name"
@@ -18,15 +18,15 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Sdetector">
-        <activity android:name=".Login4Activity"></activity>
+        <activity android:name="com.mbIT.sdetector.Login4Activity"></activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.mbIT.sdetector.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.Sdetector.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".Login3Activity" />
-        <activity android:name=".Login2Activity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name="com.mbIT.sdetector.Login3Activity" />
+        <activity android:name="com.mbIT.sdetector.Login2Activity" />
+        <activity android:name="com.mbIT.sdetector.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.settings.SettingsFragment">
+    tools:context="com.mbIT.sdetector.ui.settings.SettingsFragment">
 
     <LinearLayout
         android:id="@+id/text_settings"
@@ -178,6 +178,25 @@
                     android:textOn="ON"
                     android:textStyle="bold"
                     app:backgroundTint="#00FFFFFF" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="320dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="30dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="본 애플리케이션은 과학기술정보통신부 정보통신창의인재양성사업의 지원을 통해 수행한 ICT멘토링 프로젝트 결과물입니다."
+                    android:textColor="#676658"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
         </LinearLayout>

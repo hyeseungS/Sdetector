@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.sdetector.ui.home.HomeFragment"
+        android:name="com.mbIT.sdetector.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -17,13 +17,13 @@
 
     <fragment
         android:id="@+id/navigation_report"
-        android:name="com.example.sdetector.ui.report.ReportFragment"
+        android:name="com.mbIT.sdetector.ui.report.ReportFragment"
         android:label="@string/title_report"
         tools:layout="@layout/fragment_report" />
 
     <fragment
         android:id="@+id/navigation_diary"
-        android:name="com.example.sdetector.ui.diary.DiaryFragment"
+        android:name="com.mbIT.sdetector.ui.diary.DiaryFragment"
         android:label="@string/title_diary"
         tools:layout="@layout/fragment_diary" >
         <action
@@ -33,13 +33,13 @@
 
     <fragment
         android:id="@+id/diary_list"
-        android:name="com.example.sdetector.DiarylistFragment"
+        android:name="com.mbIT.sdetector.DiarylistFragment"
         android:label="일기 목록"
         tools:layout="@layout/fragment_diarylist" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.example.sdetector.ui.settings.SettingsFragment"
+        android:name="com.mbIT.sdetector.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" >
         <action
@@ -52,13 +52,13 @@
 
     <fragment
         android:id="@+id/more_graph"
-        android:name="com.example.sdetector.Graph3Fragment"
+        android:name="com.mbIT.sdetector.Graph3Fragment"
         android:label="앱 사용 시간"
         tools:layout="@layout/fragment_graph3" />
 
     <fragment
         android:id="@+id/mem_settings"
-        android:name="com.example.sdetector.Settings2Fragment"
+        android:name="com.mbIT.sdetector.Settings2Fragment"
         android:label="회원 정보"
         tools:layout="@layout/fragment_settings2" >
         <action
@@ -74,23 +74,23 @@
 
     <fragment
         android:id="@+id/mem_settingsID"
-        android:name="com.example.sdetector.Settings2_1Fragment"
+        android:name="com.mbIT.sdetector.Settings2_1Fragment"
         android:label="ID 변경"
         tools:layout="@layout/fragment_settings2_1" />
     <fragment
         android:id="@+id/mem_settingsPW"
-        android:name="com.example.sdetector.Settings2_2Fragment"
+        android:name="com.mbIT.sdetector.Settings2_2Fragment"
         android:label="PW 변경"
         tools:layout="@layout/fragment_settings2_2" />
     <fragment
         android:id="@+id/mem_settingsINFO"
-        android:name="com.example.sdetector.Settings2_3Fragment"
+        android:name="com.mbIT.sdetector.Settings2_3Fragment"
         android:label="개인 정보 변경"
         tools:layout="@layout/fragment_settings2_3" />
 
     <fragment
         android:id="@+id/tac_settings"
-        android:name="com.example.sdetector.Settings3Fragment"
+        android:name="com.mbIT.sdetector.Settings3Fragment"
         android:label="이용 약관 확인"
         tools:layout="@layout/fragment_settings3" />
 </navigation>

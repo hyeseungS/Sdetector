@@ -7,7 +7,7 @@
     android:background="#FFFFFF"
     android:clickable="true"
     android:clipChildren="true"
-    tools:context=".Login2Activity">
+    tools:context="com.mbIT.sdetector.Login2Activity">
 
 
 
